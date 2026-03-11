@@ -8,49 +8,86 @@ datasource db {
 }
 
 model Artist {
-  id          String     @id @default(uuid())
+  id          String           @id @default(uuid())
   name        String
   description String?
   genre       String?
-  imageUrl    String?    @map("image_url")
-  socialLinks Json?      @map("social_links")
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt @map("updated_at")
-  schedules   Schedule[]
+  imageUrl    String?          @map("image_url")
+  socialLinks Json?            @map("social_links")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  lineups     ScheduleLineup[]
 
   @@map("artists")
 }
 
 model Schedule {
-  id          String       @id @default(uuid())
-  artistId    String       @map("artist_id")
-  artist      Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  id          String           @id @default(uuid())
   title       String
   description String?
   type        ScheduleType
-  startDate   DateTime     @map("start_date")
-  endDate     DateTime?    @map("end_date")
+  startDate   DateTime         @map("start_date")
+  endDate     DateTime?        @map("end_date")
   location    String?
   address     String?
-  imageUrl    String?      @map("image_url")
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  cardNews    CardNews[]
+  imageUrl    String?          @map("image_url")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  lineups     ScheduleLineup[]
+  attendances UserScheduleAttendance[]
 
   @@map("schedules")
 }
 
-model CardNews {
-  id         String         @id @default(uuid())
-  scheduleId String         @map("schedule_id")
-  schedule   Schedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  title      String
-  slides     Json
-  status     CardNewsStatus @default(DRAFT)
-  createdAt  DateTime       @default(now()) @map("created_at")
-  updatedAt  DateTime       @updatedAt @map("updated_at")
+model ScheduleLineup {
+  id               String         @id @default(uuid())
+  scheduleId       String         @map("schedule_id")
+  schedule         Schedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  artistId         String         @map("artist_id")
+  artist           Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  stageName        String?        @map("stage_name")
+  startTime        DateTime?      @map("start_time")
+  endTime          DateTime?      @map("end_time")
+  performanceOrder Int?           @map("performance_order")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  bookmarks        UserBookmark[]
 
-  @@map("card_news")
+  @@unique([scheduleId, artistId])
+  @@map("schedule_lineups")
+}
+
+model User {
+  id          String                   @id @default(uuid())
+  externalId  String                   @unique @default(uuid()) @map("external_id")
+  email       String                   @unique
+  nickname    String?
+  imageUrl    String?                  @map("image_url")
+  createdAt   DateTime                 @default(now()) @map("created_at")
+  updatedAt   DateTime                 @updatedAt @map("updated_at")
+  accounts    Account[]
+  bookmarks   UserBookmark[]
+  attendances UserScheduleAttendance[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String      @id @default(uuid())
+  userId            String      @map("user_id")
+  user              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  provider          AuthProvider
+  providerAccountId String      @map("provider_account_id")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+enum AuthProvider {
+  APPLE
+  GOOGLE
 }
 
 enum ScheduleType {
@@ -61,7 +98,31 @@ enum ScheduleType {
   OTHER
 }
 
-enum CardNewsStatus {
-  DRAFT
-  PUBLISHED
+model UserScheduleAttendance {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduleId String   @map("schedule_id")
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  date       DateTime @db.Date
+  checkedAt  DateTime @map("checked_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([userId, scheduleId, date])
+  @@map("user_schedule_attendances")
+}
+
+model UserBookmark {
+  id               String         @id @default(uuid())
+  userId           String         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scheduleLineupId String         @map("schedule_lineup_id")
+  scheduleLineup   ScheduleLineup @relation(fields: [scheduleLineupId], references: [id], onDelete: Cascade)
+  checkedAt        DateTime       @map("checked_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  @@unique([userId, scheduleLineupId])
+  @@map("user_bookmarks")
 }

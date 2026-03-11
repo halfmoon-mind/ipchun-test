@@ -52,3 +52,26 @@ export interface CardNewsSlide {
   caption: string;
   order: number;
 }
+
+export interface ScheduleLineup {
+  id: string;
+  scheduleId: string;
+  artistId: string;
+  stageName: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  performanceOrder: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AttendanceDto {
+  scheduleId: string;
+  date: string;
+  checkedAt: string;
+}
+
+export interface BookmarkDto {
+  scheduleLineupId: string;
+  checkedAt: string;
+}
