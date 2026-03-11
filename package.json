@@ -1,0 +1,21 @@
+{
+  "name": "ipchun",
+  "private": true,
+  "scripts": {
+    "dev:server": "pnpm --filter @ipchun/server dev",
+    "dev:mobile": "pnpm --filter @ipchun/mobile start",
+    "dev:admin": "pnpm --filter @ipchun/admin dev",
+    "build:server": "pnpm --filter @ipchun/server build",
+    "build:admin": "pnpm --filter @ipchun/admin build",
+    "lint": "pnpm -r lint",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.5.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.6.0"
+}
