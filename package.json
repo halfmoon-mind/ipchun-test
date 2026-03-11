@@ -2,7 +2,7 @@
   "name": "ipchun",
   "private": true,
   "scripts": {
-    "dev:server": "pnpm --filter @ipchun/server dev",
+    "dev:server": "pnpm --filter @ipchun/shared build && pnpm --filter @ipchun/server dev",
     "dev:mobile": "pnpm --filter @ipchun/mobile start",
     "dev:admin": "pnpm --filter @ipchun/admin dev",
     "build:server": "pnpm --filter @ipchun/server build",
