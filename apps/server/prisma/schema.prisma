@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Artist {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  genre       String?
+  imageUrl    String?    @map("image_url")
+  socialLinks Json?      @map("social_links")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  schedules   Schedule[]
+
+  @@map("artists")
+}
+
+model Schedule {
+  id          String       @id @default(uuid())
+  artistId    String       @map("artist_id")
+  artist      Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  type        ScheduleType
+  startDate   DateTime     @map("start_date")
+  endDate     DateTime?    @map("end_date")
+  location    String?
+  address     String?
+  imageUrl    String?      @map("image_url")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  cardNews    CardNews[]
+
+  @@map("schedules")
+}
+
+model CardNews {
+  id         String         @id @default(uuid())
+  scheduleId String         @map("schedule_id")
+  schedule   Schedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  title      String
+  slides     Json
+  status     CardNewsStatus @default(DRAFT)
+  createdAt  DateTime       @default(now()) @map("created_at")
+  updatedAt  DateTime       @updatedAt @map("updated_at")
+
+  @@map("card_news")
+}
+
+enum ScheduleType {
+  CONCERT
+  BUSKING
+  FESTIVAL
+  RELEASE
+  OTHER
+}
+
+enum CardNewsStatus {
+  DRAFT
+  PUBLISHED
+}
