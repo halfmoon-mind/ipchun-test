@@ -24,5 +24,8 @@ Thumbs.db
 # Testing
 coverage/
 
+# Worktrees
+.worktrees/
+
 # Misc
 *.log
