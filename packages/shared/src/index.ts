@@ -24,7 +24,6 @@ export interface Artist {
 
 export interface Schedule {
   id: string;
-  artistId: string;
   title: string;
   description: string | null;
   type: ScheduleType;
