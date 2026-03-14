@@ -3,27 +3,44 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
+const SCHEDULE_INCLUDE = {
+  lineups: {
+    include: { artist: true },
+    orderBy: { performanceOrder: 'asc' as const },
+  },
+};
+
 @Injectable()
 export class ScheduleService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(dto: CreateScheduleDto) {
-    return this.prisma.schedule.create({
-      data: dto,
-      include: { artist: true },
+  async create(dto: CreateScheduleDto) {
+    const { artistId, ...scheduleData } = dto;
+    return this.prisma.$transaction(async (tx) => {
+      const schedule = await tx.schedule.create({ data: scheduleData });
+      if (artistId) {
+        await tx.scheduleLineup.create({
+          data: { scheduleId: schedule.id, artistId },
+        });
+      }
+      return tx.schedule.findUniqueOrThrow({
+        where: { id: schedule.id },
+        include: SCHEDULE_INCLUDE,
+      });
     });
   }
 
   findAll() {
     return this.prisma.schedule.findMany({
-      include: { artist: true },
+      include: SCHEDULE_INCLUDE,
       orderBy: { startDate: 'asc' },
     });
   }
 
   findByArtist(artistId: string) {
     return this.prisma.schedule.findMany({
-      where: { artistId },
+      where: { lineups: { some: { artistId } } },
+      include: SCHEDULE_INCLUDE,
       orderBy: { startDate: 'asc' },
     });
   }
@@ -31,7 +48,7 @@ export class ScheduleService {
   findOne(id: string) {
     return this.prisma.schedule.findUniqueOrThrow({
       where: { id },
-      include: { artist: true },
+      include: SCHEDULE_INCLUDE,
     });
   }
 
@@ -39,7 +56,7 @@ export class ScheduleService {
     return this.prisma.schedule.update({
       where: { id },
       data: dto,
-      include: { artist: true },
+      include: SCHEDULE_INCLUDE,
     });
   }
 
