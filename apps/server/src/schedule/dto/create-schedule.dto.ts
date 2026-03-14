@@ -2,8 +2,9 @@ import { IsString, IsOptional, IsEnum, IsDateString, IsUUID, IsNotEmpty } from '
 import { ScheduleType } from '@ipchun/shared';
 
 export class CreateScheduleDto {
+  @IsOptional()
   @IsUUID()
-  artistId!: string;
+  artistId?: string;
 
   @IsString()
   @IsNotEmpty()
