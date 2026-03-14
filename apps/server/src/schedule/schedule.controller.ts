@@ -11,6 +11,7 @@ import {
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { CalendarQueryDto } from './dto/calendar-query.dto';
 
 @Controller('schedules')
 export class ScheduleController {
@@ -19,6 +20,15 @@ export class ScheduleController {
   @Post()
   create(@Body() dto: CreateScheduleDto) {
     return this.scheduleService.create(dto);
+  }
+
+  @Get('calendar')
+  getCalendar(@Query() query: CalendarQueryDto) {
+    return this.scheduleService.findCalendar({
+      year: query.year,
+      month: query.month,
+      artistId: query.artistId,
+    });
   }
 
   @Get()
