@@ -61,10 +61,25 @@ export default function ArtistDetailScreen() {
     }
   };
 
+  const headerOptions = {
+    headerShown: true,
+    title: artist?.name ?? '',
+    headerBackTitleVisible: false,
+    headerStyle: {
+      backgroundColor: theme.background.val,
+    },
+    headerTintColor: theme.color.val,
+    headerTitleStyle: {
+      fontFamily: 'Pretendard-Bold',
+      fontSize: 17,
+    },
+    headerShadowVisible: false,
+  };
+
   if (loading) {
     return (
       <YStack flex={1} backgroundColor="$background" alignItems="center" justifyContent="center">
-        <Stack.Screen options={{ title: '' }} />
+        <Stack.Screen options={headerOptions} />
         <Spinner size="large" color="$accentColor" />
       </YStack>
     );
@@ -73,7 +88,7 @@ export default function ArtistDetailScreen() {
   if (error || !artist) {
     return (
       <YStack flex={1} backgroundColor="$background" alignItems="center" justifyContent="center" gap="$3">
-        <Stack.Screen options={{ title: '' }} />
+        <Stack.Screen options={headerOptions} />
         <Ionicons name="alert-circle-outline" size={48} color={theme.negativeColor.val} />
         <Text color="$colorSecondary" fontSize="$body">
           {error ?? '아티스트를 찾을 수 없습니다.'}
@@ -89,7 +104,7 @@ export default function ArtistDetailScreen() {
 
   return (
     <YStack flex={1} backgroundColor="$background">
-      <Stack.Screen options={{ title: artist.name }} />
+      <Stack.Screen options={headerOptions} />
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}>
         {/* Compact Header */}
         <XStack padding="$4" gap="$4" alignItems="flex-start">
