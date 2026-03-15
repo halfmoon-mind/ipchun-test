@@ -83,20 +83,6 @@ export default function ArtistDetailScreen() {
           <Text fontFamily="$heading" fontSize="$title" fontWeight="$title" color="$color">
             {artist.name}
           </Text>
-          {(artist.followers != null || artist.monthlyListeners != null) && (
-            <XStack gap="$3">
-              {artist.followers != null && (
-                <Text fontFamily="$body" fontSize="$caption" color="$colorSecondary">
-                  팔로워 {artist.followers.toLocaleString()}
-                </Text>
-              )}
-              {artist.monthlyListeners != null && (
-                <Text fontFamily="$body" fontSize="$caption" color="$colorSecondary">
-                  월간 리스너 {artist.monthlyListeners.toLocaleString()}
-                </Text>
-              )}
-            </XStack>
-          )}
         </YStack>
       </XStack>
 

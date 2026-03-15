@@ -22,8 +22,6 @@ export interface Artist {
   socialLinks: Record<string, string> | null;
   spotifyId: string | null;
   spotifyUrl: string | null;
-  monthlyListeners: number | null;
-  followers: number | null;
   createdAt: string;
   updatedAt: string;
 }
