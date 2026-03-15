@@ -14,7 +14,20 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+export interface ArtistSummary {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  spotifyUrl: string | null;
+}
+
 export const api = {
+  artists: {
+    getAll() {
+      return request<ArtistSummary[]>('/artists');
+    },
+  },
   schedules: {
     getCalendar(year: number, month: number, artistId?: string) {
       const params = new URLSearchParams({ year: String(year), month: String(month) });

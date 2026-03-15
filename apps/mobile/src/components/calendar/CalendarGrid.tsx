@@ -34,8 +34,9 @@ function getCalendarDays(year: number, month: number) {
     days.push({ day: d, month, year });
   }
 
-  // Next month days (fill to 42 = 6 weeks)
-  const remaining = 42 - days.length;
+  // Next month days (fill to complete last week row)
+  const totalCells = Math.ceil(days.length / 7) * 7;
+  const remaining = totalCells - days.length;
   for (let d = 1; d <= remaining; d++) {
     const m = month + 1 > 12 ? 1 : month + 1;
     const y = month + 1 > 12 ? year + 1 : year;
@@ -62,10 +63,17 @@ export function CalendarGrid({ year, month, selectedDate, dates, onSelectDate }:
   return (
     <YStack>
       {/* Weekday header */}
-      <XStack>
-        {WEEKDAYS.map((wd) => (
-          <YStack key={wd} flex={1} alignItems="center" paddingVertical="$1">
-            <Text fontSize={12} fontFamily="$body" color="$colorSecondary">{wd}</Text>
+      <XStack paddingVertical="$2" borderBottomWidth={0.5} borderBottomColor="$separatorColor">
+        {WEEKDAYS.map((wd, i) => (
+          <YStack key={wd} flex={1} alignItems="center">
+            <Text
+              fontSize={12}
+              fontFamily="$body"
+              fontWeight="600"
+              color={i === 0 ? '$negativeColor' : i === 6 ? '$accentColor' : '$colorSecondary'}
+            >
+              {wd}
+            </Text>
           </YStack>
         ))}
       </XStack>
@@ -79,6 +87,7 @@ export function CalendarGrid({ year, month, selectedDate, dates, onSelectDate }:
               <CalendarDayCell
                 key={di}
                 day={d.day}
+                dayOfWeek={di}
                 isCurrentMonth={d.month === month && d.year === year}
                 isToday={dateKey === todayKey}
                 isSelected={dateKey === selectedDate}

@@ -1,4 +1,4 @@
-import { XStack, Text, Button } from 'tamagui';
+import { XStack, YStack, Text } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'tamagui';
 
@@ -13,16 +13,37 @@ export function CalendarHeader({ year, month, onPrev, onNext }: CalendarHeaderPr
   const theme = useTheme();
 
   return (
-    <XStack alignItems="center" justifyContent="space-between" paddingHorizontal="$4" paddingVertical="$3">
-      <Button size="$3" circular chromeless onPress={onPrev}>
-        <Ionicons name="chevron-back" size={20} color={theme.color.val} />
-      </Button>
+    <XStack
+      alignItems="center"
+      justifyContent="space-between"
+      paddingHorizontal="$4"
+      paddingVertical="$3"
+      borderBottomWidth={0.5}
+      borderBottomColor="$separatorColor"
+    >
+      <YStack
+        width={44}
+        height={44}
+        alignItems="center"
+        justifyContent="center"
+        onPress={onPrev}
+        pressStyle={{ opacity: 0.6 }}
+      >
+        <Ionicons name="chevron-back" size={22} color={theme.color.val} />
+      </YStack>
       <Text fontFamily="$heading" fontSize={18} fontWeight="700" color="$color">
         {year}년 {month}월
       </Text>
-      <Button size="$3" circular chromeless onPress={onNext}>
-        <Ionicons name="chevron-forward" size={20} color={theme.color.val} />
-      </Button>
+      <YStack
+        width={44}
+        height={44}
+        alignItems="center"
+        justifyContent="center"
+        onPress={onNext}
+        pressStyle={{ opacity: 0.6 }}
+      >
+        <Ionicons name="chevron-forward" size={22} color={theme.color.val} />
+      </YStack>
     </XStack>
   );
 }

@@ -24,10 +24,10 @@ export function ScheduleCard({ schedule, onPress }: ScheduleCardProps) {
       padding="$3"
       gap="$3"
       onPress={onPress}
-      pressStyle={{ opacity: 0.8 }}
+      pressStyle={{ opacity: 0.7 }}
     >
       {/* Color indicator bar */}
-      <YStack width={4} borderRadius="$full" backgroundColor={typeColor} />
+      <YStack width={3} borderRadius="$full" backgroundColor={typeColor} alignSelf="stretch" />
 
       <YStack flex={1} gap="$1">
         <XStack alignItems="center" gap="$2">

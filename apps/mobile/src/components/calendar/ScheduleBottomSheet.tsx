@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import { YStack, XStack, Text, Image, ScrollView, Button } from 'tamagui';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useTheme } from 'tamagui';
+import { Ionicons } from '@expo/vector-icons';
 import { SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_LABELS } from '../../constants/schedule';
 import type { CalendarSchedule } from '../../api/client';
 
@@ -95,7 +96,7 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
                       />
                     ) : (
                       <YStack width={36} height={36} borderRadius={999} backgroundColor="$backgroundNested" alignItems="center" justifyContent="center">
-                        <Text fontSize={14} color="$colorTertiary">🎵</Text>
+                        <Ionicons name="musical-note" size={14} color={theme.colorTertiary.val} />
                       </YStack>
                     )}
                     <YStack flex={1}>
@@ -123,12 +124,11 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
             <Button
               marginTop="$3"
               backgroundColor="$accentColor"
-              color="#FFFFFF"
-              fontFamily="$heading"
-              fontWeight="700"
               onPress={() => onDetail(schedule.id)}
             >
-              상세 보기
+              <Text fontFamily="$heading" fontWeight="700" color="#FFFFFF" fontSize={15}>
+                상세 보기
+              </Text>
             </Button>
           </YStack>
         </ScrollView>

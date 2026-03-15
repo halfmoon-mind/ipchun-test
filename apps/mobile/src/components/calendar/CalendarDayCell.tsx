@@ -3,6 +3,7 @@ import { SCHEDULE_TYPE_COLORS } from '../../constants/schedule';
 
 interface CalendarDayCellProps {
   day: number;
+  dayOfWeek: number; // 0=Sun, 6=Sat
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
@@ -10,7 +11,7 @@ interface CalendarDayCellProps {
   onPress: () => void;
 }
 
-export function CalendarDayCell({ day, isCurrentMonth, isToday, isSelected, types, onPress }: CalendarDayCellProps) {
+export function CalendarDayCell({ day, dayOfWeek, isCurrentMonth, isToday, isSelected, types, onPress }: CalendarDayCellProps) {
   const maxDots = 3;
   const visibleTypes = types.slice(0, maxDots);
 
@@ -18,16 +19,17 @@ export function CalendarDayCell({ day, isCurrentMonth, isToday, isSelected, type
     <YStack
       flex={1}
       alignItems="center"
-      paddingVertical="$1"
+      paddingVertical="$2"
       onPress={onPress}
+      pressStyle={{ opacity: 0.6 }}
       backgroundColor={isSelected ? '$accentColorSubtle' : 'transparent'}
       borderRadius="$sm"
-      minHeight={44}
+      minHeight={48}
     >
       <Text
         fontSize={14}
         fontFamily="$body"
-        color={!isCurrentMonth ? '$colorTertiary' : isToday ? '$accentColor' : '$color'}
+        color={!isCurrentMonth ? '$colorTertiary' : isToday ? '$accentColor' : dayOfWeek === 0 ? '$negativeColor' : dayOfWeek === 6 ? '$accentColor' : '$color'}
         fontWeight={isToday ? '700' : '400'}
       >
         {day}
