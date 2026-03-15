@@ -37,12 +37,68 @@ export class ScheduleService {
     });
   }
 
-  findByArtist(artistId: string) {
-    return this.prisma.schedule.findMany({
-      where: { lineups: { some: { artistId } } },
+  async findByArtist(
+    artistId: string,
+    options?: { period?: 'upcoming' | 'past'; cursor?: string; limit?: number },
+  ) {
+    const { period, cursor, limit = 10 } = options ?? {};
+
+    // No period: return all (backward compatible)
+    if (!period) {
+      return this.prisma.schedule.findMany({
+        where: { lineups: { some: { artistId } } },
+        include: SCHEDULE_INCLUDE,
+        orderBy: { startDate: 'asc' },
+      });
+    }
+
+    const now = new Date();
+    const isUpcoming = period === 'upcoming';
+
+    const take = isUpcoming ? undefined : limit + 1;
+    const baseWhere = { lineups: { some: { artistId } } };
+
+    let where: Record<string, unknown>;
+
+    if (cursor && !isUpcoming) {
+      const cursorSchedule = await this.prisma.schedule.findUniqueOrThrow({
+        where: { id: cursor },
+        select: { startDate: true },
+      });
+      where = {
+        ...baseWhere,
+        OR: [
+          { startDate: { lt: cursorSchedule.startDate } },
+          { startDate: cursorSchedule.startDate, id: { lt: cursor } },
+        ],
+      };
+    } else {
+      where = {
+        ...baseWhere,
+        ...(isUpcoming
+          ? { startDate: { gte: now } }
+          : { startDate: { lt: now } }),
+      };
+    }
+
+    const schedules = await this.prisma.schedule.findMany({
+      where,
       include: SCHEDULE_INCLUDE,
-      orderBy: { startDate: 'asc' },
+      orderBy: [{ startDate: isUpcoming ? 'asc' : 'desc' }, { id: isUpcoming ? 'asc' : 'desc' }],
+      ...(take && { take }),
     });
+
+    // Upcoming: return all
+    if (isUpcoming) {
+      return { data: schedules, nextCursor: null };
+    }
+
+    // Past: check for next page
+    const hasMore = schedules.length > limit;
+    const data = hasMore ? schedules.slice(0, limit) : schedules;
+    const nextCursor = hasMore ? data[data.length - 1].id : null;
+
+    return { data, nextCursor };
   }
 
   findOne(id: string) {

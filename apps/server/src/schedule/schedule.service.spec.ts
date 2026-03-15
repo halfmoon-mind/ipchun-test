@@ -31,6 +31,67 @@ describe('ScheduleService', () => {
     jest.clearAllMocks();
   });
 
+  describe('findByArtist', () => {
+    it('should return upcoming schedules sorted ascending when period is upcoming', async () => {
+      mockPrisma.schedule.findMany.mockResolvedValue([]);
+
+      await service.findByArtist('artist-1', { period: 'upcoming' });
+
+      const call = mockPrisma.schedule.findMany.mock.calls[0][0];
+      expect(call.where.lineups).toEqual({ some: { artistId: 'artist-1' } });
+      expect(call.where.startDate.gte).toBeDefined();
+      expect(call.orderBy[0].startDate).toBe('asc');
+    });
+
+    it('should return past schedules sorted descending with limit when period is past', async () => {
+      mockPrisma.schedule.findMany.mockResolvedValue([]);
+
+      await service.findByArtist('artist-1', { period: 'past', limit: 5 });
+
+      const call = mockPrisma.schedule.findMany.mock.calls[0][0];
+      expect(call.where.startDate.lt).toBeDefined();
+      expect(call.orderBy[0].startDate).toBe('desc');
+      expect(call.take).toBe(6); // limit + 1 for nextCursor detection
+    });
+
+    it('should handle cursor-based pagination using (startDate, id) composite cursor', async () => {
+      const cursorSchedule = {
+        startDate: new Date('2026-02-01T00:00:00Z'),
+      };
+      mockPrisma.schedule.findUniqueOrThrow.mockResolvedValue(cursorSchedule);
+      mockPrisma.schedule.findMany.mockResolvedValue([]);
+
+      await service.findByArtist('artist-1', { period: 'past', cursor: 'cursor-id', limit: 10 });
+
+      const call = mockPrisma.schedule.findMany.mock.calls[0][0];
+      expect(call.where.OR).toBeDefined();
+      expect(call.where.OR).toHaveLength(2);
+    });
+
+    it('should return all schedules ascending when no period specified', async () => {
+      mockPrisma.schedule.findMany.mockResolvedValue([]);
+
+      await service.findByArtist('artist-1');
+
+      const call = mockPrisma.schedule.findMany.mock.calls[0][0];
+      expect(call.where.startDate).toBeUndefined();
+      expect(call.orderBy.startDate).toBe('asc');
+    });
+
+    it('should detect nextCursor when more results exist', async () => {
+      const schedules = Array.from({ length: 11 }, (_, i) => ({
+        id: `s${i}`,
+        startDate: new Date(`2026-01-${String(10 - i).padStart(2, '0')}T00:00:00Z`),
+      }));
+      mockPrisma.schedule.findMany.mockResolvedValue(schedules);
+
+      const result = await service.findByArtist('artist-1', { period: 'past', limit: 10 });
+
+      expect(result.data).toHaveLength(10);
+      expect(result.nextCursor).toBe('s9');
+    });
+  });
+
   describe('findCalendar', () => {
     it('should query schedules within the given month range', async () => {
       mockPrisma.schedule.findMany.mockResolvedValue([]);

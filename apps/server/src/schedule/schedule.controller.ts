@@ -12,6 +12,7 @@ import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { CalendarQueryDto } from './dto/calendar-query.dto';
+import { FindSchedulesQueryDto } from './dto/find-schedules-query.dto';
 
 @Controller('schedules')
 export class ScheduleController {
@@ -32,9 +33,13 @@ export class ScheduleController {
   }
 
   @Get()
-  findAll(@Query('artistId') artistId?: string) {
-    if (artistId) {
-      return this.scheduleService.findByArtist(artistId);
+  findAll(@Query() query: FindSchedulesQueryDto) {
+    if (query.artistId) {
+      return this.scheduleService.findByArtist(query.artistId, {
+        period: query.period,
+        cursor: query.cursor,
+        limit: query.limit,
+      });
     }
     return this.scheduleService.findAll();
   }
