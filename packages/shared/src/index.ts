@@ -75,3 +75,8 @@ export interface BookmarkDto {
   scheduleLineupId: string;
   checkedAt: string;
 }
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  nextCursor: string | null;
+}
