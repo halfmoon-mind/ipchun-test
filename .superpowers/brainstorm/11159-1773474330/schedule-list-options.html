@@ -1,0 +1,159 @@
+<h2>일정 목록 표시 방식</h2>
+<p class="subtitle">미래 일정과 과거 일정을 어떻게 배치할지 선택해주세요</p>
+
+<div class="split">
+  <!-- Option A: Timeline -->
+  <div class="mockup" data-choice="timeline" onclick="toggleSelect(this)" style="cursor:pointer;">
+    <div class="mockup-header">A. 타임라인 (오늘 기준)</div>
+    <div class="mockup-body" style="background:#000;max-width:340px;">
+
+      <!-- Upcoming - closest first (ascending) -->
+      <div style="padding:12px 16px 4px;">
+        <div style="color:#F5A623;font-size:12px;font-weight:600;letter-spacing:1px;">▲ 다가오는 일정</div>
+      </div>
+
+      <div style="padding:4px 16px;">
+        <div style="display:flex;gap:12px;">
+          <div style="width:2px;background:#F5A623;border-radius:1px;flex-shrink:0;"></div>
+          <div style="flex:1;padding:8px 0;">
+            <div style="background:#1C1C1E;border-radius:10px;padding:12px;margin-bottom:8px;">
+              <div style="color:#F5A623;font-size:11px;font-weight:600;">3월 22일 (토)</div>
+              <div style="color:#fff;font-size:15px;font-weight:600;margin-top:3px;">서울숲 페스티벌</div>
+              <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">서울숲 일대</div>
+            </div>
+            <div style="background:#1C1C1E;border-radius:10px;padding:12px;">
+              <div style="color:#F5A623;font-size:11px;font-weight:600;">4월 5일 (토)</div>
+              <div style="color:#fff;font-size:15px;font-weight:600;margin-top:3px;">단독 콘서트</div>
+              <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">롤링홀</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TODAY marker -->
+      <div style="padding:4px 16px;display:flex;align-items:center;gap:8px;">
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.2);"></div>
+        <div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;">오늘</div>
+        <div style="flex:1;height:1px;background:rgba(255,255,255,0.2);"></div>
+      </div>
+
+      <!-- Past - most recent first (descending) -->
+      <div style="padding:4px 16px 4px;">
+        <div style="color:rgba(255,255,255,0.32);font-size:12px;font-weight:600;letter-spacing:1px;">▼ 지난 일정</div>
+      </div>
+
+      <div style="padding:4px 16px 16px;">
+        <div style="display:flex;gap:12px;">
+          <div style="width:2px;background:rgba(255,255,255,0.15);border-radius:1px;flex-shrink:0;"></div>
+          <div style="flex:1;padding:8px 0;">
+            <div style="background:#1C1C1E;border-radius:10px;padding:12px;margin-bottom:8px;opacity:0.6;">
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;">2월 14일 (금)</div>
+              <div style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:600;margin-top:3px;">발렌타인 버스킹</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:2px;">홍대 걷고싶은거리</div>
+            </div>
+            <div style="background:#1C1C1E;border-radius:10px;padding:12px;opacity:0.6;">
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;">1월 20일 (월)</div>
+              <div style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:600;margin-top:3px;">인디 뮤직 페스트</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:2px;">마로니에공원</div>
+            </div>
+            <div style="text-align:center;padding:8px;">
+              <span style="color:rgba(255,255,255,0.25);font-size:12px;">더 보기 ↓</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Option B: Flat sections -->
+  <div class="mockup" data-choice="flat" onclick="toggleSelect(this)" style="cursor:pointer;">
+    <div class="mockup-header">B. 섹션 분리 (단순 리스트)</div>
+    <div class="mockup-body" style="background:#000;max-width:340px;">
+
+      <!-- Upcoming -->
+      <div style="padding:12px 16px;">
+        <div style="color:#F5A623;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:10px;">다가오는 일정</div>
+
+        <div style="background:#1C1C1E;border-radius:10px;padding:12px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="color:#F5A623;font-size:11px;font-weight:600;">3월 22일 (토)</div>
+              <div style="color:#fff;font-size:15px;font-weight:600;margin-top:3px;">서울숲 페스티벌</div>
+              <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">서울숲 일대</div>
+            </div>
+            <div style="background:#2C2C2E;border-radius:6px;padding:3px 7px;color:rgba(255,255,255,0.35);font-size:10px;">FESTIVAL</div>
+          </div>
+        </div>
+
+        <div style="background:#1C1C1E;border-radius:10px;padding:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="color:#F5A623;font-size:11px;font-weight:600;">4월 5일 (토)</div>
+              <div style="color:#fff;font-size:15px;font-weight:600;margin-top:3px;">단독 콘서트</div>
+              <div style="color:rgba(255,255,255,0.5);font-size:12px;margin-top:2px;">롤링홀</div>
+            </div>
+            <div style="background:#2C2C2E;border-radius:6px;padding:3px 7px;color:rgba(255,255,255,0.35);font-size:10px;">CONCERT</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div style="height:8px;background:#1C1C1E;"></div>
+
+      <!-- Past -->
+      <div style="padding:12px 16px;">
+        <div style="color:rgba(255,255,255,0.32);font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:10px;">지난 일정</div>
+
+        <div style="background:#1C1C1E;border-radius:10px;padding:12px;margin-bottom:8px;opacity:0.6;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;">2월 14일 (금)</div>
+              <div style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:600;margin-top:3px;">발렌타인 버스킹</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:2px;">홍대 걷고싶은거리</div>
+            </div>
+            <div style="background:#2C2C2E;border-radius:6px;padding:3px 7px;color:rgba(255,255,255,0.25);font-size:10px;">BUSKING</div>
+          </div>
+        </div>
+
+        <div style="background:#1C1C1E;border-radius:10px;padding:12px;opacity:0.6;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <div style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;">1월 20일 (월)</div>
+              <div style="color:rgba(255,255,255,0.7);font-size:15px;font-weight:600;margin-top:3px;">인디 뮤직 페스트</div>
+              <div style="color:rgba(255,255,255,0.4);font-size:12px;margin-top:2px;">마로니에공원</div>
+            </div>
+            <div style="background:#2C2C2E;border-radius:6px;padding:3px 7px;color:rgba(255,255,255,0.25);font-size:10px;">FESTIVAL</div>
+          </div>
+        </div>
+
+        <div style="text-align:center;padding:8px;">
+          <span style="color:rgba(255,255,255,0.25);font-size:12px;">더 보기 ↓</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:20px;">
+  <h3>비교</h3>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>A. 타임라인</h4>
+      <ul>
+        <li>시각적으로 시간 흐름이 명확</li>
+        <li>"오늘" 마커로 현재 위치 인지</li>
+        <li>좌측 라인이 연속성 부여</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>B. 섹션 분리</h4>
+      <ul>
+        <li>구현이 단순</li>
+        <li>타입 배지 표시 여유</li>
+        <li>다른 화면과 일관된 카드 스타일</li>
+      </ul>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,6 @@
+{
+  "enabledPlugins": {
+    "fullstack-dev-skills@fullstack-dev-skills": false,
+    "frontend-design@claude-plugins-official": false
+  }
+}
