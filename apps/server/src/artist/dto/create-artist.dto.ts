@@ -11,13 +11,17 @@ export class CreateArtistDto {
 
   @IsString()
   @IsOptional()
-  genre?: string;
-
-  @IsString()
-  @IsOptional()
   imageUrl?: string;
 
   @IsObject()
   @IsOptional()
   socialLinks?: Record<string, string>;
+
+  @IsString()
+  @IsOptional()
+  spotifyId?: string;
+
+  @IsString()
+  @IsOptional()
+  spotifyUrl?: string;
 }

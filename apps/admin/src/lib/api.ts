@@ -49,4 +49,17 @@ export const api = {
     delete: (id: string) =>
       request<void>(`/schedules/${id}`, { method: 'DELETE' }),
   },
+  spotify: {
+    getArtist: async (spotifyId: string) => {
+      const res = await fetch(`/api/spotify?id=${spotifyId}`);
+      if (!res.ok) throw new Error(`Spotify fetch failed: ${res.status}`);
+      return res.json() as Promise<{
+        name: string;
+        imageUrl: string | null;
+        description: string | null;
+        spotifyId: string;
+        spotifyUrl: string;
+      }>;
+    },
+  },
 };

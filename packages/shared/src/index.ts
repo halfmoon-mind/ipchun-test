@@ -15,9 +15,10 @@ export interface Artist {
   id: string;
   name: string;
   description: string | null;
-  genre: string | null;
   imageUrl: string | null;
   socialLinks: Record<string, string> | null;
+  spotifyId: string | null;
+  spotifyUrl: string | null;
   createdAt: string;
   updatedAt: string;
 }

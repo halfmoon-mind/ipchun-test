@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
@@ -7,7 +7,15 @@ import { UpdateArtistDto } from './dto/update-artist.dto';
 export class ArtistService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(dto: CreateArtistDto) {
+  async create(dto: CreateArtistDto) {
+    if (dto.spotifyId) {
+      const existing = await this.prisma.artist.findUnique({
+        where: { spotifyId: dto.spotifyId },
+      });
+      if (existing) {
+        throw new ConflictException(`이미 등록된 Spotify 아티스트입니다: ${existing.name}`);
+      }
+    }
     return this.prisma.artist.create({ data: dto });
   }
 
