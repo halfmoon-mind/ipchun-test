@@ -2,7 +2,11 @@
   "name": "ipchun",
   "private": true,
   "scripts": {
-    "dev:server": "pnpm --filter @ipchun/shared build && pnpm --filter @ipchun/server dev",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:migrate": "pnpm --filter @ipchun/server exec prisma migrate dev",
+    "db:seed": "pnpm --filter @ipchun/server exec prisma db seed",
+    "dev:server": "docker compose up -d && pnpm --filter @ipchun/shared build && pnpm --filter @ipchun/server dev",
     "dev:mobile": "pnpm --filter @ipchun/mobile start",
     "dev:admin": "pnpm --filter @ipchun/admin dev",
     "build:server": "pnpm --filter @ipchun/server build",
