@@ -52,6 +52,12 @@ export const api = {
     getOne(id: string) {
       return request<ScheduleDetail>(`/schedules/${id}`);
     },
+    getByArtist(artistId: string, options: { period: 'upcoming' | 'past'; cursor?: string; limit?: number }) {
+      const params = new URLSearchParams({ artistId, period: options.period });
+      if (options.cursor) params.set('cursor', options.cursor);
+      if (options.limit) params.set('limit', String(options.limit));
+      return request<PaginatedScheduleResponse>(`/schedules?${params}`);
+    },
   },
 };
 
@@ -90,3 +96,8 @@ export interface CalendarResponse {
 }
 
 export type ScheduleDetail = CalendarSchedule;
+
+export interface PaginatedScheduleResponse {
+  data: CalendarSchedule[];
+  nextCursor: string | null;
+}
