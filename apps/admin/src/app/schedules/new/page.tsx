@@ -45,39 +45,31 @@ export default function NewSchedulePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-6">새 일정 등록</h1>
+      <h1 className="page-heading mb-8">새 일정 등록</h1>
+
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="alert-error mb-6">{error}</div>
       )}
-      <form onSubmit={handleSubmit} className="max-w-lg space-y-4">
+
+      <form onSubmit={handleSubmit} className="max-w-xl space-y-5">
         <div>
-          <label className="block text-sm font-medium mb-1">
-            아티스트 ID *
-          </label>
+          <label className="form-label">아티스트 ID *</label>
           <input
             name="artistId"
             required
-            className="w-full border rounded px-3 py-2"
+            className="form-input"
             placeholder="아티스트 목록 페이지에서 ID 확인 (UUID 형식)"
           />
         </div>
+
         <div>
-          <label className="block text-sm font-medium mb-1">제목 *</label>
-          <input
-            name="title"
-            required
-            className="w-full border rounded px-3 py-2"
-          />
+          <label className="form-label">제목 *</label>
+          <input name="title" required className="form-input" />
         </div>
+
         <div>
-          <label className="block text-sm font-medium mb-1">유형 *</label>
-          <select
-            name="type"
-            required
-            className="w-full border rounded px-3 py-2"
-          >
+          <label className="form-label">유형 *</label>
+          <select name="type" required className="form-input">
             {Object.entries(scheduleTypeLabels).map(([value, label]) => (
               <option key={value} value={value}>
                 {label}
@@ -85,56 +77,52 @@ export default function NewSchedulePage() {
             ))}
           </select>
         </div>
+
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">
-              시작일 *
-            </label>
+            <label className="form-label">시작일 *</label>
             <input
               name="startDate"
               type="datetime-local"
               required
-              className="w-full border rounded px-3 py-2"
+              className="form-input"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1">종료일</label>
+            <label className="form-label">종료일</label>
             <input
               name="endDate"
               type="datetime-local"
-              className="w-full border rounded px-3 py-2"
+              className="form-input"
             />
           </div>
         </div>
+
         <div>
-          <label className="block text-sm font-medium mb-1">장소</label>
-          <input
-            name="location"
-            className="w-full border rounded px-3 py-2"
-          />
+          <label className="form-label">장소</label>
+          <input name="location" className="form-input" />
         </div>
+
         <div>
-          <label className="block text-sm font-medium mb-1">주소</label>
-          <input
-            name="address"
-            className="w-full border rounded px-3 py-2"
-          />
+          <label className="form-label">주소</label>
+          <input name="address" className="form-input" />
         </div>
+
         <div>
-          <label className="block text-sm font-medium mb-1">설명</label>
+          <label className="form-label">설명</label>
           <textarea
             name="description"
             rows={4}
-            className="w-full border rounded px-3 py-2"
+            className="form-input"
+            style={{ resize: 'vertical' }}
           />
         </div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 disabled:opacity-50"
-        >
-          {loading ? '등록 중...' : '등록'}
-        </button>
+
+        <div className="pt-2">
+          <button type="submit" disabled={loading} className="btn-primary">
+            {loading ? '등록 중...' : '등록'}
+          </button>
+        </div>
       </form>
     </div>
   );
