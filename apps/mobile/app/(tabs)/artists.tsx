@@ -3,11 +3,13 @@ import { FlatList, Image, RefreshControl } from 'react-native';
 import { YStack, XStack, Text, Spinner } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'tamagui';
+import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { api, type ArtistSummary } from '../../src/api/client';
 
 export default function ArtistsScreen() {
   const theme = useTheme();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const [artists, setArtists] = useState<ArtistSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,7 +82,13 @@ export default function ArtistsScreen() {
         }
         ItemSeparatorComponent={() => <YStack height={1} backgroundColor="$separatorColor" marginVertical="$3" />}
         renderItem={({ item }) => (
-          <XStack alignItems="center" gap="$3" paddingVertical="$2">
+          <XStack
+            alignItems="center"
+            gap="$3"
+            paddingVertical="$2"
+            onPress={() => router.push(`/artists/${item.id}`)}
+            pressStyle={{ opacity: 0.7 }}
+          >
             {item.imageUrl ? (
               <Image
                 source={{ uri: item.imageUrl }}

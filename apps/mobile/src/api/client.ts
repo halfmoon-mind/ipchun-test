@@ -14,6 +14,20 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json();
 }
 
+export interface Artist {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  socialLinks: Record<string, string> | null;
+  spotifyId: string | null;
+  spotifyUrl: string | null;
+  monthlyListeners: number | null;
+  followers: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ArtistSummary {
   id: string;
   name: string;
@@ -26,6 +40,9 @@ export const api = {
   artists: {
     getAll() {
       return request<ArtistSummary[]>('/artists');
+    },
+    getOne(id: string) {
+      return request<Artist>(`/artists/${id}`);
     },
   },
   schedules: {
