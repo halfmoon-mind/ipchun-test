@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Query,
+  Put,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { ReplaceLineupsDto } from './dto/replace-lineups.dto';
 import { CalendarQueryDto } from './dto/calendar-query.dto';
 import { FindSchedulesQueryDto } from './dto/find-schedules-query.dto';
 
@@ -57,5 +59,15 @@ export class ScheduleController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.scheduleService.remove(id);
+  }
+
+  @Put(':id/lineups')
+  replaceLineups(@Param('id') id: string, @Body() dto: ReplaceLineupsDto) {
+    return this.scheduleService.replaceLineups(id, dto.lineups);
+  }
+
+  @Delete(':id/lineups/:lineupId')
+  removeLineup(@Param('id') id: string, @Param('lineupId') lineupId: string) {
+    return this.scheduleService.removeLineup(id, lineupId);
   }
 }

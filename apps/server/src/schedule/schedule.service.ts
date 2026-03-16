@@ -160,4 +160,32 @@ export class ScheduleService {
 
     return { year, month, schedules, dates };
   }
+
+  async replaceLineups(scheduleId: string, lineups: { artistId: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number }[]) {
+    return this.prisma.$transaction(async (tx) => {
+      await tx.scheduleLineup.deleteMany({ where: { scheduleId } });
+      if (lineups.length > 0) {
+        await tx.scheduleLineup.createMany({
+          data: lineups.map((l) => ({
+            scheduleId,
+            artistId: l.artistId,
+            stageName: l.stageName || null,
+            startTime: l.startTime ? new Date(l.startTime) : null,
+            endTime: l.endTime ? new Date(l.endTime) : null,
+            performanceOrder: l.performanceOrder ?? null,
+          })),
+        });
+      }
+      return tx.schedule.findUniqueOrThrow({
+        where: { id: scheduleId },
+        include: SCHEDULE_INCLUDE,
+      });
+    });
+  }
+
+  removeLineup(scheduleId: string, lineupId: string) {
+    return this.prisma.scheduleLineup.delete({
+      where: { id: lineupId, scheduleId },
+    });
+  }
 }
