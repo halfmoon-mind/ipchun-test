@@ -5,7 +5,8 @@ export interface ScrapedSchedule {
   endDate: string | null;      // ISO 8601
   location: string | null;     // 장소명
   address: string | null;      // 주소
-  imageUrl: string | null;     // 포스터/이미지
+  imageUrl: string | null;     // 대표 포스터/이미지
+  images: string[];            // 모든 이미지 URL (포스터, 상세정보, 라인업 등)
   sourceUrl: string;           // 원본 링크
-  source: 'instagram' | 'interpark' | 'og' | 'unknown';
+  source: 'instagram' | 'interpark' | 'ticketlink' | 'melon' | 'og' | 'unknown';
 }
