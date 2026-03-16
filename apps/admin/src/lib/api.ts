@@ -1,4 +1,5 @@
 import type { Artist, Schedule } from '@ipchun/shared';
+import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -48,6 +49,18 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/schedules/${id}`, { method: 'DELETE' }),
+  },
+  scrape: {
+    schedule: async (url: string): Promise<ScrapedSchedule> => {
+      const res = await fetch(
+        `/api/scrape-schedule?url=${encodeURIComponent(url)}`,
+      );
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Scrape failed: ${res.status}`);
+      }
+      return res.json();
+    },
   },
   spotify: {
     getArtist: async (spotifyId: string) => {
