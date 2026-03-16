@@ -17,7 +17,10 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   artists: {
-    list: () => request<Artist[]>('/artists'),
+    list: (search?: string) =>
+      request<Artist[]>(
+        `/artists${search ? `?search=${encodeURIComponent(search)}` : ''}`,
+      ),
     get: (id: string) => request<Artist>(`/artists/${id}`),
     create: (data: Omit<Artist, 'id' | 'createdAt' | 'updatedAt'>) =>
       request<Artist>('/artists', {
@@ -50,6 +53,21 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/schedules/${id}`, { method: 'DELETE' }),
+    replaceLineups: (scheduleId: string, lineups: Array<{
+      artistId: string;
+      stageName?: string;
+      startTime?: string;
+      endTime?: string;
+      performanceOrder?: number;
+    }>) =>
+      request<Schedule>(`/schedules/${scheduleId}/lineups`, {
+        method: 'PUT',
+        body: JSON.stringify({ lineups }),
+      }),
+    removeLineup: (scheduleId: string, lineupId: string) =>
+      request<void>(`/schedules/${scheduleId}/lineups/${lineupId}`, {
+        method: 'DELETE',
+      }),
   },
   scrape: {
     schedule: async (url: string): Promise<ScrapedSchedule> => {
