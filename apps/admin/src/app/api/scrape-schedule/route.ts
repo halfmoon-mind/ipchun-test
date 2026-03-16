@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { isInstagramUrl, parseInstagram } from './parsers/instagram';
 import { isInterparkUrl, parseInterpark } from './parsers/interpark';
+import { isTicketlinkUrl, parseTicketlink } from './parsers/ticketlink';
+import { isMelonTicketUrl, parseMelonTicket } from './parsers/melon';
 import { parseOg } from './parsers/og';
 
 export async function GET(request: NextRequest) {
@@ -24,6 +26,10 @@ export async function GET(request: NextRequest) {
       result = await parseInstagram(url);
     } else if (isInterparkUrl(url)) {
       result = await parseInterpark(url);
+    } else if (isTicketlinkUrl(url)) {
+      result = await parseTicketlink(url);
+    } else if (isMelonTicketUrl(url)) {
+      result = await parseMelonTicket(url);
     } else {
       // 범용 OG 폴백
       result = await parseOg(url);
