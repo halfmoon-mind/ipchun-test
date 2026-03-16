@@ -27,6 +27,7 @@ export async function parseInstagram(url: string): Promise<ScrapedSchedule> {
         location: null,
         address: null,
         imageUrl: data.thumbnail_url || null,
+        images: data.thumbnail_url ? [data.thumbnail_url] : [],
         sourceUrl: url,
         source: 'instagram',
       };

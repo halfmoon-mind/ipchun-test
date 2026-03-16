@@ -2,7 +2,7 @@ import { ScrapedSchedule } from './types';
 import { fetchHtml, extractMetaContent } from './og';
 
 export function isInterparkUrl(url: string): boolean {
-  return /^https?:\/\/(tickets\.)?interpark\.com\/goods\//.test(url);
+  return /^https?:\/\/(tickets?\.|nol\.)?interpark\.com\/(goods|ticket)\//.test(url);
 }
 
 export async function parseInterpark(url: string): Promise<ScrapedSchedule> {
@@ -51,6 +51,7 @@ export async function parseInterpark(url: string): Promise<ScrapedSchedule> {
     location,
     address,
     imageUrl,
+    images: imageUrl ? [imageUrl] : [],
     sourceUrl: url,
     source: 'interpark',
   };

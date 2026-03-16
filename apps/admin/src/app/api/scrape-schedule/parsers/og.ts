@@ -31,6 +31,8 @@ export async function fetchHtml(url: string): Promise<string> {
 export async function parseOg(url: string): Promise<ScrapedSchedule> {
   const html = await fetchHtml(url);
 
+  const image = extractMetaContent(html, 'og:image');
+
   return {
     title: extractMetaContent(html, 'og:title'),
     description: extractMetaContent(html, 'og:description'),
@@ -38,7 +40,8 @@ export async function parseOg(url: string): Promise<ScrapedSchedule> {
     endDate: null,
     location: null,
     address: null,
-    imageUrl: extractMetaContent(html, 'og:image'),
+    imageUrl: image,
+    images: image ? [image] : [],
     sourceUrl: url,
     source: 'og',
   };
