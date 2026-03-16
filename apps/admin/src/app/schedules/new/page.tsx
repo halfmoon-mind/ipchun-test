@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { ScheduleType } from '@ipchun/shared';
+import LineupSection, { type LineupEntry } from './lineup-section';
 
 const scheduleTypeLabels: Record<ScheduleType, string> = {
   [ScheduleType.CONCERT]: '콘서트',
@@ -41,8 +42,9 @@ export default function NewSchedulePage() {
   const [location, setLocation] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [artistId, setArtistId] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [scrapedImages, setScrapedImages] = useState<string[]>([]);
+  const [lineups, setLineups] = useState<LineupEntry[]>([]);
 
   async function handleScrape() {
     if (!scrapeUrl.trim()) return;
@@ -58,6 +60,9 @@ export default function NewSchedulePage() {
       if (!location && data.location) setLocation(data.location);
       if (!address && data.address) setAddress(data.address);
       if (!imageUrl && data.imageUrl) setImageUrl(data.imageUrl);
+      if (data.images && data.images.length > 0) {
+        setScrapedImages(data.images);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '링크 정보를 가져오지 못했습니다');
     } finally {
@@ -70,8 +75,7 @@ export default function NewSchedulePage() {
     setLoading(true);
     setError(null);
     try {
-      await api.schedules.create({
-        artistId,
+      const schedule = await api.schedules.create({
         title,
         type,
         startDate,
@@ -81,6 +85,21 @@ export default function NewSchedulePage() {
         description: description || null,
         imageUrl: imageUrl || null,
       } as Parameters<typeof api.schedules.create>[0]);
+
+      const matchedLineups = lineups.filter((l) => l.artistId);
+      if (matchedLineups.length > 0) {
+        await api.schedules.replaceLineups(
+          schedule.id,
+          matchedLineups.map((l, i) => ({
+            artistId: l.artistId,
+            stageName: l.stageName || undefined,
+            startTime: l.startTime || undefined,
+            endTime: l.endTime || undefined,
+            performanceOrder: l.performanceOrder ?? i + 1,
+          })),
+        );
+      }
+
       router.push('/schedules');
     } catch (err) {
       setError(err instanceof Error ? err.message : '등록에 실패했습니다');
@@ -121,17 +140,6 @@ export default function NewSchedulePage() {
       </div>
 
       <form onSubmit={handleSubmit} className="max-w-xl space-y-5">
-        <div>
-          <label className="form-label">아티스트 ID *</label>
-          <input
-            value={artistId}
-            onChange={(e) => setArtistId(e.target.value)}
-            required
-            className="form-input"
-            placeholder="아티스트 목록 페이지에서 ID 확인 (UUID 형식)"
-          />
-        </div>
-
         <div>
           <label className="form-label">제목 *</label>
           <input
@@ -227,6 +235,12 @@ export default function NewSchedulePage() {
             style={{ resize: 'vertical' }}
           />
         </div>
+
+        <LineupSection
+          images={scrapedImages}
+          lineups={lineups}
+          onLineupsChange={setLineups}
+        />
 
         <div className="pt-2">
           <button type="submit" disabled={loading} className="btn-primary">
