@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
@@ -21,8 +22,8 @@ export class ArtistController {
   }
 
   @Get()
-  findAll() {
-    return this.artistService.findAll();
+  findAll(@Query('search') search?: string) {
+    return this.artistService.findAll(search);
   }
 
   @Get(':id')
