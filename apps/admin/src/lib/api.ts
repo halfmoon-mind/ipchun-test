@@ -1,5 +1,6 @@
 import type { Artist, Schedule } from '@ipchun/shared';
 import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
+import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -58,6 +59,20 @@ export const api = {
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body.error || `Scrape failed: ${res.status}`);
+      }
+      return res.json();
+    },
+  },
+  ocr: {
+    lineup: async (imageUrls: string[]): Promise<{ lineup: ExtractedLineup[] }> => {
+      const res = await fetch('/api/ocr-lineup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageUrls }),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `OCR failed: ${res.status}`);
       }
       return res.json();
     },
