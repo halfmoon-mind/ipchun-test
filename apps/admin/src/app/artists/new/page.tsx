@@ -39,9 +39,16 @@ export default function NewArtistPage() {
       setSpotifyId(data.spotifyId);
       setSpotifyLink(data.spotifyUrl);
 
+      // YouTube 채널 자동 검색
+      const youtube = await api.youtube.searchChannel(data.name);
+
       setSocialLinks((prev) => {
-        const filtered = prev.filter((l) => l.key !== 'spotify');
-        return [{ key: 'spotify', value: data.spotifyUrl }, ...filtered];
+        const filtered = prev.filter((l) => l.key !== 'spotify' && l.key !== 'youtube');
+        const links = [{ key: 'spotify', value: data.spotifyUrl }];
+        if (youtube?.channelUrl) {
+          links.push({ key: 'youtube', value: youtube.channelUrl });
+        }
+        return [...links, ...filtered];
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Spotify 정보를 가져오는데 실패했습니다');
