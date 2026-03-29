@@ -1,4 +1,4 @@
-import type { Artist, Schedule, SpotifyMeta } from '@ipchun/shared';
+import type { Artist, Schedule, SpotifyMeta, Performance, FetchedPerformance } from '@ipchun/shared';
 import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
 import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
@@ -124,5 +124,21 @@ export const api = {
         channelTitle: string | null;
       }>;
     },
+  },
+  performances: {
+    list: () => request<Performance[]>('/performances'),
+    get: (id: string) => request<Performance>(`/performances/${id}`),
+    create: (data: Record<string, unknown>) =>
+      request<Performance>('/performances', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      }),
+    delete: (id: string) =>
+      request<void>(`/performances/${id}`, { method: 'DELETE' }),
+    fetch: (url: string) =>
+      request<FetchedPerformance>('/performances/fetch', {
+        method: 'POST',
+        body: JSON.stringify({ url }),
+      }),
   },
 };
