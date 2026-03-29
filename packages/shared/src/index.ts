@@ -11,6 +11,29 @@ export enum CardNewsStatus {
   PUBLISHED = 'PUBLISHED',
 }
 
+export enum Genre {
+  CONCERT = 'CONCERT',
+  MUSICAL = 'MUSICAL',
+  PLAY = 'PLAY',
+  CLASSIC = 'CLASSIC',
+  FESTIVAL = 'FESTIVAL',
+  OTHER = 'OTHER',
+}
+
+export enum PerformanceStatus {
+  SCHEDULED = 'SCHEDULED',
+  ON_SALE = 'ON_SALE',
+  SOLD_OUT = 'SOLD_OUT',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
+
+export enum TicketPlatform {
+  MELON = 'MELON',
+  NOL = 'NOL',
+  TICKETLINK = 'TICKETLINK',
+}
+
 export interface SpotifyMeta {
   genres: string[];
   popularity: number;
@@ -101,4 +124,94 @@ export interface BookmarkDto {
 export interface PaginatedResponse<T> {
   data: T[];
   nextCursor: string | null;
+}
+
+export interface Venue {
+  id: string;
+  name: string;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  phone: string | null;
+  website: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Performance {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  genre: Genre;
+  ageRating: string | null;
+  runtime: number | null;
+  intermission: number | null;
+  posterUrl: string | null;
+  status: PerformanceStatus;
+  venueId: string | null;
+  venue: Venue | null;
+  organizer: string | null;
+  sources: PerformanceSourceItem[];
+  schedules: PerformanceScheduleItem[];
+  artists: PerformanceArtistItem[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PerformanceSourceItem {
+  id: string;
+  platform: TicketPlatform;
+  externalId: string;
+  sourceUrl: string;
+  ticketOpenAt: string | null;
+  bookingEndAt: string | null;
+  salesStatus: string | null;
+  lastSyncedAt: string;
+  tickets: TicketItem[];
+}
+
+export interface PerformanceScheduleItem {
+  id: string;
+  dateTime: string;
+}
+
+export interface PerformanceArtistItem {
+  id: string;
+  artistId: string;
+  artist?: Artist;
+  role: string | null;
+}
+
+export interface TicketItem {
+  id: string;
+  seatGrade: string;
+  price: number;
+}
+
+/** 플랫폼에서 fetch한 결과 (프리뷰용, DB 저장 전) */
+export interface FetchedPerformance {
+  title: string;
+  subtitle: string | null;
+  genre: Genre;
+  ageRating: string | null;
+  runtime: number | null;
+  intermission: number | null;
+  posterUrl: string | null;
+  venue: {
+    name: string;
+    address: string | null;
+    latitude: number | null;
+    longitude: number | null;
+  } | null;
+  organizer: string | null;
+  schedules: Array<{ dateTime: string }>;
+  tickets: Array<{ seatGrade: string; price: number }>;
+  source: {
+    platform: TicketPlatform;
+    externalId: string;
+    sourceUrl: string;
+    ticketOpenAt: string | null;
+    bookingEndAt: string | null;
+    salesStatus: string | null;
+  };
 }
