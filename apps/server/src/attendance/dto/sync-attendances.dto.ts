@@ -25,7 +25,7 @@ export class AttendanceRemovalDto {
 
 export class SyncAttendancesDto {
   @IsUUID()
-  scheduleId!: string;
+  performanceId!: string;
 
   @IsArray()
   @ValidateNested({ each: true })
