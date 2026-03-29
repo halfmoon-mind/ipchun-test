@@ -56,6 +56,13 @@ export default function RootLayout({
                 아티스트
               </Link>
               <Link
+                href="/performances"
+                className="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15.6 11.6L22 7v10l-6.4-4.6"/><rect x="2" y="7" width="14" height="10" rx="1"/></svg>
+                공연
+              </Link>
+              <Link
                 href="/schedules"
                 className="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-[13px] font-medium"
               >
