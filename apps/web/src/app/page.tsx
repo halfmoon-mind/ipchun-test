@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { Calendar } from "@/components/Calendar";
 import { ScheduleList } from "@/components/ScheduleList";
-import { AdBanner } from "@/components/AdBanner";
 import { api, type CalendarResponse } from "@/lib/api";
 
 export default function HomePage() {
@@ -39,9 +38,6 @@ export default function HomePage() {
         onSelectDate={setSelectedDate}
         onChangeMonth={handleChangeMonth}
       />
-
-      {/* Ad slot */}
-      <AdBanner slot="CALENDAR_BELOW" className="px-4 py-2" />
 
       {/* Divider */}
       <div

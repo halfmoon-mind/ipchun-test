@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
-import { AdBanner } from "@/components/AdBanner";
 import type { Schedule, ScheduleLineup } from "@ipchun/shared";
 
 type ScheduleDetail = Schedule & {
@@ -146,8 +145,6 @@ export default function ScheduleDetailPage() {
         </div>
       )}
 
-      {/* Ad */}
-      <AdBanner slot="DETAIL_BOTTOM" className="mt-4" />
     </div>
   );
 }
