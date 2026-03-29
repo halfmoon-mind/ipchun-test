@@ -18,10 +18,11 @@
 |------|------|-----------|
 | `apps/server/prisma/schema.prisma` | `monthlyListeners`, `spotifyMeta` 컬럼 추가 | Task 1 |
 | `packages/shared/src/index.ts` | `SpotifyMeta` 인터페이스 추가, `Artist` 확장 | Task 2 |
-| `apps/server/src/artist/dto/create-artist.dto.ts` | 2개 필드 추가 | Task 2 |
+| `apps/server/src/artist/dto/create-artist.dto.ts` | 2개 필드 추가 (`@ApiProperty` 포함) | Task 2 |
 | `apps/admin/.env.example` | Spotify 키 placeholder 추가 | Task 3 |
 | `apps/admin/src/app/api/spotify/route.ts` | Web API 기반으로 전면 교체 | Task 3 |
-| `apps/admin/src/lib/api.ts` | spotify 응답 타입 확장 | Task 4 |
+| `apps/admin/src/lib/api.ts` | spotify 응답 타입 확장 (`SpotifyMeta` import) | Task 4 |
+| `apps/admin/src/app/artists/_components/SpotifyInfoSection.tsx` | Spotify 정보 표시 공유 컴포넌트 (신규) | Task 4 |
 | `apps/admin/src/app/artists/new/page.tsx` | Spotify 추가 데이터 표시 + submit 확장 | Task 4 |
 | `apps/admin/src/app/artists/[id]/edit/page.tsx` | 동일 | Task 5 |
 
@@ -32,7 +33,7 @@
 **Files:**
 - Modify: `apps/server/prisma/schema.prisma:10-23`
 
-- [ ] **Step 1: Artist 모델에 2개 컬럼 추가**
+- [x] **Step 1: Artist 모델에 2개 컬럼 추가**
 
 `apps/server/prisma/schema.prisma`에서 Artist 모델을 수정:
 
@@ -55,19 +56,19 @@ model Artist {
 }
 ```
 
-- [ ] **Step 2: 마이그레이션 생성 및 적용**
+- [x] **Step 2: 마이그레이션 생성 및 적용**
 
 Run: `cd apps/server && npx prisma migrate dev --name add_spotify_meta`
 
 Expected: Migration created and applied. Two new columns `monthly_listeners` (integer, nullable) and `spotify_meta` (jsonb, nullable) added to `artists` table.
 
-- [ ] **Step 3: Prisma client 재생성 확인**
+- [x] **Step 3: Prisma client 재생성 확인**
 
 Run: `cd apps/server && npx prisma generate`
 
 Expected: Prisma Client generated successfully.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/server/prisma/schema.prisma apps/server/prisma/migrations/
@@ -82,9 +83,9 @@ git commit -m "feat(server): add monthlyListeners and spotifyMeta columns to Art
 - Modify: `packages/shared/src/index.ts:14-24`
 - Modify: `apps/server/src/artist/dto/create-artist.dto.ts`
 
-- [ ] **Step 1: SpotifyMeta 인터��이스 추가 및 Artist 확장**
+- [x] **Step 1: SpotifyMeta 인터페이스 추가 및 Artist 확장**
 
-`packages/shared/src/index.ts`에서 `Artist` 인터페이스 아래에 `SpotifyMeta`를 추가하고 `Artist`를 확장:
+`packages/shared/src/index.ts`에서 `Artist` 인터페이스 위에 `SpotifyMeta`를 추가하고 `Artist`를 확장:
 
 ```typescript
 export interface SpotifyMeta {
@@ -122,9 +123,9 @@ export interface Artist {
 }
 ```
 
-- [ ] **Step 2: CreateArtistDto에 2개 필드 추가**
+- [x] **Step 2: CreateArtistDto에 2개 필드 추가**
 
-`apps/server/src/artist/dto/create-artist.dto.ts`에 추가:
+`apps/server/src/artist/dto/create-artist.dto.ts`에 추가. 기존 `@ApiProperty` 패턴이 있으면 따르고, 없으면 `class-validator` 데코레이터만 사용:
 
 ```typescript
 import { IsString, IsOptional, IsObject, IsNotEmpty, IsInt } from 'class-validator';
@@ -166,7 +167,7 @@ export class CreateArtistDto {
 
 `UpdateArtistDto`는 `PartialType(CreateArtistDto)`이므로 자동으로 포함됨.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add packages/shared/src/index.ts apps/server/src/artist/dto/create-artist.dto.ts
@@ -181,7 +182,7 @@ git commit -m "feat: add SpotifyMeta type and extend Artist with spotify fields"
 - Modify: `apps/admin/.env.example`
 - Modify: `apps/admin/src/app/api/spotify/route.ts` (전면 교체)
 
-- [ ] **Step 1: .env.example에 Spotify 키 placeholder 추가**
+- [x] **Step 1: .env.example에 Spotify 키 placeholder 추가**
 
 `apps/admin/.env.example`에 추가:
 
@@ -195,9 +196,9 @@ SPOTIFY_CLIENT_SECRET=
 
 사용자에게 안내: `apps/admin/.env.local`에도 실제 키를 넣어야 함.
 
-- [ ] **Step 2: Spotify API route 전면 교체**
+- [x] **Step 2: Spotify API route 전면 교체**
 
-`apps/admin/src/app/api/spotify/route.ts`를 아래 ��용으로 교체:
+`apps/admin/src/app/api/spotify/route.ts`를 아래 내용으로 교체:
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server';
@@ -215,7 +216,7 @@ async function getSpotifyToken(): Promise<string> {
   const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    throw new Error('SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET must be set');
+    throw new Error('Spotify API 키가 설정되지 않았습니다. SPOTIFY_CLIENT_ID와 SPOTIFY_CLIENT_SECRET을 확인해주세요.');
   }
 
   const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -228,7 +229,7 @@ async function getSpotifyToken(): Promise<string> {
   });
 
   if (!res.ok) {
-    throw new Error(`Spotify token request failed: ${res.status}`);
+    throw new Error(`Spotify 인증 실패: ${res.status}`);
   }
 
   const data = await res.json();
@@ -239,15 +240,19 @@ async function getSpotifyToken(): Promise<string> {
 
 // --- Spotify API Helpers ---
 async function spotifyApi<T>(token: string, path: string): Promise<T | null> {
-  try {
-    const res = await fetch(`https://api.spotify.com/v1${path}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
+  const res = await fetch(`https://api.spotify.com/v1${path}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (res.status === 429) {
+    const retryAfter = res.headers.get('retry-after');
+    throw new Error(
+      `Spotify API 요청 한도 초과. ${retryAfter ? `${retryAfter}초 후` : '잠시 후'} 다시 시도해주세요.`,
+    );
   }
+
+  if (!res.ok) return null;
+  return res.json();
 }
 
 function parseMonthlyListeners(html: string): number | null {
@@ -312,7 +317,7 @@ export async function GET(request: NextRequest) {
 
     if (!artist) {
       return NextResponse.json(
-        { error: 'Artist not found on Spotify' },
+        { error: 'Spotify에서 아티스트를 찾을 수 없습니다' },
         { status: 404 },
       );
     }
@@ -374,15 +379,15 @@ export async function GET(request: NextRequest) {
 }
 ```
 
-- [ ] **Step 3: 수동 테스트**
+- [x] **Step 3: 수동 테스트**
 
 서버 실행 후 브라우저에서 확인:
 
 Run: `curl http://localhost:3001/api/spotify?id=57okaLdCtv3nVBSn5otJkp | python3 -m json.tool | head -30`
 
-Expected: JSON 응답에 `name: "HYUKOH"`, `spotifyMeta.genres`, `spotifyMeta.topTracks`, `spotifyMeta.relatedArtists` 포��.
+Expected: JSON 응답에 `name: "HYUKOH"`, `spotifyMeta.genres`, `spotifyMeta.topTracks`, `spotifyMeta.relatedArtists` 포함.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add apps/admin/.env.example apps/admin/src/app/api/spotify/route.ts
@@ -391,21 +396,32 @@ git commit -m "feat(admin): replace Spotify scraping with Web API integration"
 
 ---
 
-### Task 4: Admin API 클라이언트 + 새 아티스트 페이지 UI
+### Task 4: Admin API 클라이언트 + SpotifyInfoSection 컴포넌트 + 새 아티스트 페이지
 
 **Files:**
 - Modify: `apps/admin/src/lib/api.ts:98-110`
+- Create: `apps/admin/src/app/artists/_components/SpotifyInfoSection.tsx`
 - Modify: `apps/admin/src/app/artists/new/page.tsx`
 
-- [ ] **Step 1: API 클라이언트 응답 타입 확장**
+- [x] **Step 1: API 클라이언트 응답 타입 확장**
 
-`apps/admin/src/lib/api.ts`에서 spotify 섹션의 반환 타입을 확장:
+`apps/admin/src/lib/api.ts` 상단에 import 추가:
+
+```typescript
+import type { Artist, Schedule } from '@ipchun/shared';
+import type { SpotifyMeta } from '@ipchun/shared';
+```
+
+spotify 섹션의 반환 타입을 확장:
 
 ```typescript
 spotify: {
   getArtist: async (spotifyId: string) => {
     const res = await fetch(`/api/spotify?id=${spotifyId}`);
-    if (!res.ok) throw new Error(`Spotify fetch failed: ${res.status}`);
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      throw new Error(body.error || `Spotify fetch failed: ${res.status}`);
+    }
     return res.json() as Promise<{
       name: string;
       imageUrl: string | null;
@@ -413,60 +429,170 @@ spotify: {
       spotifyId: string;
       spotifyUrl: string;
       monthlyListeners: number | null;
-      spotifyMeta: {
-        genres: string[];
-        popularity: number;
-        followers: number;
-        images: { url: string; width: number; height: number }[];
-        topTracks: {
-          name: string;
-          previewUrl: string | null;
-          popularity: number;
-          albumName: string;
-          albumImageUrl: string | null;
-        }[];
-        relatedArtists: {
-          name: string;
-          spotifyId: string;
-          imageUrl: string | null;
-          genres: string[];
-        }[];
-      } | null;
+      spotifyMeta: SpotifyMeta | null;
     }>;
   },
 },
 ```
 
-- [ ] **Step 2: new/page.tsx에 state 추가 및 fetch 핸들러 확장**
+- [x] **Step 2: SpotifyInfoSection 공유 컴포넌트 생성**
+
+`apps/admin/src/app/artists/_components/SpotifyInfoSection.tsx` 생성:
+
+```tsx
+import type { SpotifyMeta } from '@ipchun/shared';
+
+interface SpotifyInfoSectionProps {
+  spotifyId: string;
+  spotifyLink: string;
+  monthlyListeners: number | null;
+  spotifyMeta: SpotifyMeta | null;
+}
+
+export function SpotifyInfoSection({
+  spotifyId,
+  spotifyLink,
+  monthlyListeners,
+  spotifyMeta,
+}: SpotifyInfoSectionProps) {
+  return (
+    <div
+      className="p-4 space-y-4"
+      style={{ background: 'var(--spotify-light)', border: '1px solid rgba(29, 185, 84, 0.12)' }}
+    >
+      <p className="text-[13px] font-semibold" style={{ color: 'var(--spotify)' }}>
+        Spotify 정보
+      </p>
+
+      {/* 기본 정보 */}
+      <div className="grid grid-cols-2 gap-3 text-[13px]">
+        <div>
+          <span style={{ color: 'var(--text-tertiary)' }}>Spotify ID</span>
+          <p className="font-medium mt-0.5" style={{ color: 'var(--text-primary)' }}>{spotifyId}</p>
+        </div>
+        <div>
+          <span style={{ color: 'var(--text-tertiary)' }}>링크</span>
+          <p className="mt-0.5">
+            <a
+              href={spotifyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium underline"
+              style={{ color: 'var(--spotify)' }}
+            >
+              Spotify에서 보기
+            </a>
+          </p>
+        </div>
+      </div>
+
+      {/* 수치 정보 */}
+      {spotifyMeta && (
+        <>
+          <div className="grid grid-cols-3 gap-3 text-[13px]">
+            {monthlyListeners != null && (
+              <div>
+                <span style={{ color: 'var(--text-tertiary)' }}>월간 리스너</span>
+                <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                  {monthlyListeners.toLocaleString()}
+                </p>
+              </div>
+            )}
+            <div>
+              <span style={{ color: 'var(--text-tertiary)' }}>팔로워</span>
+              <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                {spotifyMeta.followers.toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <span style={{ color: 'var(--text-tertiary)' }}>인기도</span>
+              <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                {spotifyMeta.popularity}/100
+              </p>
+            </div>
+          </div>
+
+          {/* 장르 */}
+          {spotifyMeta.genres.length > 0 && (
+            <div>
+              <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>장르</span>
+              <div className="flex flex-wrap gap-1.5 mt-1">
+                {spotifyMeta.genres.map((genre) => (
+                  <span
+                    key={genre}
+                    className="px-2 py-0.5 text-[12px]"
+                    style={{ background: 'var(--spotify-light)', color: 'var(--spotify)' }}
+                  >
+                    {genre}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 인기 트랙 */}
+          {spotifyMeta.topTracks.length > 0 && (
+            <div>
+              <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>인기 트랙</span>
+              <div className="mt-1 space-y-1">
+                {spotifyMeta.topTracks.slice(0, 5).map((track, i) => (
+                  <div key={i} className="flex items-center gap-2 text-[13px]">
+                    <span className="w-5 text-right" style={{ color: 'var(--text-tertiary)' }}>{i + 1}</span>
+                    {track.albumImageUrl && (
+                      <img src={track.albumImageUrl} alt="" className="w-6 h-6 object-cover" />
+                    )}
+                    <span style={{ color: 'var(--text-primary)' }}>{track.name}</span>
+                    <span className="ml-auto text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
+                      {track.albumName}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 관련 아티스트 */}
+          {spotifyMeta.relatedArtists.length > 0 && (
+            <div>
+              <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>관련 아티스트</span>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {spotifyMeta.relatedArtists.slice(0, 8).map((ra) => (
+                  <div key={ra.spotifyId} className="flex items-center gap-1.5 text-[12px]">
+                    {ra.imageUrl && (
+                      <img src={ra.imageUrl} alt="" className="w-5 h-5 object-cover" />
+                    )}
+                    <span style={{ color: 'var(--text-primary)' }}>{ra.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+- [x] **Step 3: new/page.tsx에 state 추가 및 fetch/submit 확장**
 
 `apps/admin/src/app/artists/new/page.tsx`에서:
+
+import 추가:
+
+```typescript
+import type { SpotifyMeta } from '@ipchun/shared';
+import { SpotifyInfoSection } from './_components/SpotifyInfoSection';
+```
 
 기존 state 아래에 추가:
 
 ```typescript
 const [monthlyListeners, setMonthlyListeners] = useState<number | null>(null);
-const [spotifyMeta, setSpotifyMeta] = useState<{
-  genres: string[];
-  popularity: number;
-  followers: number;
-  images: { url: string; width: number; height: number }[];
-  topTracks: {
-    name: string;
-    previewUrl: string | null;
-    popularity: number;
-    albumName: string;
-    albumImageUrl: string | null;
-  }[];
-  relatedArtists: {
-    name: string;
-    spotifyId: string;
-    imageUrl: string | null;
-    genres: string[];
-  }[];
-} | null>(null);
+const [spotifyMeta, setSpotifyMeta] = useState<SpotifyMeta | null>(null);
 ```
 
-`handleSpotifyFetch`의 try 블록에서 기존 `setName(data.name)` 등 아래에 추���:
+`handleSpotifyFetch`의 try 블록에서 기존 `setSocialLinks` 아래에 추가:
 
 ```typescript
 setMonthlyListeners(data.monthlyListeners);
@@ -488,183 +614,64 @@ await api.artists.create({
 });
 ```
 
-- [ ] **Step 3: Spotify 정보 섹션 UI 확장**
+- [x] **Step 4: Spotify 정보 섹션 UI를 컴포넌트로 교체**
 
-`apps/admin/src/app/artists/new/page.tsx`에서 기존 `{/* Spotify 정보 */}` 섹션을 아래로 교체:
+`apps/admin/src/app/artists/new/page.tsx`에서 기존 `{/* Spotify 정보 */}` 섹션 전체를 교체:
 
 ```tsx
 {/* Spotify 정보 */}
 {spotifyId && (
-  <div
-    className="p-4 space-y-4"
-    style={{ background: 'rgba(29, 185, 84, 0.05)', border: '1px solid rgba(29, 185, 84, 0.12)' }}
-  >
-    <p className="text-[13px] font-semibold" style={{ color: '#1DB954' }}>
-      Spotify 정보
-    </p>
-
-    {/* 기본 정보 */}
-    <div className="grid grid-cols-2 gap-3 text-[13px]">
-      <div>
-        <span style={{ color: 'var(--text-tertiary)' }}>Spotify ID</span>
-        <p className="font-medium mt-0.5" style={{ color: 'var(--text-primary)' }}>{spotifyId}</p>
-      </div>
-      <div>
-        <span style={{ color: 'var(--text-tertiary)' }}>링크</span>
-        <p className="mt-0.5">
-          <a
-            href={spotifyLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium underline"
-            style={{ color: '#1DB954' }}
-          >
-            Spotify에서 보기
-          </a>
-        </p>
-      </div>
-    </div>
-
-    {/* 수치 정보 */}
-    {spotifyMeta && (
-      <>
-        <div className="grid grid-cols-3 gap-3 text-[13px]">
-          {monthlyListeners != null && (
-            <div>
-              <span style={{ color: 'var(--text-tertiary)' }}>월간 리스너</span>
-              <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                {monthlyListeners.toLocaleString()}
-              </p>
-            </div>
-          )}
-          <div>
-            <span style={{ color: 'var(--text-tertiary)' }}>팔로워</span>
-            <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
-              {spotifyMeta.followers.toLocaleString()}
-            </p>
-          </div>
-          <div>
-            <span style={{ color: 'var(--text-tertiary)' }}>인기도</span>
-            <p className="font-semibold mt-0.5" style={{ color: 'var(--text-primary)' }}>
-              {spotifyMeta.popularity}/100
-            </p>
-          </div>
-        </div>
-
-        {/* 장르 */}
-        {spotifyMeta.genres.length > 0 && (
-          <div>
-            <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>장르</span>
-            <div className="flex flex-wrap gap-1.5 mt-1">
-              {spotifyMeta.genres.map((genre) => (
-                <span
-                  key={genre}
-                  className="px-2 py-0.5 text-[12px]"
-                  style={{ background: 'rgba(29, 185, 84, 0.1)', color: '#1DB954' }}
-                >
-                  {genre}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 인기 트랙 */}
-        {spotifyMeta.topTracks.length > 0 && (
-          <div>
-            <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>인기 트랙</span>
-            <div className="mt-1 space-y-1">
-              {spotifyMeta.topTracks.slice(0, 5).map((track, i) => (
-                <div key={i} className="flex items-center gap-2 text-[13px]">
-                  <span className="w-5 text-right" style={{ color: 'var(--text-tertiary)' }}>{i + 1}</span>
-                  {track.albumImageUrl && (
-                    <img src={track.albumImageUrl} alt="" className="w-6 h-6 object-cover" />
-                  )}
-                  <span style={{ color: 'var(--text-primary)' }}>{track.name}</span>
-                  <span className="ml-auto text-[12px]" style={{ color: 'var(--text-tertiary)' }}>
-                    {track.albumName}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 관��� 아티스트 */}
-        {spotifyMeta.relatedArtists.length > 0 && (
-          <div>
-            <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>관련 아티스트</span>
-            <div className="flex flex-wrap gap-2 mt-1">
-              {spotifyMeta.relatedArtists.slice(0, 8).map((ra) => (
-                <div key={ra.spotifyId} className="flex items-center gap-1.5 text-[12px]">
-                  {ra.imageUrl && (
-                    <img src={ra.imageUrl} alt="" className="w-5 h-5 rounded-full object-cover" />
-                  )}
-                  <span style={{ color: 'var(--text-primary)' }}>{ra.name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </>
-    )}
-  </div>
+  <SpotifyInfoSection
+    spotifyId={spotifyId}
+    spotifyLink={spotifyLink}
+    monthlyListeners={monthlyListeners}
+    spotifyMeta={spotifyMeta}
+  />
 )}
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
-git add apps/admin/src/lib/api.ts apps/admin/src/app/artists/new/page.tsx
-git commit -m "feat(admin): show Spotify Web API data in new artist form"
+git add apps/admin/src/lib/api.ts apps/admin/src/app/artists/_components/SpotifyInfoSection.tsx apps/admin/src/app/artists/new/page.tsx
+git commit -m "feat(admin): add SpotifyInfoSection component and show Web API data in new artist form"
 ```
 
 ---
 
-### Task 5: Edit ���티스트 페이지 동일 적용
+### Task 5: Edit 아티스트 페이지 동일 적용
 
 **Files:**
 - Modify: `apps/admin/src/app/artists/[id]/edit/page.tsx`
 
-- [ ] **Step 1: state 추가**
+- [x] **Step 1: import 및 state 추가**
 
 `apps/admin/src/app/artists/[id]/edit/page.tsx`에서:
 
-기존 state 아래에 추가 (Task 4 Step 2와 동일한 타입):
+import 추가:
+
+```typescript
+import type { SpotifyMeta } from '@ipchun/shared';
+import { SpotifyInfoSection } from '../_components/SpotifyInfoSection';
+```
+
+기존 state 아래에 추가:
 
 ```typescript
 const [monthlyListeners, setMonthlyListeners] = useState<number | null>(null);
-const [spotifyMeta, setSpotifyMeta] = useState<{
-  genres: string[];
-  popularity: number;
-  followers: number;
-  images: { url: string; width: number; height: number }[];
-  topTracks: {
-    name: string;
-    previewUrl: string | null;
-    popularity: number;
-    albumName: string;
-    albumImageUrl: string | null;
-  }[];
-  relatedArtists: {
-    name: string;
-    spotifyId: string;
-    imageUrl: string | null;
-    genres: string[];
-  }[];
-} | null>(null);
+const [spotifyMeta, setSpotifyMeta] = useState<SpotifyMeta | null>(null);
 ```
 
-- [ ] **Step 2: useEffect에서 기존 데이터 로��**
+- [x] **Step 2: useEffect에서 기존 데이터 로드**
 
-`useEffect`의 `api.artists.get(id).then((artist) => { ... })` 블록 안에 추��:
+`useEffect`의 `api.artists.get(id).then((artist) => { ... })` 블록 안에 추가:
 
 ```typescript
 setMonthlyListeners(artist.monthlyListeners);
 setSpotifyMeta(artist.spotifyMeta);
 ```
 
-- [ ] **Step 3: handleSpotifyFetch의 try 블록에 추가**
+- [x] **Step 3: handleSpotifyFetch의 try 블록에 추가**
 
 기존 `setSocialLinks` 아래에:
 
@@ -673,7 +680,7 @@ setMonthlyListeners(data.monthlyListeners);
 setSpotifyMeta(data.spotifyMeta);
 ```
 
-- [ ] **Step 4: handleSubmit의 api.artists.update 호출에 필드 추가**
+- [x] **Step 4: handleSubmit의 api.artists.update 호출에 필드 추가**
 
 ```typescript
 await api.artists.update(id, {
@@ -688,11 +695,23 @@ await api.artists.update(id, {
 });
 ```
 
-- [ ] **Step 5: Spotify 정보 섹션 UI 교체**
+- [x] **Step 5: Spotify 정보 섹션 UI를 컴포넌트로 교체**
 
-기존 `{/* Spotify 정보 */}` 섹션을 Task 4 Step 3의 JSX와 동일하게 교체.
+기존 `{/* Spotify 정보 */}` 섹션 전체를 교체:
 
-- [ ] **Step 6: Commit**
+```tsx
+{/* Spotify 정보 */}
+{spotifyId && (
+  <SpotifyInfoSection
+    spotifyId={spotifyId}
+    spotifyLink={spotifyLink}
+    monthlyListeners={monthlyListeners}
+    spotifyMeta={spotifyMeta}
+  />
+)}
+```
+
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/admin/src/app/artists/[id]/edit/page.tsx
@@ -703,7 +722,7 @@ git commit -m "feat(admin): show Spotify Web API data in edit artist form"
 
 ### Task 6: 수동 E2E 검증
 
-- [ ] **Step 1: 서버 + Admin 실행**
+- [x] **Step 1: 서버 + Admin 실행**
 
 Run:
 ```bash
@@ -711,21 +730,22 @@ cd apps/server && pnpm dev &
 cd apps/admin && pnpm dev &
 ```
 
-- [ ] **Step 2: 새 아티스트 등록 테스트**
+- [x] **Step 2: 새 아티스트 등록 테스트**
 
 1. Admin `http://localhost:3001/artists/new` 접속
 2. Spotify URL에 `https://open.spotify.com/artist/57okaLdCtv3nVBSn5otJkp` 입력
 3. "자동 채우기" 클릭
-4. 확인: 이름(HYUKOH), 이미지, 장르 배지, 월간 리스너/팔로워/인기도 수치, 인기 트랙 5곡, 관련 아티스트 표시
+4. 확인: 이름(HYUKOH), 이��지, 장르 배지, 월간 리스너/팔로워/인기도 수치, 인기 트랙 5곡, 관련 아티스트 표시
 5. "등록" 클릭 → 아티스트 목록으로 이동, 정상 저장 확인
 
-- [ ] **Step 3: 수정 페이지 테스트**
+- [x] **Step 3: 수정 페이지 테스트**
 
 1. 등록한 아티스트의 수정 페이지 접속
 2. 확인: 저장된 `spotifyMeta`, `monthlyListeners` 데이터가 UI에 표시됨
 3. 수정 후 저장 → 데이터 유지 확인
 
-- [ ] **Step 4: 에러 케이스 확인**
+- [x] **Step 4: 에러 케이스 확인**
 
-1. 존재하지 않는 Spotify ID 입력 → "Artist not found on Spotify" 에러 표시
-2. API 키 없이 요청 → 에러 메시지 표시
+1. 존재하지 않는 Spotify ID 입력 → "Spotify에서 아티스트를 찾을 수 없습니다" 에러 표시
+2. API 키 없이 요청 → "Spotify API 키가 설정되지 않았습니다" 에러 표시
+3. 빠른 연속 요청 → 429 시 "요청 한도 초과" 메시지 표시
