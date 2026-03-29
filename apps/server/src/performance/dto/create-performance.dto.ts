@@ -12,13 +12,14 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-// DTO 전용 enum (Prisma enum과 값 동일)
 enum Genre {
   CONCERT = 'CONCERT',
   MUSICAL = 'MUSICAL',
   PLAY = 'PLAY',
   CLASSIC = 'CLASSIC',
   FESTIVAL = 'FESTIVAL',
+  BUSKING = 'BUSKING',
+  RELEASE = 'RELEASE',
   OTHER = 'OTHER',
 }
 
@@ -42,7 +43,6 @@ export class ScheduleEntryDto {
 }
 
 export class TicketEntryDto {
-  @IsString()
   @IsNotEmpty()
   seatGrade!: string;
 
@@ -58,6 +58,10 @@ export class CreatePerformanceDto {
   @IsString()
   @IsOptional()
   subtitle?: string;
+
+  @IsString()
+  @IsOptional()
+  description?: string;
 
   @ApiProperty({ enum: Genre, enumName: 'Genre' })
   @IsEnum(Genre)
@@ -105,18 +109,19 @@ export class CreatePerformanceDto {
   @IsOptional()
   venueLongitude?: number;
 
-  // ── Source ──
+  // ── Source (optional — not needed for manual entries like BUSKING) ──
   @ApiProperty({ enum: TicketPlatform, enumName: 'TicketPlatform' })
   @IsEnum(TicketPlatform)
-  platform!: TicketPlatform;
+  @IsOptional()
+  platform?: TicketPlatform;
 
   @IsString()
-  @IsNotEmpty()
-  externalId!: string;
+  @IsOptional()
+  externalId?: string;
 
   @IsString()
-  @IsNotEmpty()
-  sourceUrl!: string;
+  @IsOptional()
+  sourceUrl?: string;
 
   @IsDateString()
   @IsOptional()
