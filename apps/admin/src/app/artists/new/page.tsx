@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import type { SpotifyMeta } from '@ipchun/shared';
+import { SpotifyInfoSection } from '../_components/SpotifyInfoSection';
 
 export default function NewArtistPage() {
   const router = useRouter();
@@ -17,6 +19,8 @@ export default function NewArtistPage() {
   const [spotifyId, setSpotifyId] = useState('');
   const [spotifyLink, setSpotifyLink] = useState('');
   const [socialLinks, setSocialLinks] = useState<{ key: string; value: string }[]>([]);
+  const [monthlyListeners, setMonthlyListeners] = useState<number | null>(null);
+  const [spotifyMeta, setSpotifyMeta] = useState<SpotifyMeta | null>(null);
 
   function extractSpotifyId(url: string): string | null {
     const match = url.match(/artist\/([a-zA-Z0-9]+)/);
@@ -41,6 +45,9 @@ export default function NewArtistPage() {
 
       // YouTube 채널 자동 검색
       const youtube = await api.youtube.searchChannel(data.name);
+
+      setMonthlyListeners(data.monthlyListeners);
+      setSpotifyMeta(data.spotifyMeta);
 
       setSocialLinks((prev) => {
         const filtered = prev.filter((l) => l.key !== 'spotify' && l.key !== 'youtube');
@@ -89,6 +96,8 @@ export default function NewArtistPage() {
         socialLinks: Object.keys(socialLinksObj).length > 0 ? socialLinksObj : null,
         spotifyId: spotifyId || null,
         spotifyUrl: spotifyLink || null,
+        monthlyListeners,
+        spotifyMeta,
       });
       router.push('/artists');
     } catch (err) {
@@ -182,34 +191,12 @@ export default function NewArtistPage() {
 
         {/* Spotify 정보 */}
         {spotifyId && (
-          <div
-            className="p-4 rounded-xl space-y-3"
-            style={{ background: 'var(--spotify-light)', border: '1px solid rgba(29, 185, 84, 0.12)' }}
-          >
-            <p className="text-[13px] font-semibold" style={{ color: 'var(--spotify)' }}>
-              Spotify 정보
-            </p>
-            <div className="grid grid-cols-2 gap-3 text-[13px]">
-              <div>
-                <span style={{ color: 'var(--text-tertiary)' }}>Spotify ID</span>
-                <p className="font-medium mt-0.5" style={{ color: 'var(--text-primary)' }}>{spotifyId}</p>
-              </div>
-              <div>
-                <span style={{ color: 'var(--text-tertiary)' }}>링크</span>
-                <p className="mt-0.5">
-                  <a
-                    href={spotifyLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium underline"
-                    style={{ color: 'var(--spotify)' }}
-                  >
-                    Spotify에서 보기
-                  </a>
-                </p>
-              </div>
-            </div>
-          </div>
+          <SpotifyInfoSection
+            spotifyId={spotifyId}
+            spotifyLink={spotifyLink}
+            monthlyListeners={monthlyListeners}
+            spotifyMeta={spotifyMeta}
+          />
         )}
 
         {/* 소셜 링크 */}

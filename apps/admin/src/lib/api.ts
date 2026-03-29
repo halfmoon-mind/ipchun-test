@@ -1,4 +1,4 @@
-import type { Artist, Schedule } from '@ipchun/shared';
+import type { Artist, Schedule, SpotifyMeta } from '@ipchun/shared';
 import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
 import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
@@ -98,13 +98,18 @@ export const api = {
   spotify: {
     getArtist: async (spotifyId: string) => {
       const res = await fetch(`/api/spotify?id=${spotifyId}`);
-      if (!res.ok) throw new Error(`Spotify fetch failed: ${res.status}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Spotify fetch failed: ${res.status}`);
+      }
       return res.json() as Promise<{
         name: string;
         imageUrl: string | null;
         description: string | null;
         spotifyId: string;
         spotifyUrl: string;
+        monthlyListeners: number | null;
+        spotifyMeta: SpotifyMeta | null;
       }>;
     },
   },
