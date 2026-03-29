@@ -19,7 +19,8 @@ model Artist {
   spotifyMeta      Json?            @map("spotify_meta")
   createdAt        DateTime         @default(now()) @map("created_at")
   updatedAt        DateTime         @updatedAt @map("updated_at")
-  lineups          ScheduleLineup[]
+  lineups            ScheduleLineup[]
+  performanceArtists PerformanceArtist[]
 
   @@map("artists")
 }
@@ -101,6 +102,29 @@ enum ScheduleType {
   OTHER
 }
 
+enum Genre {
+  CONCERT
+  MUSICAL
+  PLAY
+  CLASSIC
+  FESTIVAL
+  OTHER
+}
+
+enum PerformanceStatus {
+  SCHEDULED
+  ON_SALE
+  SOLD_OUT
+  COMPLETED
+  CANCELLED
+}
+
+enum TicketPlatform {
+  MELON
+  NOL
+  TICKETLINK
+}
+
 model UserScheduleAttendance {
   id         String   @id @default(uuid())
   userId     String   @map("user_id")
@@ -128,4 +152,99 @@ model UserBookmark {
 
   @@unique([userId, scheduleLineupId])
   @@map("user_bookmarks")
+}
+
+model Venue {
+  id           String        @id @default(uuid())
+  name         String        @unique
+  address      String?
+  latitude     Float?
+  longitude    Float?
+  phone        String?
+  website      String?
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  performances Performance[]
+
+  @@map("venues")
+}
+
+model Performance {
+  id           String              @id @default(uuid())
+  title        String
+  subtitle     String?
+  genre        Genre               @default(CONCERT)
+  ageRating    String?             @map("age_rating")
+  runtime      Int?
+  intermission Int?
+  posterUrl    String?             @map("poster_url")
+  status       PerformanceStatus   @default(SCHEDULED)
+  venueId      String?             @map("venue_id")
+  venue        Venue?              @relation(fields: [venueId], references: [id])
+  organizer    String?
+  createdAt    DateTime            @default(now()) @map("created_at")
+  updatedAt    DateTime            @updatedAt @map("updated_at")
+  sources      PerformanceSource[]
+  schedules    PerformanceSchedule[]
+  artists      PerformanceArtist[]
+
+  @@map("performances")
+}
+
+model PerformanceSource {
+  id            String         @id @default(uuid())
+  performanceId String         @map("performance_id")
+  performance   Performance    @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  platform      TicketPlatform
+  externalId    String         @map("external_id")
+  sourceUrl     String         @map("source_url")
+  ticketOpenAt  DateTime?      @map("ticket_open_at")
+  bookingEndAt  DateTime?      @map("booking_end_at")
+  salesStatus   String?        @map("sales_status")
+  rawData       Json?          @map("raw_data")
+  lastSyncedAt  DateTime       @default(now()) @map("last_synced_at")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  tickets       Ticket[]
+
+  @@unique([platform, externalId])
+  @@map("performance_sources")
+}
+
+model PerformanceSchedule {
+  id            String      @id @default(uuid())
+  performanceId String      @map("performance_id")
+  performance   Performance @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  dateTime      DateTime    @map("date_time")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@unique([performanceId, dateTime])
+  @@map("performance_schedules")
+}
+
+model PerformanceArtist {
+  id            String      @id @default(uuid())
+  performanceId String      @map("performance_id")
+  performance   Performance @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  artistId      String      @map("artist_id")
+  artist        Artist      @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  role          String?
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@unique([performanceId, artistId])
+  @@map("performance_artists")
+}
+
+model Ticket {
+  id        String            @id @default(uuid())
+  sourceId  String            @map("source_id")
+  source    PerformanceSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  seatGrade String            @map("seat_grade")
+  price     Int
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
+
+  @@map("tickets")
 }
