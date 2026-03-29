@@ -1,40 +1,53 @@
 @import "tailwindcss";
 
 :root {
-  --background: #faf8f5;
-  --foreground: #2d2a26;
-  --sidebar-bg: #1a1a2e;
-  --sidebar-hover: #26264a;
-  --sidebar-accent: #c85a3a;
-  --card-bg: #ffffff;
-  --card-border: #eae6e1;
-  --card-shadow: 0 1px 3px rgba(45, 42, 38, 0.06), 0 1px 2px rgba(45, 42, 38, 0.04);
-  --card-shadow-hover: 0 4px 12px rgba(45, 42, 38, 0.08), 0 2px 4px rgba(45, 42, 38, 0.04);
-  --input-border: #d9d4ce;
-  --input-focus: #c85a3a;
-  --text-primary: #2d2a26;
-  --text-secondary: #8a8580;
-  --text-tertiary: #b5b0ab;
-  --accent: #c85a3a;
-  --accent-hover: #b04e30;
-  --accent-light: #fdf0ec;
-  --spotify: #1db954;
-  --spotify-light: #ecfaf0;
-  --error: #c44040;
-  --error-light: #fdf0f0;
+  --background: #FDFCF9;
+  --foreground: #1A1A1A;
+  --primary: #1A1A1A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F5F2ED;
+  --secondary-foreground: #1A1A1A;
+  --muted: #F5F2ED;
+  --muted-foreground: #777777;
+  --accent: #E8E5DF;
+  --accent-foreground: #1A1A1A;
+  --border: #E5E2DC;
+  --input: #E5E2DC;
+  --ring: #1A1A1A;
+  --destructive: #DC2626;
+  --destructive-foreground: #FFFFFF;
+  --card-bg: #FDFCF9;
+  --card-foreground: #1A1A1A;
+  --card-border: #E5E2DC;
+  --card-shadow: 0 1px 3px rgba(26, 26, 26, 0.06), 0 1px 2px rgba(26, 26, 26, 0.04);
+  --card-shadow-hover: 0 4px 12px rgba(26, 26, 26, 0.08), 0 2px 4px rgba(26, 26, 26, 0.04);
+  --input-border: #E5E2DC;
+  --input-focus: #1A1A1A;
+  --text-primary: #1A1A1A;
+  --text-secondary: #777777;
+  --text-tertiary: #E5E2DC;
+  --sidebar-bg: #1A1A1A;
+  --sidebar-hover: #333333;
+  --sidebar-accent: #F5F2ED;
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #DC2626;
+  --font-heading: "Playfair Display", Georgia, serif;
+  --font-body: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-heading);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -44,8 +57,8 @@ input, textarea, select {
 }
 
 ::selection {
-  background: var(--accent-light);
-  color: var(--accent);
+  background: var(--secondary);
+  color: var(--foreground);
 }
 
 /* Sidebar nav links */
@@ -63,7 +76,7 @@ input, textarea, select {
 .form-input {
   width: 100%;
   border: 1px solid var(--input-border);
-  border-radius: 8px;
+  border-radius: 0;
   padding: 10px 14px;
   background: var(--card-bg);
   color: var(--text-primary);
@@ -74,7 +87,7 @@ input, textarea, select {
 .form-input:focus {
   outline: none;
   border-color: var(--input-focus);
-  box-shadow: 0 0 0 3px rgba(200, 90, 58, 0.1);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
 }
 
 .form-input::placeholder {
@@ -85,7 +98,7 @@ input, textarea, select {
 .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 12px;
+  border-radius: 0;
   box-shadow: var(--card-shadow);
   transition: box-shadow 0.2s ease;
 }
@@ -99,10 +112,10 @@ input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--accent);
-  color: #ffffff;
+  background: var(--primary);
+  color: var(--primary-foreground);
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -110,7 +123,7 @@ input, textarea, select {
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: #333333;
 }
 
 .btn-primary:disabled {
@@ -123,10 +136,10 @@ input, textarea, select {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--spotify);
+  background: var(--color-success);
   color: #ffffff;
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: 0;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -135,7 +148,7 @@ input, textarea, select {
 }
 
 .btn-spotify:hover {
-  background: #1aa34a;
+  background: #1da34a;
 }
 
 .btn-spotify:disabled {
@@ -147,19 +160,19 @@ input, textarea, select {
 .btn-text {
   font-size: 13px;
   font-weight: 500;
-  color: var(--accent);
+  color: var(--foreground);
   cursor: pointer;
   transition: color 0.15s ease;
 }
 
 .btn-text:hover {
-  color: var(--accent-hover);
+  color: var(--muted-foreground);
 }
 
 .btn-text-danger {
   font-size: 13px;
   font-weight: 500;
-  color: var(--error);
+  color: var(--color-error);
   cursor: pointer;
   transition: color 0.15s ease;
 }
@@ -180,10 +193,10 @@ input, textarea, select {
 /* Error alert */
 .alert-error {
   padding: 12px 16px;
-  background: var(--error-light);
-  border: 1px solid rgba(196, 64, 64, 0.15);
-  border-radius: 8px;
-  color: var(--error);
+  background: #FEF2F2;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  border-radius: 0;
+  color: var(--color-error);
   font-size: 14px;
 }
 
