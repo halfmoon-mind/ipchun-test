@@ -71,7 +71,7 @@ export function SpotifyInfoSection({
           </div>
 
           {/* 장르 */}
-          {spotifyMeta.genres.length > 0 && (
+          {spotifyMeta.genres?.length > 0 && (
             <div>
               <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>장르</span>
               <div className="flex flex-wrap gap-1.5 mt-1">
@@ -89,7 +89,7 @@ export function SpotifyInfoSection({
           )}
 
           {/* 인기 트랙 */}
-          {spotifyMeta.topTracks.length > 0 && (
+          {spotifyMeta.topTracks?.length > 0 && (
             <div>
               <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>인기 트랙</span>
               <div className="mt-1 space-y-1">
@@ -110,7 +110,7 @@ export function SpotifyInfoSection({
           )}
 
           {/* 관련 아티스트 */}
-          {spotifyMeta.relatedArtists.length > 0 && (
+          {spotifyMeta.relatedArtists?.length > 0 && (
             <div>
               <span className="text-[12px]" style={{ color: 'var(--text-tertiary)' }}>관련 아티스트</span>
               <div className="flex flex-wrap gap-2 mt-1">
