@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsObject, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsObject, IsNotEmpty, IsInt } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateArtistDto {
@@ -30,4 +30,13 @@ export class CreateArtistDto {
   @IsString()
   @IsOptional()
   spotifyUrl?: string;
+
+  @IsInt()
+  @IsOptional()
+  monthlyListeners?: number;
+
+  @IsObject()
+  @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  spotifyMeta?: Record<string, any>;
 }

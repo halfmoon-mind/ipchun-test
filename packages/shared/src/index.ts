@@ -11,6 +11,26 @@ export enum CardNewsStatus {
   PUBLISHED = 'PUBLISHED',
 }
 
+export interface SpotifyMeta {
+  genres: string[];
+  popularity: number;
+  followers: number;
+  images: { url: string; width: number; height: number }[];
+  topTracks: {
+    name: string;
+    previewUrl: string | null;
+    popularity: number;
+    albumName: string;
+    albumImageUrl: string | null;
+  }[];
+  relatedArtists: {
+    name: string;
+    spotifyId: string;
+    imageUrl: string | null;
+    genres: string[];
+  }[];
+}
+
 export interface Artist {
   id: string;
   name: string;
@@ -19,6 +39,8 @@ export interface Artist {
   socialLinks: Record<string, string> | null;
   spotifyId: string | null;
   spotifyUrl: string | null;
+  monthlyListeners: number | null;
+  spotifyMeta: SpotifyMeta | null;
   createdAt: string;
   updatedAt: string;
 }
