@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useEffect } from "react";
 import type { Schedule, ScheduleLineup } from "@ipchun/shared";
 import { ScheduleCard } from "./ScheduleCard";
 
@@ -13,6 +16,8 @@ interface ScheduleListProps {
 }
 
 export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
+  const closestRef = useRef<HTMLDivElement>(null);
+
   const filtered = selectedDate
     ? schedules.filter((s) => {
         const start = s.startDate.slice(0, 10);
@@ -20,6 +25,32 @@ export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
         return selectedDate >= start && selectedDate <= end;
       })
     : schedules;
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+
+  let closestIndex = -1;
+  if (!selectedDate && filtered.length > 0) {
+    // Find the first upcoming schedule (startDate >= today)
+    closestIndex = filtered.findIndex(
+      (s) => s.startDate.slice(0, 10) >= todayStr
+    );
+    // If all are past, point to the last one
+    if (closestIndex === -1) {
+      closestIndex = filtered.length - 1;
+    }
+  }
+
+  useEffect(() => {
+    if (!selectedDate && closestRef.current) {
+      // Delay slightly so the DOM is fully laid out
+      requestAnimationFrame(() => {
+        closestRef.current?.scrollIntoView({
+          block: "center",
+          behavior: "smooth",
+        });
+      });
+    }
+  }, [selectedDate, schedules]);
 
   if (filtered.length === 0) {
     return (
@@ -31,8 +62,10 @@ export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
 
   return (
     <div>
-      {filtered.map((schedule) => (
-        <ScheduleCard key={schedule.id} schedule={schedule} />
+      {filtered.map((schedule, i) => (
+        <div key={schedule.id} ref={i === closestIndex ? closestRef : undefined}>
+          <ScheduleCard schedule={schedule} />
+        </div>
       ))}
     </div>
   );

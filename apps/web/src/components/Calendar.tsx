@@ -5,7 +5,7 @@ interface CalendarProps {
   month: number;
   dates: Record<string, string[]>;
   selectedDate: string | null;
-  onSelectDate: (date: string) => void;
+  onSelectDate: (date: string | null) => void;
   onChangeMonth: (year: number, month: number) => void;
 }
 
@@ -90,7 +90,7 @@ export function Calendar({
           return (
             <button
               key={dateStr}
-              onClick={() => onSelectDate(dateStr)}
+              onClick={() => onSelectDate(isSelected ? null : dateStr)}
               className={`
                 relative flex flex-col items-center justify-center py-2 text-sm
                 ${isSelected ? "bg-primary text-primary-foreground font-bold" : ""}
