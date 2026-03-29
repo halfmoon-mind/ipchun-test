@@ -42,7 +42,7 @@ export async function fetchFromTicketlink(
       title = ld.name || '';
       startDate = ld.startDate || null;
       endDate = ld.endDate || null;
-      posterUrl = ld.image || null;
+      posterUrl = Array.isArray(ld.image) ? ld.image[0] : ld.image || null;
 
       if (ld.location) {
         venueName = ld.location.name || null;
@@ -82,7 +82,7 @@ export async function fetchFromTicketlink(
       { headers: { ...headers, Accept: 'application/json' } },
     );
     if (datesRes.ok) {
-      const datesData = await datesRes.json();
+      const datesData: any = await datesRes.json();
       if (datesData.data && Array.isArray(datesData.data)) {
         for (const item of datesData.data) {
           if (item.productDate) {
