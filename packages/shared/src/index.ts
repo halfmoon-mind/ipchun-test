@@ -1,22 +1,11 @@
-export enum ScheduleType {
-  CONCERT = 'CONCERT',
-  BUSKING = 'BUSKING',
-  FESTIVAL = 'FESTIVAL',
-  RELEASE = 'RELEASE',
-  OTHER = 'OTHER',
-}
-
-export enum CardNewsStatus {
-  DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-}
-
 export enum Genre {
   CONCERT = 'CONCERT',
   MUSICAL = 'MUSICAL',
   PLAY = 'PLAY',
   CLASSIC = 'CLASSIC',
   FESTIVAL = 'FESTIVAL',
+  BUSKING = 'BUSKING',
+  RELEASE = 'RELEASE',
   OTHER = 'OTHER',
 }
 
@@ -68,64 +57,6 @@ export interface Artist {
   updatedAt: string;
 }
 
-export interface Schedule {
-  id: string;
-  title: string;
-  description: string | null;
-  type: ScheduleType;
-  startDate: string;
-  endDate: string | null;
-  location: string | null;
-  address: string | null;
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CardNews {
-  id: string;
-  scheduleId: string;
-  title: string;
-  slides: CardNewsSlide[];
-  status: CardNewsStatus;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface CardNewsSlide {
-  imageUrl: string;
-  caption: string;
-  order: number;
-}
-
-export interface ScheduleLineup {
-  id: string;
-  scheduleId: string;
-  artistId: string;
-  stageName: string | null;
-  startTime: string | null;
-  endTime: string | null;
-  performanceOrder: number | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface AttendanceDto {
-  scheduleId: string;
-  date: string;
-  checkedAt: string;
-}
-
-export interface BookmarkDto {
-  scheduleLineupId: string;
-  checkedAt: string;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  nextCursor: string | null;
-}
-
 export interface Venue {
   id: string;
   name: string;
@@ -142,6 +73,7 @@ export interface Performance {
   id: string;
   title: string;
   subtitle: string | null;
+  description: string | null;
   genre: Genre;
   ageRating: string | null;
   runtime: number | null;
@@ -180,6 +112,10 @@ export interface PerformanceArtistItem {
   artistId: string;
   artist?: Artist;
   role: string | null;
+  stageName: string | null;
+  startTime: string | null;
+  endTime: string | null;
+  performanceOrder: number | null;
 }
 
 export interface TicketItem {
@@ -188,7 +124,6 @@ export interface TicketItem {
   price: number;
 }
 
-/** 플랫폼에서 fetch한 결과 (프리뷰용, DB 저장 전) */
 export interface FetchedPerformance {
   title: string;
   subtitle: string | null;
@@ -214,4 +149,20 @@ export interface FetchedPerformance {
     bookingEndAt: string | null;
     salesStatus: string | null;
   };
+}
+
+export interface AttendanceDto {
+  performanceId: string;
+  date: string;
+  checkedAt: string;
+}
+
+export interface BookmarkDto {
+  performanceArtistId: string;
+  checkedAt: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  nextCursor: string | null;
 }
