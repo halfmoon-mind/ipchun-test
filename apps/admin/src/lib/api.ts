@@ -108,4 +108,16 @@ export const api = {
       }>;
     },
   },
+  youtube: {
+    searchChannel: async (artistName: string) => {
+      const res = await fetch(
+        `/api/youtube?name=${encodeURIComponent(artistName)}`,
+      );
+      if (!res.ok) return null;
+      return res.json() as Promise<{
+        channelUrl: string | null;
+        channelTitle: string | null;
+      }>;
+    },
+  },
 };
