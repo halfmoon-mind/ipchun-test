@@ -117,6 +117,16 @@ export default function NewPerformancePage() {
     );
     setSalesStatus(data.source.salesStatus || '');
 
+    // salesStatus → Performance.status 자동 매핑
+    if (
+      data.source.salesStatus &&
+      Object.values(PerformanceStatus).includes(
+        data.source.salesStatus as PerformanceStatus,
+      )
+    ) {
+      setStatus(data.source.salesStatus as PerformanceStatus);
+    }
+
     setSchedules(
       data.schedules.map((s) => ({
         dateTime: toDatetimeLocal(s.dateTime),
@@ -374,7 +384,7 @@ export default function NewPerformancePage() {
                   onChange={(e) => updateTicket(i, 'price', parseInt(e.target.value) || 0)}
                   type="number"
                   placeholder="가격 (원)"
-                  className="form-input flex-1"
+                  className="form-input flex-1 min-w-[120px]"
                 />
                 <button type="button" onClick={() => removeTicket(i)} className="text-sm px-2 py-1" style={{ color: 'var(--destructive)' }}>
                   삭제
