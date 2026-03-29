@@ -5,17 +5,17 @@ import { CalendarGrid } from '../../src/components/calendar/CalendarGrid';
 import { ScheduleList } from '../../src/components/calendar/ScheduleList';
 import { ScheduleBottomSheet } from '../../src/components/calendar/ScheduleBottomSheet';
 import { api } from '../../src/api/client';
-import type { CalendarResponse, CalendarSchedule } from '../../src/api/client';
+import type { CalendarResponse, CalendarPerformance } from '../../src/api/client';
 import { useRouter } from 'expo-router';
 
-function getSchedulesForDate(schedules: CalendarSchedule[], dateKey: string): CalendarSchedule[] {
-  return schedules
-    .filter((s) => {
-      const start = s.startDate.slice(0, 10);
-      const end = s.endDate ? s.endDate.slice(0, 10) : start;
-      return dateKey >= start && dateKey <= end;
-    })
-    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+function getPerformancesForDate(performances: CalendarPerformance[], dateKey: string): CalendarPerformance[] {
+  return performances
+    .filter((p) => p.schedules.some((s) => s.dateTime.slice(0, 10) === dateKey))
+    .sort((a, b) => {
+      const aTime = a.schedules.find((s) => s.dateTime.slice(0, 10) === dateKey)?.dateTime ?? '';
+      const bTime = b.schedules.find((s) => s.dateTime.slice(0, 10) === dateKey)?.dateTime ?? '';
+      return new Date(aTime).getTime() - new Date(bTime).getTime();
+    });
 }
 
 export default function CalendarScreen() {
@@ -27,13 +27,13 @@ export default function CalendarScreen() {
   const [data, setData] = useState<CalendarResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedSchedule, setSelectedSchedule] = useState<CalendarSchedule | null>(null);
+  const [selectedPerformance, setSelectedPerformance] = useState<CalendarPerformance | null>(null);
 
   const fetchCalendar = useCallback(async (y: number, m: number) => {
     setLoading(true);
     setError(null);
     try {
-      const result = await api.schedules.getCalendar(y, m);
+      const result = await api.performances.getCalendar(y, m);
       setData(result);
     } catch (e) {
       setError(e instanceof Error ? e.message : '데이터를 불러올 수 없습니다');
@@ -46,7 +46,6 @@ export default function CalendarScreen() {
     fetchCalendar(year, month);
   }, [year, month, fetchCalendar]);
 
-  // Auto-select today when current month
   useEffect(() => {
     if (data && year === now.getFullYear() && month === now.getMonth() + 1) {
       const todayKey = `${year}-${String(month).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
@@ -66,57 +65,57 @@ export default function CalendarScreen() {
     setSelectedDate(null);
   };
 
-  const selectedSchedules = selectedDate && data
-    ? getSchedulesForDate(data.schedules, selectedDate)
+  const selectedPerformances = selectedDate && data
+    ? getPerformancesForDate(data.performances, selectedDate)
     : [];
 
   return (
-      <YStack flex={1} backgroundColor="$background">
-        <CalendarHeader year={year} month={month} onPrev={handlePrev} onNext={handleNext} />
+    <YStack flex={1} backgroundColor="$background">
+      <CalendarHeader year={year} month={month} onPrev={handlePrev} onNext={handleNext} />
 
-        {loading ? (
-          <YStack flex={1} alignItems="center" justifyContent="center">
-            <Spinner size="large" color="$accentColor" />
-          </YStack>
-        ) : error ? (
-          <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
-            <Text fontFamily="$body" color="$negativeColor" textAlign="center">{error}</Text>
-            <Text
-              fontFamily="$body"
-              color="$accentColor"
-              marginTop="$3"
-              onPress={() => fetchCalendar(year, month)}
-            >
-              다시 시도
-            </Text>
-          </YStack>
-        ) : (
-          <ScrollView>
-            <CalendarGrid
-              year={year}
-              month={month}
-              selectedDate={selectedDate}
-              dates={data?.dates ?? {}}
-              onSelectDate={setSelectedDate}
+      {loading ? (
+        <YStack flex={1} alignItems="center" justifyContent="center">
+          <Spinner size="large" color="$accentColor" />
+        </YStack>
+      ) : error ? (
+        <YStack flex={1} alignItems="center" justifyContent="center" padding="$4">
+          <Text fontFamily="$body" color="$negativeColor" textAlign="center">{error}</Text>
+          <Text
+            fontFamily="$body"
+            color="$accentColor"
+            marginTop="$3"
+            onPress={() => fetchCalendar(year, month)}
+          >
+            다시 시도
+          </Text>
+        </YStack>
+      ) : (
+        <ScrollView>
+          <CalendarGrid
+            year={year}
+            month={month}
+            selectedDate={selectedDate}
+            dates={data?.dates ?? {}}
+            onSelectDate={setSelectedDate}
+          />
+          {selectedDate && (
+            <ScheduleList
+              date={selectedDate}
+              performances={selectedPerformances}
+              onPerformancePress={setSelectedPerformance}
             />
-            {selectedDate && (
-              <ScheduleList
-                date={selectedDate}
-                schedules={selectedSchedules}
-                onSchedulePress={setSelectedSchedule}
-              />
-            )}
-          </ScrollView>
-        )}
+          )}
+        </ScrollView>
+      )}
 
-        <ScheduleBottomSheet
-          schedule={selectedSchedule}
-          onClose={() => setSelectedSchedule(null)}
-          onDetail={(id) => {
-            setSelectedSchedule(null);
-            router.push(`/schedules/${id}`);
-          }}
-        />
-      </YStack>
+      <ScheduleBottomSheet
+        performance={selectedPerformance}
+        onClose={() => setSelectedPerformance(null)}
+        onDetail={(id) => {
+          setSelectedPerformance(null);
+          router.push(`/schedules/${id}`);
+        }}
+      />
+    </YStack>
   );
 }
