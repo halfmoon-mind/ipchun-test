@@ -1,4 +1,4 @@
-import type { Artist, Schedule, SpotifyMeta, Performance, FetchedPerformance } from '@ipchun/shared';
+import type { Artist, SpotifyMeta, Performance, FetchedPerformance } from '@ipchun/shared';
 import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
 import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
@@ -34,40 +34,6 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/artists/${id}`, { method: 'DELETE' }),
-  },
-  schedules: {
-    list: (artistId?: string) =>
-      request<Schedule[]>(
-        `/schedules${artistId ? `?artistId=${artistId}` : ''}`,
-      ),
-    get: (id: string) => request<Schedule>(`/schedules/${id}`),
-    create: (data: Omit<Schedule, 'id' | 'createdAt' | 'updatedAt'>) =>
-      request<Schedule>('/schedules', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      }),
-    update: (id: string, data: Partial<Omit<Schedule, 'id' | 'artistId' | 'createdAt' | 'updatedAt'>>) =>
-      request<Schedule>(`/schedules/${id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(data),
-      }),
-    delete: (id: string) =>
-      request<void>(`/schedules/${id}`, { method: 'DELETE' }),
-    replaceLineups: (scheduleId: string, lineups: Array<{
-      artistId: string;
-      stageName?: string;
-      startTime?: string;
-      endTime?: string;
-      performanceOrder?: number;
-    }>) =>
-      request<Schedule>(`/schedules/${scheduleId}/lineups`, {
-        method: 'PUT',
-        body: JSON.stringify({ lineups }),
-      }),
-    removeLineup: (scheduleId: string, lineupId: string) =>
-      request<void>(`/schedules/${scheduleId}/lineups/${lineupId}`, {
-        method: 'DELETE',
-      }),
   },
   scrape: {
     schedule: async (url: string): Promise<ScrapedSchedule> => {

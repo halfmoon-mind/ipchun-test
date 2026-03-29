@@ -64,7 +64,7 @@ export default function ArtistDetailScreen() {
   const headerOptions = {
     headerShown: true,
     title: artist?.name ?? '',
-    headerBackButtonDisplayMode: 'minimal',
+    headerBackButtonDisplayMode: 'minimal' as const,
     headerStyle: {
       backgroundColor: theme.background.val,
     },
