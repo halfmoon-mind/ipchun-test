@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json({
-      channelUrl: `https://www.youtube.com/channel/${item.snippet.channelId}`,
+      channelUrl: `https://music.youtube.com/channel/${item.snippet.channelId}`,
       channelTitle: item.snippet.channelTitle,
     });
   } catch (err) {

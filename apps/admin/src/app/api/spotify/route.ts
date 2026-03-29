@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
     // 4개 요청 병렬 실행
     const [artist, topTracksRes, relatedRes, htmlRes] = await Promise.all([
       spotifyApi<SpotifyArtist>(token, `/artists/${spotifyId}`),
-      spotifyApi<{ tracks: SpotifyTrack[] }>(token, `/artists/${spotifyId}/top-tracks`),
+      spotifyApi<{ tracks: SpotifyTrack[] }>(token, `/artists/${spotifyId}/top-tracks?market=KR`),
       spotifyApi<{ artists: SpotifyArtist[] }>(token, `/artists/${spotifyId}/related-artists`),
       fetch(`https://open.spotify.com/artist/${spotifyId}`, {
         headers: {
@@ -142,10 +142,10 @@ export async function GET(request: NextRequest) {
       spotifyUrl: `https://open.spotify.com/artist/${spotifyId}`,
       monthlyListeners,
       spotifyMeta: {
-        genres: artist.genres,
-        popularity: artist.popularity,
-        followers: artist.followers.total,
-        images: artist.images.map((img) => ({
+        genres: artist.genres ?? [],
+        popularity: artist.popularity ?? 0,
+        followers: artist.followers?.total ?? 0,
+        images: (artist.images ?? []).map((img) => ({
           url: img.url,
           width: img.width,
           height: img.height,
