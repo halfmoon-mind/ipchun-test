@@ -16,6 +16,8 @@ const genreLabels: Record<Genre, string> = {
   [Genre.PLAY]: '연극',
   [Genre.CLASSIC]: '클래식',
   [Genre.FESTIVAL]: '페스티벌',
+  [Genre.BUSKING]: '버스킹',
+  [Genre.RELEASE]: '발매',
   [Genre.OTHER]: '기타',
 };
 
@@ -61,6 +63,7 @@ export default function NewPerformancePage() {
   // Form fields
   const [title, setTitle] = useState('');
   const [subtitle, setSubtitle] = useState('');
+  const [description, setDescription] = useState('');
   const [genre, setGenre] = useState<Genre>(Genre.CONCERT);
   const [ageRating, setAgeRating] = useState('');
   const [runtime, setRuntime] = useState('');
@@ -157,9 +160,10 @@ export default function NewPerformancePage() {
     setSaving(true);
     setError(null);
     try {
-      await api.performances.create({
+      const payload: Record<string, unknown> = {
         title,
         subtitle: subtitle || undefined,
+        description: description || undefined,
         genre,
         ageRating: ageRating || undefined,
         runtime: runtime ? parseInt(runtime) : undefined,
@@ -169,19 +173,25 @@ export default function NewPerformancePage() {
         organizer: organizer || undefined,
         venueName: venueName || undefined,
         venueAddress: venueAddress || undefined,
-        platform,
-        externalId,
-        sourceUrl,
-        ticketOpenAt: ticketOpenAt || undefined,
-        bookingEndAt: bookingEndAt || undefined,
-        salesStatus: salesStatus || undefined,
         schedules: schedules
           .filter((s) => s.dateTime)
           .map((s) => ({
             dateTime: new Date(s.dateTime).toISOString(),
           })),
         tickets: tickets.filter((t) => t.seatGrade && t.price > 0),
-      });
+      };
+
+      // Source fields only if platform is present
+      if (platform && externalId && sourceUrl) {
+        payload.platform = platform;
+        payload.externalId = externalId;
+        payload.sourceUrl = sourceUrl;
+        payload.ticketOpenAt = ticketOpenAt || undefined;
+        payload.bookingEndAt = bookingEndAt || undefined;
+        payload.salesStatus = salesStatus || undefined;
+      }
+
+      await api.performances.create(payload);
       router.push('/performances');
     } catch (err) {
       setError(err instanceof Error ? err.message : '등록에 실패했습니다');
@@ -264,6 +274,17 @@ export default function NewPerformancePage() {
             <div>
               <label className="form-label">부제</label>
               <input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} className="form-input" />
+            </div>
+
+            <div>
+              <label className="form-label">설명</label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="공연 설명 (선택)"
+                rows={3}
+                className="form-input"
+              />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -428,7 +449,7 @@ export default function NewPerformancePage() {
         <div className="pt-4">
           <button
             type="submit"
-            disabled={saving || !title || !platform}
+            disabled={saving || !title}
             className="btn-primary"
           >
             {saving ? '등록 중...' : '공연 등록'}
