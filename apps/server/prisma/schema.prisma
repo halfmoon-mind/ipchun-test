@@ -8,57 +8,20 @@ datasource db {
 }
 
 model Artist {
-  id               String           @id @default(uuid())
+  id               String              @id @default(uuid())
   name             String
   description      String?
-  imageUrl         String?          @map("image_url")
-  socialLinks      Json?            @map("social_links")
-  spotifyId        String?          @unique @map("spotify_id")
-  spotifyUrl       String?          @map("spotify_url")
-  monthlyListeners Int?             @map("monthly_listeners")
-  spotifyMeta      Json?            @map("spotify_meta")
-  createdAt        DateTime         @default(now()) @map("created_at")
-  updatedAt        DateTime         @updatedAt @map("updated_at")
-  lineups            ScheduleLineup[]
+  imageUrl         String?             @map("image_url")
+  socialLinks      Json?               @map("social_links")
+  spotifyId        String?             @unique @map("spotify_id")
+  spotifyUrl       String?             @map("spotify_url")
+  monthlyListeners Int?                @map("monthly_listeners")
+  spotifyMeta      Json?               @map("spotify_meta")
+  createdAt        DateTime            @default(now()) @map("created_at")
+  updatedAt        DateTime            @updatedAt @map("updated_at")
   performanceArtists PerformanceArtist[]
 
   @@map("artists")
-}
-
-model Schedule {
-  id          String           @id @default(uuid())
-  title       String
-  description String?
-  type        ScheduleType
-  startDate   DateTime         @map("start_date")
-  endDate     DateTime?        @map("end_date")
-  location    String?
-  address     String?
-  imageUrl    String?          @map("image_url")
-  createdAt   DateTime         @default(now()) @map("created_at")
-  updatedAt   DateTime         @updatedAt @map("updated_at")
-  lineups     ScheduleLineup[]
-  attendances UserScheduleAttendance[]
-
-  @@map("schedules")
-}
-
-model ScheduleLineup {
-  id               String         @id @default(uuid())
-  scheduleId       String         @map("schedule_id")
-  schedule         Schedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  artistId         String         @map("artist_id")
-  artist           Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  stageName        String?        @map("stage_name")
-  startTime        DateTime?      @map("start_time")
-  endTime          DateTime?      @map("end_time")
-  performanceOrder Int?           @map("performance_order")
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
-  bookmarks        UserBookmark[]
-
-  @@unique([scheduleId, artistId])
-  @@map("schedule_lineups")
 }
 
 model User {
@@ -71,7 +34,7 @@ model User {
   updatedAt   DateTime                 @updatedAt @map("updated_at")
   accounts    Account[]
   bookmarks   UserBookmark[]
-  attendances UserScheduleAttendance[]
+  attendances UserAttendance[]
 
   @@map("users")
 }
@@ -94,20 +57,14 @@ enum AuthProvider {
   GOOGLE
 }
 
-enum ScheduleType {
-  CONCERT
-  BUSKING
-  FESTIVAL
-  RELEASE
-  OTHER
-}
-
 enum Genre {
   CONCERT
   MUSICAL
   PLAY
   CLASSIC
   FESTIVAL
+  BUSKING
+  RELEASE
   OTHER
 }
 
@@ -125,32 +82,32 @@ enum TicketPlatform {
   TICKETLINK
 }
 
-model UserScheduleAttendance {
-  id         String   @id @default(uuid())
-  userId     String   @map("user_id")
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  scheduleId String   @map("schedule_id")
-  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  date       DateTime @db.Date
-  checkedAt  DateTime @map("checked_at")
-  createdAt  DateTime @default(now()) @map("created_at")
-  updatedAt  DateTime @updatedAt @map("updated_at")
+model UserAttendance {
+  id            String      @id @default(uuid())
+  userId        String      @map("user_id")
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  performanceId String      @map("performance_id")
+  performance   Performance @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  date          DateTime    @db.Date
+  checkedAt     DateTime    @map("checked_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
 
-  @@unique([userId, scheduleId, date])
-  @@map("user_schedule_attendances")
+  @@unique([userId, performanceId, date])
+  @@map("user_attendances")
 }
 
 model UserBookmark {
-  id               String         @id @default(uuid())
-  userId           String         @map("user_id")
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  scheduleLineupId String         @map("schedule_lineup_id")
-  scheduleLineup   ScheduleLineup @relation(fields: [scheduleLineupId], references: [id], onDelete: Cascade)
-  checkedAt        DateTime       @map("checked_at")
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
+  id                String            @id @default(uuid())
+  userId            String            @map("user_id")
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  performanceArtistId String          @map("performance_artist_id")
+  performanceArtist   PerformanceArtist @relation(fields: [performanceArtistId], references: [id], onDelete: Cascade)
+  checkedAt         DateTime          @map("checked_at")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
 
-  @@unique([userId, scheduleLineupId])
+  @@unique([userId, performanceArtistId])
   @@map("user_bookmarks")
 }
 
@@ -173,6 +130,7 @@ model Performance {
   id           String              @id @default(uuid())
   title        String
   subtitle     String?
+  description  String?
   genre        Genre               @default(CONCERT)
   ageRating    String?             @map("age_rating")
   runtime      Int?
@@ -187,6 +145,7 @@ model Performance {
   sources      PerformanceSource[]
   schedules    PerformanceSchedule[]
   artists      PerformanceArtist[]
+  attendances  UserAttendance[]
 
   @@map("performances")
 }
@@ -224,14 +183,19 @@ model PerformanceSchedule {
 }
 
 model PerformanceArtist {
-  id            String      @id @default(uuid())
-  performanceId String      @map("performance_id")
-  performance   Performance @relation(fields: [performanceId], references: [id], onDelete: Cascade)
-  artistId      String      @map("artist_id")
-  artist        Artist      @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  role          String?
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  id               String         @id @default(uuid())
+  performanceId    String         @map("performance_id")
+  performance      Performance    @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  artistId         String         @map("artist_id")
+  artist           Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  role             String?
+  stageName        String?        @map("stage_name")
+  startTime        DateTime?      @map("start_time")
+  endTime          DateTime?      @map("end_time")
+  performanceOrder Int?           @map("performance_order")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  bookmarks        UserBookmark[]
 
   @@unique([performanceId, artistId])
   @@map("performance_artists")
