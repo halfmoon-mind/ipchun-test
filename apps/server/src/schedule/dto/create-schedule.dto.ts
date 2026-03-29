@@ -1,4 +1,5 @@
 import { IsString, IsOptional, IsEnum, IsDateString, IsUUID, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { ScheduleType } from '@ipchun/shared';
 
 export class CreateScheduleDto {
@@ -14,6 +15,7 @@ export class CreateScheduleDto {
   @IsOptional()
   description?: string;
 
+  @ApiProperty({ enum: ScheduleType, enumName: 'ScheduleType' })
   @IsEnum(ScheduleType)
   type!: ScheduleType;
 

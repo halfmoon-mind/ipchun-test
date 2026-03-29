@@ -1,8 +1,11 @@
 import { Controller, Get, Put, Param, Body, Query, Headers, BadRequestException } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiHeader, ApiQuery } from '@nestjs/swagger';
 import { AttendanceService } from './attendance.service';
 import { SyncAttendancesDto } from './dto/sync-attendances.dto';
 import { ToggleAttendanceDto } from './dto/toggle-attendance.dto';
 
+@ApiTags('Attendances')
+@ApiHeader({ name: 'x-user-id', required: true, description: '사용자 식별자 (UUID)' })
 @Controller('attendances')
 export class AttendanceController {
   constructor(private readonly attendanceService: AttendanceService) {}
@@ -14,6 +17,8 @@ export class AttendanceController {
   }
 
   @Get()
+  @ApiOperation({ summary: '출석 기록 조회' })
+  @ApiQuery({ name: 'scheduleId', required: true, description: '스케줄 ID (UUID)' })
   async findAll(
     @Headers() headers: Record<string, string>,
     @Query('scheduleId') scheduleId: string,
@@ -31,6 +36,7 @@ export class AttendanceController {
   }
 
   @Put('sync')
+  @ApiOperation({ summary: '출석 데이터 동기화' })
   async sync(
     @Headers() headers: Record<string, string>,
     @Body() dto: SyncAttendancesDto,
@@ -40,6 +46,7 @@ export class AttendanceController {
   }
 
   @Put(':scheduleId/:date')
+  @ApiOperation({ summary: '출석 토글 (특정 날짜)' })
   async toggle(
     @Headers() headers: Record<string, string>,
     @Param('scheduleId') scheduleId: string,

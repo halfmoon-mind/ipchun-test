@@ -1,4 +1,5 @@
 import { IsIn, IsInt, IsOptional, IsUUID, Max, Min } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class FindSchedulesQueryDto {
@@ -6,6 +7,7 @@ export class FindSchedulesQueryDto {
   @IsUUID()
   artistId?: string;
 
+  @ApiProperty({ enum: ['upcoming', 'past'], required: false })
   @IsOptional()
   @IsIn(['upcoming', 'past'])
   period?: 'upcoming' | 'past';
