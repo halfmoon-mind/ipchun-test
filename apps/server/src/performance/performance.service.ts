@@ -150,22 +150,117 @@ export class PerformanceService {
     });
   }
 
-  update(id: string, dto: UpdatePerformanceDto) {
-    return this.prisma.performance.update({
-      where: { id },
-      data: {
-        title: dto.title,
-        subtitle: dto.subtitle,
-        description: dto.description,
-        genre: dto.genre,
-        ageRating: dto.ageRating,
-        runtime: dto.runtime,
-        intermission: dto.intermission,
-        posterUrl: dto.posterUrl,
-        status: dto.status,
-        organizer: dto.organizer,
-      },
-      include: PERFORMANCE_INCLUDE,
+  async update(id: string, dto: UpdatePerformanceDto) {
+    return this.prisma.$transaction(async (tx) => {
+      // 1) Venue
+      let venueId: string | null | undefined = undefined;
+      if (dto.venueName !== undefined) {
+        if (dto.venueName) {
+          const venue = await tx.venue.upsert({
+            where: { name: dto.venueName },
+            update: {
+              address: dto.venueAddress ?? undefined,
+              latitude: dto.venueLatitude ?? undefined,
+              longitude: dto.venueLongitude ?? undefined,
+            },
+            create: {
+              name: dto.venueName,
+              address: dto.venueAddress ?? null,
+              latitude: dto.venueLatitude ?? null,
+              longitude: dto.venueLongitude ?? null,
+            },
+          });
+          venueId = venue.id;
+        } else {
+          venueId = null;
+        }
+      }
+
+      // 2) Performance
+      await tx.performance.update({
+        where: { id },
+        data: {
+          title: dto.title,
+          subtitle: dto.subtitle,
+          description: dto.description,
+          genre: dto.genre,
+          ageRating: dto.ageRating,
+          runtime: dto.runtime,
+          intermission: dto.intermission,
+          posterUrl: dto.posterUrl,
+          status: dto.status,
+          organizer: dto.organizer,
+          ...(venueId !== undefined && { venueId }),
+        },
+      });
+
+      // 3) Schedules (replace)
+      if (dto.schedules !== undefined) {
+        await tx.performanceSchedule.deleteMany({ where: { performanceId: id } });
+        if (dto.schedules.length > 0) {
+          await tx.performanceSchedule.createMany({
+            data: dto.schedules.map((s) => ({
+              performanceId: id,
+              dateTime: new Date(s.dateTime),
+            })),
+            skipDuplicates: true,
+          });
+        }
+      }
+
+      // 4) Source & Tickets
+      if (dto.platform !== undefined || dto.ticketOpenAt !== undefined || dto.bookingEndAt !== undefined || dto.salesStatus !== undefined) {
+        const existingSource = await tx.performanceSource.findFirst({
+          where: { performanceId: id },
+        });
+
+        if (existingSource) {
+          await tx.performanceSource.update({
+            where: { id: existingSource.id },
+            data: {
+              ticketOpenAt: dto.ticketOpenAt ? new Date(dto.ticketOpenAt) : existingSource.ticketOpenAt,
+              bookingEndAt: dto.bookingEndAt ? new Date(dto.bookingEndAt) : existingSource.bookingEndAt,
+              salesStatus: dto.salesStatus ?? existingSource.salesStatus,
+            },
+          });
+
+          // Replace tickets if provided
+          if (dto.tickets !== undefined) {
+            await tx.ticket.deleteMany({ where: { sourceId: existingSource.id } });
+            if (dto.tickets.length > 0) {
+              await tx.ticket.createMany({
+                data: dto.tickets.map((t) => ({
+                  sourceId: existingSource.id,
+                  seatGrade: t.seatGrade,
+                  price: t.price,
+                })),
+              });
+            }
+          }
+        }
+      } else if (dto.tickets !== undefined) {
+        // Tickets changed but no source fields — still replace tickets on first source
+        const existingSource = await tx.performanceSource.findFirst({
+          where: { performanceId: id },
+        });
+        if (existingSource) {
+          await tx.ticket.deleteMany({ where: { sourceId: existingSource.id } });
+          if (dto.tickets.length > 0) {
+            await tx.ticket.createMany({
+              data: dto.tickets.map((t) => ({
+                sourceId: existingSource.id,
+                seatGrade: t.seatGrade,
+                price: t.price,
+              })),
+            });
+          }
+        }
+      }
+
+      return tx.performance.findUniqueOrThrow({
+        where: { id },
+        include: PERFORMANCE_INCLUDE,
+      });
     });
   }
 
