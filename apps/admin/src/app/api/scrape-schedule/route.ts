@@ -3,6 +3,7 @@ import { isInstagramUrl, parseInstagram } from './parsers/instagram';
 import { isInterparkUrl, parseInterpark } from './parsers/interpark';
 import { isTicketlinkUrl, parseTicketlink } from './parsers/ticketlink';
 import { isMelonTicketUrl, parseMelonTicket } from './parsers/melon';
+import { isYes24Url, parseYes24 } from './parsers/yes24';
 import { parseOg } from './parsers/og';
 
 export async function GET(request: NextRequest) {
@@ -30,6 +31,8 @@ export async function GET(request: NextRequest) {
       result = await parseTicketlink(url);
     } else if (isMelonTicketUrl(url)) {
       result = await parseMelonTicket(url);
+    } else if (isYes24Url(url)) {
+      result = await parseYes24(url);
     } else {
       // 범용 OG 폴백
       result = await parseOg(url);
