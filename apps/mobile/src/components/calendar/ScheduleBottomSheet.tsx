@@ -1,9 +1,10 @@
 import { useCallback, useMemo, useRef } from 'react';
+import { Linking } from 'react-native';
 import { YStack, XStack, Text, Image, ScrollView, Button } from 'tamagui';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useTheme } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
-import { GENRE_COLORS, GENRE_LABELS } from '../../constants/schedule';
+import { GENRE_COLORS, GENRE_LABELS, PLATFORM_LABELS } from '../../constants/schedule';
 import type { CalendarPerformance } from '../../api/client';
 
 interface ScheduleBottomSheetProps {
@@ -114,12 +115,34 @@ export function ScheduleBottomSheet({ performance, onClose, onDetail }: Schedule
               </YStack>
             )}
 
+            {/* Quick ticket links */}
+            {performance.sources && performance.sources.length > 0 && (
+              <YStack gap="$2" marginTop="$2">
+                {performance.sources.map((source) => (
+                  <Button
+                    key={source.id}
+                    backgroundColor="$accentColor"
+                    onPress={() => Linking.openURL(source.sourceUrl)}
+                  >
+                    <XStack alignItems="center" gap="$2">
+                      <Ionicons name="ticket-outline" size={16} color="#FFFFFF" />
+                      <Text fontFamily="$heading" fontWeight="700" color="#FFFFFF" fontSize={14}>
+                        {PLATFORM_LABELS[source.platform] ?? source.platform}에서 예매
+                      </Text>
+                    </XStack>
+                  </Button>
+                ))}
+              </YStack>
+            )}
+
             <Button
-              marginTop="$3"
-              backgroundColor="$accentColor"
+              marginTop="$1"
+              backgroundColor="transparent"
+              borderWidth={1}
+              borderColor="$accentColor"
               onPress={() => onDetail(performance.id)}
             >
-              <Text fontFamily="$heading" fontWeight="700" color="#FFFFFF" fontSize={15}>
+              <Text fontFamily="$heading" fontWeight="700" color="$accentColor" fontSize={15}>
                 상세 보기
               </Text>
             </Button>
