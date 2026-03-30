@@ -160,15 +160,109 @@ export default function PerformanceDetailPage() {
         {/* 아티스트 라인업 */}
         {performance.artists.length > 0 && (
           <section>
-            <h2 className="text-lg font-semibold mb-2" style={{ fontFamily: 'var(--font-primary)' }}>아티스트 라인업</h2>
-            <div className="space-y-2">
-              {performance.artists.map((a) => (
-                <div key={a.id} className="flex items-center gap-3 text-sm">
-                  <span className="font-medium">{a.artist?.name ?? a.stageName ?? 'Unknown'}</span>
-                  {a.role && <span style={{ color: 'var(--muted-foreground)' }}>({a.role})</span>}
-                </div>
-              ))}
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold" style={{ fontFamily: 'var(--font-primary)' }}>
+                {performance.lineupMode === 'TIMETABLE' ? '타임테이블' : performance.lineupMode === 'LINEUP' ? '라인업' : '아티스트 라인업'}
+              </h2>
+              <Link href={`/performances/${id}/edit`} style={{ fontSize: 12, color: 'var(--foreground)', border: '1px solid var(--border)', padding: '4px 12px' }}>
+                편집
+              </Link>
             </div>
+
+            {performance.lineupMode === 'TIMETABLE' ? (
+              // Timetable read view
+              (() => {
+                const dayGroups = performance.schedules.reduce<Record<string, typeof performance.artists>>((acc, s) => {
+                  const dateKey = new Date(s.dateTime).toISOString().slice(0, 10);
+                  if (!acc[dateKey]) acc[dateKey] = [];
+                  const dayArtists = performance.artists.filter((a) => a.performanceScheduleId === s.id);
+                  acc[dateKey].push(...dayArtists);
+                  return acc;
+                }, {});
+
+                return Object.entries(dayGroups).map(([dateKey, dayArtists], dayIdx) => {
+                  const stageGroups = dayArtists.reduce<Record<string, typeof dayArtists>>((acc, a) => {
+                    const stage = a.stage ?? '미배정';
+                    if (!acc[stage]) acc[stage] = [];
+                    acc[stage].push(a);
+                    return acc;
+                  }, {});
+
+                  const d = new Date(dateKey);
+                  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+                  return (
+                    <div key={dateKey} style={{ marginBottom: 16 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted-foreground)', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid var(--border)' }}>
+                        Day {dayIdx + 1} · {dateKey} ({dayNames[d.getDay()]})
+                      </div>
+                      {Object.entries(stageGroups).map(([stage, stageArtists]) => (
+                        <div key={stage} style={{ marginBottom: 12 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>{stage}</div>
+                          <div style={{ borderLeft: '2px solid var(--foreground)', paddingLeft: 12 }}>
+                            {stageArtists
+                              .sort((a, b) => (a.startTime && b.startTime ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime() : 0))
+                              .map((a) => (
+                                <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                                  {a.startTime && a.endTime && (
+                                    <span style={{ fontSize: 11, fontFamily: 'monospace', color: 'var(--muted-foreground)', minWidth: 80 }}>
+                                      {formatDateTime(a.startTime).slice(-5)}–{formatDateTime(a.endTime).slice(-5)}
+                                    </span>
+                                  )}
+                                  <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                                </div>
+                              ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                });
+              })()
+            ) : performance.lineupMode === 'LINEUP' ? (
+              // Lineup read view
+              (() => {
+                const dayGroups = performance.schedules.reduce<Record<string, typeof performance.artists>>((acc, s) => {
+                  const dateKey = new Date(s.dateTime).toISOString().slice(0, 10);
+                  if (!acc[dateKey]) acc[dateKey] = [];
+                  const dayArtists = performance.artists
+                    .filter((a) => a.performanceScheduleId === s.id)
+                    .sort((a, b) => (a.performanceOrder ?? 0) - (b.performanceOrder ?? 0));
+                  acc[dateKey].push(...dayArtists);
+                  return acc;
+                }, {});
+
+                return Object.entries(dayGroups).map(([dateKey, dayArtists], dayIdx) => {
+                  const d = new Date(dateKey);
+                  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+                  return (
+                    <div key={dateKey} style={{ marginBottom: 16 }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--muted-foreground)', marginBottom: 8, paddingBottom: 6, borderBottom: '1px solid var(--border)' }}>
+                        Day {dayIdx + 1} · {dateKey} ({dayNames[d.getDay()]})
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
+                        {dayArtists.map((a) => (
+                          <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                });
+              })()
+            ) : (
+              // Default: simple list (non-festival)
+              <div className="space-y-2">
+                {performance.artists.map((a) => (
+                  <div key={a.id} className="flex items-center gap-3 text-sm">
+                    <span className="font-medium">{a.artist?.name ?? a.stageName ?? 'Unknown'}</span>
+                    {a.role && <span style={{ color: 'var(--muted-foreground)' }}>({a.role})</span>}
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
         )}
       </div>
