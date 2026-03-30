@@ -17,7 +17,7 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState<string | null>(null);
   const ref = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     if (!query.trim()) {

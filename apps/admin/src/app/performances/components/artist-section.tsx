@@ -47,8 +47,21 @@ export function ArtistSection({
           lineupMode={lineupMode ?? ('LINEUP' as LineupMode)}
           onLineupModeChange={onLineupModeChange}
           schedules={schedules}
-          artists={artists}
-          onArtistsChange={onArtistsChange}
+          artists={artists.map((a) => ({
+            artistId: a.artistId,
+            artist: a.artist,
+            performanceScheduleId: a.performanceScheduleId,
+            performanceOrder: a.performanceOrder,
+            stage: a.stage,
+            startTime: a.startTime,
+            endTime: a.endTime,
+          }))}
+          onArtistsChange={(festivalArtists) => {
+            onArtistsChange(festivalArtists.map((a) => ({
+              ...a,
+              role: null,
+            })));
+          }}
         />
       ) : (
         <ConcertArtistSection
