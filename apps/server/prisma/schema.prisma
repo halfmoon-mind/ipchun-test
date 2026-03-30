@@ -82,6 +82,11 @@ enum TicketPlatform {
   TICKETLINK
 }
 
+enum LineupMode {
+  LINEUP
+  TIMETABLE
+}
+
 model UserAttendance {
   id            String      @id @default(uuid())
   userId        String      @map("user_id")
@@ -137,6 +142,7 @@ model Performance {
   intermission Int?
   posterUrl    String?             @map("poster_url")
   status       PerformanceStatus   @default(SCHEDULED)
+  lineupMode   LineupMode?          @map("lineup_mode")
   venueId      String?             @map("venue_id")
   venue        Venue?              @relation(fields: [venueId], references: [id])
   organizer    String?
@@ -171,31 +177,35 @@ model PerformanceSource {
 }
 
 model PerformanceSchedule {
-  id            String      @id @default(uuid())
-  performanceId String      @map("performance_id")
-  performance   Performance @relation(fields: [performanceId], references: [id], onDelete: Cascade)
-  dateTime      DateTime    @map("date_time")
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @updatedAt @map("updated_at")
+  id            String              @id @default(uuid())
+  performanceId String              @map("performance_id")
+  performance   Performance         @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  dateTime      DateTime            @map("date_time")
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  artists       PerformanceArtist[]
 
   @@unique([performanceId, dateTime])
   @@map("performance_schedules")
 }
 
 model PerformanceArtist {
-  id               String         @id @default(uuid())
-  performanceId    String         @map("performance_id")
-  performance      Performance    @relation(fields: [performanceId], references: [id], onDelete: Cascade)
-  artistId         String         @map("artist_id")
-  artist           Artist         @relation(fields: [artistId], references: [id], onDelete: Cascade)
-  role             String?
-  stageName        String?        @map("stage_name")
-  startTime        DateTime?      @map("start_time")
-  endTime          DateTime?      @map("end_time")
-  performanceOrder Int?           @map("performance_order")
-  createdAt        DateTime       @default(now()) @map("created_at")
-  updatedAt        DateTime       @updatedAt @map("updated_at")
-  bookmarks        UserBookmark[]
+  id                    String               @id @default(uuid())
+  performanceId         String               @map("performance_id")
+  performance           Performance          @relation(fields: [performanceId], references: [id], onDelete: Cascade)
+  artistId              String               @map("artist_id")
+  artist                Artist               @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  performanceScheduleId String?              @map("performance_schedule_id")
+  performanceSchedule   PerformanceSchedule? @relation(fields: [performanceScheduleId], references: [id], onDelete: SetNull)
+  role                  String?
+  stageName             String?              @map("stage_name")
+  stage                 String?
+  startTime             DateTime?            @map("start_time")
+  endTime               DateTime?            @map("end_time")
+  performanceOrder      Int?                 @map("performance_order")
+  createdAt             DateTime             @default(now()) @map("created_at")
+  updatedAt             DateTime             @updatedAt @map("updated_at")
+  bookmarks             UserBookmark[]
 
   @@unique([performanceId, artistId])
   @@map("performance_artists")
