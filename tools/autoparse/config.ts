@@ -13,6 +13,8 @@ export const CONFIG = {
       `https://tickets.interpark.com/goods/${id}`,
     ticketlink: (id: string) =>
       `https://www.ticketlink.co.kr/product/${id}`,
+    yes24: (id: string) =>
+      `https://ticket.yes24.com/Perf/${id}`,
   },
   /** data 디렉토리 경로 */
   dataDir: new URL('./data', import.meta.url).pathname,
@@ -24,5 +26,5 @@ export const CONFIG = {
   seedsPath: new URL('./seeds.json', import.meta.url).pathname,
 } as const;
 
-export type Platform = 'melon' | 'nol' | 'ticketlink';
-export const PLATFORMS: Platform[] = ['melon', 'nol', 'ticketlink'];
+export type Platform = 'melon' | 'nol' | 'ticketlink' | 'yes24';
+export const PLATFORMS: Platform[] = ['melon', 'nol', 'ticketlink', 'yes24'];
