@@ -157,9 +157,29 @@ export async function fetchFromMelon(
     organizer = orgMatch[1].trim();
   }
 
-  // 회차: 공연일시에서 날짜+시간 파싱
+  // 회차: box_concert_time 섹션에서 날짜+시간 파싱
   const schedules: Array<{ dateTime: string }> = [];
-  if (startDate) {
+  const concertTimeMatch = html.match(
+    /<div class="box_concert_time">([\s\S]*?)<\/div>/,
+  );
+  if (concertTimeMatch) {
+    const timeText = concertTimeMatch[1].replace(/<[^>]*>/g, '');
+    const timeEntries = timeText.matchAll(
+      /(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일[^)]*\)\s*(오전|오후)\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/g,
+    );
+    for (const m of timeEntries) {
+      const d = koreanFullDateToIso(m[1], m[2], m[3]);
+      let hour = parseInt(m[5]);
+      if (m[4] === '오후' && hour < 12) hour += 12;
+      if (m[4] === '오전' && hour === 12) hour = 0;
+      const min = m[6] ? m[6].padStart(2, '0') : '00';
+      schedules.push({
+        dateTime: `${d}T${String(hour).padStart(2, '0')}:${min}:00+09:00`,
+      });
+    }
+  }
+  // 폴백: box_concert_time 파싱 실패 시 공연기간 날짜 사용
+  if (schedules.length === 0 && startDate) {
     schedules.push({ dateTime: `${startDate}T00:00:00+09:00` });
     if (endDate && endDate !== startDate) {
       schedules.push({ dateTime: `${endDate}T00:00:00+09:00` });
