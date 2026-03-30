@@ -28,5 +28,8 @@ coverage/
 # Worktrees
 .worktrees/
 
+# autoparse 런타임 데이터
+tools/autoparse/data/
+
 # Misc
 *.log
