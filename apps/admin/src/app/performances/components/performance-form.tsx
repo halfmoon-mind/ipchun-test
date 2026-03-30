@@ -7,6 +7,10 @@ import {
   type Performance,
   type FetchedPerformance,
 } from '@ipchun/shared';
+import { ArtistSection } from './artist-section';
+import type { ArtistEntry } from './artist-section';
+import type { LineupMode, PerformanceScheduleItem } from '@ipchun/shared';
+import { api } from '@/lib/api';
 
 const genreLabels: Record<Genre, string> = {
   [Genre.CONCERT]: '콘서트',
@@ -96,6 +100,22 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
     source?.tickets?.map((t) => ({ seatGrade: t.seatGrade, price: t.price })) ?? [],
   );
 
+  const [lineupMode, setLineupMode] = useState<LineupMode | null>(
+    initialData?.lineupMode ?? null,
+  );
+  const [artistEntries, setArtistEntries] = useState<ArtistEntry[]>(
+    (initialData?.artists ?? []).map((a) => ({
+      artistId: a.artistId,
+      artist: a.artist!,
+      performanceScheduleId: a.performanceScheduleId ?? null,
+      role: a.role,
+      stage: a.stage ?? null,
+      startTime: a.startTime,
+      endTime: a.endTime,
+      performanceOrder: a.performanceOrder ?? 0,
+    })),
+  );
+
   function applyFetchedData(data: FetchedPerformance) {
     setTitle(data.title);
     setSubtitle(data.subtitle || '');
@@ -160,6 +180,7 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
         posterUrl: posterUrl || undefined,
         status,
         organizer: organizer || undefined,
+        lineupMode: genre === 'FESTIVAL' ? lineupMode : null,
         venueName: venueName || undefined,
         venueAddress: venueAddress || undefined,
         schedules: schedules
@@ -178,6 +199,25 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
       }
 
       await onSubmit(payload);
+
+      // Save artists if any
+      if (artistEntries.length > 0 || (initialData?.artists ?? []).length > 0) {
+        const perfId = initialData?.id;
+        if (perfId) {
+          await api.performances.replaceArtists(
+            perfId,
+            artistEntries.map((a) => ({
+              artistId: a.artistId,
+              role: a.role ?? undefined,
+              stage: a.stage ?? undefined,
+              startTime: a.startTime ?? undefined,
+              endTime: a.endTime ?? undefined,
+              performanceOrder: a.performanceOrder ?? undefined,
+              performanceScheduleId: a.performanceScheduleId ?? undefined,
+            })),
+          );
+        }
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : '저장에 실패했습니다');
     } finally {
@@ -417,6 +457,21 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
             </div>
           </section>
         )}
+
+        {/* ── 아티스트 ── */}
+        <div className="border-t pt-6" style={{ borderColor: 'var(--border)' }}>
+          <ArtistSection
+            genre={genre}
+            lineupMode={lineupMode}
+            onLineupModeChange={setLineupMode}
+            schedules={schedules.filter((s) => s.dateTime).map((s, i) => ({
+              id: (initialData?.schedules?.[i]?.id) ?? `temp-${i}`,
+              dateTime: s.dateTime,
+            }))}
+            artists={artistEntries}
+            onArtistsChange={setArtistEntries}
+          />
+        </div>
 
         {/* ── 제출 버튼 ── */}
         <div className="pt-4">
