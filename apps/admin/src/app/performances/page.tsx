@@ -52,9 +52,10 @@ export default function PerformancesPage() {
       ) : (
         <div className="space-y-4">
           {performances.map((p) => (
-            <div
+            <Link
               key={p.id}
-              className="flex gap-4 p-4 border"
+              href={`/performances/${p.id}`}
+              className="flex gap-4 p-4 border hover:bg-[var(--secondary)] transition-colors"
               style={{ borderColor: 'var(--border)' }}
             >
               {p.posterUrl && (
@@ -85,6 +86,7 @@ export default function PerformancesPage() {
                       href={s.sourceUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
                       className="inline-block px-2 py-0.5 text-xs border"
                       style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}
                     >
@@ -103,7 +105,7 @@ export default function PerformancesPage() {
                   </span>
                 )}
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
