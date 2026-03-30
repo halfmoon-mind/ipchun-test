@@ -46,5 +46,15 @@ export function parseTicketUrl(url: string): ParsedTicketUrl {
     };
   }
 
+  // YES24: ticket.yes24.com/Perf/{id}
+  const yes24Match = url.match(/ticket\.yes24\.com\/Perf\/(\d+)/i);
+  if (yes24Match) {
+    return {
+      platform: TicketPlatformEnum.YES24,
+      externalId: yes24Match[1],
+      sourceUrl: url,
+    };
+  }
+
   throw new Error(`지원하지 않는 URL 형식입니다: ${url}`);
 }
