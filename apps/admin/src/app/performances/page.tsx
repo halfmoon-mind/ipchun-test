@@ -26,7 +26,7 @@ export default function PerformancesPage() {
   useEffect(() => {
     api.performances
       .list()
-      .then(setPerformances)
+      .then((res) => setPerformances(res as Performance[]))
       .finally(() => setLoading(false));
   }, []);
 
@@ -81,17 +81,19 @@ export default function PerformancesPage() {
                 )}
                 <div className="flex gap-2 mt-2">
                   {p.sources.map((s) => (
-                    <a
+                    <span
                       key={s.id}
-                      href={s.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-block px-2 py-0.5 text-xs border"
+                      role="link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(s.sourceUrl, '_blank', 'noopener,noreferrer');
+                      }}
+                      className="inline-block px-2 py-0.5 text-xs border cursor-pointer hover:underline"
                       style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}
                     >
                       {platformLabels[s.platform] || s.platform}
-                    </a>
+                    </span>
                   ))}
                 </div>
               </div>

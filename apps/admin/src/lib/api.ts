@@ -1,4 +1,4 @@
-import type { Artist, SpotifyMeta, Performance, FetchedPerformance } from '@ipchun/shared';
+import type { Artist, SpotifyMeta, Performance, FetchedPerformance, PaginatedResponse } from '@ipchun/shared';
 import type { ScrapedSchedule } from '@/app/api/scrape-schedule/parsers/types';
 import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
@@ -92,7 +92,15 @@ export const api = {
     },
   },
   performances: {
-    list: () => request<Performance[]>('/performances'),
+    list: (params?: { artistId?: string; period?: 'upcoming' | 'past'; cursor?: string; limit?: number }) => {
+      const query = new URLSearchParams();
+      if (params?.artistId) query.set('artistId', params.artistId);
+      if (params?.period) query.set('period', params.period);
+      if (params?.cursor) query.set('cursor', params.cursor);
+      if (params?.limit) query.set('limit', String(params.limit));
+      const qs = query.toString();
+      return request<Performance[] | PaginatedResponse<Performance>>(`/performances${qs ? `?${qs}` : ''}`);
+    },
     get: (id: string) => request<Performance>(`/performances/${id}`),
     create: (data: Record<string, unknown>) =>
       request<Performance>('/performances', {
@@ -110,6 +118,25 @@ export const api = {
       request<FetchedPerformance>('/performances/fetch', {
         method: 'POST',
         body: JSON.stringify({ url }),
+      }),
+    calendar: (params: { year: number; month: number; artistId?: string }) => {
+      const query = new URLSearchParams({
+        year: String(params.year),
+        month: String(params.month),
+      });
+      if (params.artistId) query.set('artistId', params.artistId);
+      return request<{ year: number; month: number; performances: Performance[]; dates: Record<string, string[]> }>(
+        `/performances/calendar?${query.toString()}`,
+      );
+    },
+    replaceArtists: (id: string, artists: { artistId: string; role?: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number }[]) =>
+      request<Performance>(`/performances/${id}/artists`, {
+        method: 'PUT',
+        body: JSON.stringify({ artists }),
+      }),
+    removeArtist: (id: string, artistEntryId: string) =>
+      request<void>(`/performances/${id}/artists/${artistEntryId}`, {
+        method: 'DELETE',
       }),
   },
 };
