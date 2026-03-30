@@ -3,31 +3,55 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
-import type { Schedule, ScheduleLineup } from "@ipchun/shared";
+import type { Performance } from "@ipchun/shared";
 
-type ScheduleDetail = Schedule & {
-  lineups: (ScheduleLineup & {
-    artist: { id: string; name: string; imageUrl: string | null };
-  })[];
-};
-
-const TYPE_LABELS: Record<string, string> = {
+const GENRE_LABELS: Record<string, string> = {
   CONCERT: "공연",
-  BUSKING: "버스킹",
+  MUSICAL: "뮤지컬",
+  PLAY: "연극",
+  CLASSIC: "클래식",
   FESTIVAL: "페스티벌",
+  BUSKING: "버스킹",
   RELEASE: "발매",
   OTHER: "기타",
 };
 
+const STATUS_LABELS: Record<string, string> = {
+  SCHEDULED: "예정",
+  ON_SALE: "판매중",
+  SOLD_OUT: "매진",
+  COMPLETED: "종료",
+  CANCELLED: "취소",
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  SCHEDULED: "var(--muted-foreground)",
+  ON_SALE: "var(--color-success)",
+  SOLD_OUT: "var(--destructive)",
+  COMPLETED: "var(--muted-foreground)",
+  CANCELLED: "var(--destructive)",
+};
+
+const PLATFORM_LABELS: Record<string, string> = {
+  MELON: "멜론티켓",
+  NOL: "NOL",
+  TICKETLINK: "티켓링크",
+};
+
+function formatDateTime(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
 export default function ScheduleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [schedule, setSchedule] = useState<ScheduleDetail | null>(null);
+  const [performance, setPerformance] = useState<Performance | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.schedule(id).then((res) => {
-      setSchedule(res);
+    api.performance(id).then((res) => {
+      setPerformance(res);
       setLoading(false);
     });
   }, [id]);
@@ -40,17 +64,13 @@ export default function ScheduleDetailPage() {
     );
   }
 
-  if (!schedule) {
+  if (!performance) {
     return (
       <div className="py-16 text-center text-sm text-muted-foreground">
-        일정을 찾을 수 없습니다
+        공연을 찾을 수 없습니다
       </div>
     );
   }
-
-  const startDate = new Date(schedule.startDate);
-  const formatDate = (d: Date) =>
-    `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()}`;
 
   return (
     <div className="px-4 py-6">
@@ -65,12 +85,33 @@ export default function ScheduleDetailPage() {
         뒤로
       </button>
 
-      {/* Type badge */}
-      <div
-        className="text-[10px] font-semibold tracking-wider uppercase mb-2"
-        style={{ color: "var(--muted-foreground)" }}
-      >
-        {TYPE_LABELS[schedule.type] || schedule.type}
+      {/* Poster */}
+      {performance.posterUrl && (
+        <div className="mb-4 -mx-4">
+          <img
+            src={performance.posterUrl}
+            alt={performance.title}
+            className="w-full object-cover max-h-[300px]"
+          />
+        </div>
+      )}
+
+      {/* Genre & Status badges */}
+      <div className="flex items-center gap-2 mb-2">
+        <span
+          className="text-[10px] font-semibold tracking-wider uppercase"
+          style={{ color: "var(--muted-foreground)" }}
+        >
+          {GENRE_LABELS[performance.genre] || performance.genre}
+        </span>
+        {performance.status && performance.status !== "SCHEDULED" && (
+          <span
+            className="text-[10px] font-bold"
+            style={{ color: STATUS_COLORS[performance.status] ?? "var(--muted-foreground)" }}
+          >
+            {STATUS_LABELS[performance.status] ?? performance.status}
+          </span>
+        )}
       </div>
 
       {/* Title */}
@@ -78,38 +119,44 @@ export default function ScheduleDetailPage() {
         className="text-xl font-bold leading-tight mb-4"
         style={{ fontFamily: "var(--font-heading)" }}
       >
-        {schedule.title}
+        {performance.title}
       </h1>
 
       {/* Info */}
       <div className="space-y-2 text-sm mb-6">
-        <div className="flex gap-2">
-          <span className="text-muted-foreground w-12 flex-shrink-0">날짜</span>
-          <span>{formatDate(startDate)}</span>
-        </div>
-        {schedule.location && (
+        {performance.schedules.length > 0 && (
           <div className="flex gap-2">
-            <span className="text-muted-foreground w-12 flex-shrink-0">장소</span>
-            <span>{schedule.location}</span>
+            <span className="text-muted-foreground w-12 flex-shrink-0">날짜</span>
+            <div>
+              {performance.schedules.map((s) => (
+                <div key={s.id}>{formatDateTime(s.dateTime)}</div>
+              ))}
+            </div>
           </div>
         )}
-        {schedule.address && (
+        {performance.venue && (
+          <div className="flex gap-2">
+            <span className="text-muted-foreground w-12 flex-shrink-0">장소</span>
+            <span>{performance.venue.name}</span>
+          </div>
+        )}
+        {performance.venue?.address && (
           <div className="flex gap-2">
             <span className="text-muted-foreground w-12 flex-shrink-0">주소</span>
-            <span>{schedule.address}</span>
+            <span>{performance.venue.address}</span>
           </div>
         )}
       </div>
 
       {/* Description */}
-      {schedule.description && (
+      {performance.description && (
         <p className="text-sm leading-relaxed text-muted-foreground mb-6">
-          {schedule.description}
+          {performance.description}
         </p>
       )}
 
-      {/* Lineup */}
-      {schedule.lineups.length > 0 && (
+      {/* Artist lineup */}
+      {performance.artists.length > 0 && (
         <div className="mb-6">
           <h2
             className="text-sm font-bold mb-3"
@@ -118,16 +165,16 @@ export default function ScheduleDetailPage() {
             라인업
           </h2>
           <div className="space-y-2">
-            {schedule.lineups.map((lineup) => (
+            {performance.artists.map((entry) => (
               <div
-                key={lineup.id}
+                key={entry.id}
                 className="flex items-center gap-3 py-2 border-b"
                 style={{ borderColor: "var(--border)" }}
               >
-                {lineup.artist.imageUrl ? (
+                {entry.artist?.imageUrl ? (
                   <img
-                    src={lineup.artist.imageUrl}
-                    alt={lineup.artist.name}
+                    src={entry.artist.imageUrl}
+                    alt={entry.artist.name}
                     className="w-8 h-8 object-cover"
                   />
                 ) : (
@@ -135,16 +182,17 @@ export default function ScheduleDetailPage() {
                     className="w-8 h-8 flex items-center justify-center text-xs font-bold"
                     style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}
                   >
-                    {lineup.artist.name[0]}
+                    {(entry.artist?.name ?? entry.stageName ?? "?")[0]}
                   </div>
                 )}
-                <span className="text-sm font-medium">{lineup.artist.name}</span>
+                <span className="text-sm font-medium">
+                  {entry.artist?.name ?? entry.stageName ?? "Unknown"}
+                </span>
               </div>
             ))}
           </div>
         </div>
       )}
-
     </div>
   );
 }
