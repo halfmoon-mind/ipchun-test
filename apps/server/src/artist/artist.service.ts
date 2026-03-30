@@ -19,8 +19,11 @@ export class ArtistService {
     return this.prisma.artist.create({ data: dto });
   }
 
-  findAll() {
+  findAll(search?: string) {
     return this.prisma.artist.findMany({
+      where: search
+        ? { name: { contains: search, mode: 'insensitive' } }
+        : undefined,
       orderBy: { createdAt: 'desc' },
     });
   }

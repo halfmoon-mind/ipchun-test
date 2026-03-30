@@ -11,6 +11,9 @@
     "dev:admin": "pnpm --filter @ipchun/admin dev",
     "build:server": "pnpm --filter @ipchun/server build",
     "build:admin": "pnpm --filter @ipchun/admin build",
+    "dev:web": "pnpm --filter @ipchun/web dev",
+    "build:web": "pnpm --filter @ipchun/web build",
+    "deploy:web": "pnpm --filter @ipchun/web run deploy",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\""
   },

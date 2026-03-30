@@ -5,21 +5,21 @@ import { PrismaService } from '../prisma/prisma.service';
 export class BookmarkService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findBySchedule(userId: string, scheduleId: string) {
-    const lineups = await this.prisma.scheduleLineup.findMany({
-      where: { scheduleId },
+  async findByPerformance(userId: string, performanceId: string) {
+    const artists = await this.prisma.performanceArtist.findMany({
+      where: { performanceId },
       select: { id: true },
     });
-    const lineupIds = lineups.map((l) => l.id);
+    const artistIds = artists.map((a) => a.id);
 
     return this.prisma.userBookmark.findMany({
-      where: { userId, scheduleLineupId: { in: lineupIds } },
+      where: { userId, performanceArtistId: { in: artistIds } },
     });
   }
 
-  async toggle(userId: string, lineupId: string, checkedAt: string) {
+  async toggle(userId: string, performanceArtistId: string, checkedAt: string) {
     const existing = await this.prisma.userBookmark.findUnique({
-      where: { userId_scheduleLineupId: { userId, scheduleLineupId: lineupId } },
+      where: { userId_performanceArtistId: { userId, performanceArtistId } },
     });
 
     if (existing) {
@@ -28,60 +28,60 @@ export class BookmarkService {
     }
 
     const bookmark = await this.prisma.userBookmark.create({
-      data: { userId, scheduleLineupId: lineupId, checkedAt: new Date(checkedAt) },
+      data: { userId, performanceArtistId, checkedAt: new Date(checkedAt) },
     });
 
     return {
       bookmarked: true,
       bookmark: {
-        scheduleLineupId: bookmark.scheduleLineupId,
+        performanceArtistId: bookmark.performanceArtistId,
         checkedAt: bookmark.checkedAt.toISOString(),
       },
     };
   }
 
-  async sync(userId: string, dto: { scheduleId: string; bookmarks: { lineupId: string; checkedAt: string }[]; removals?: { lineupId: string; removedAt: string }[] }) {
-    const { scheduleId, bookmarks, removals } = dto;
+  async sync(userId: string, dto: { performanceId: string; bookmarks: { performanceArtistId: string; checkedAt: string }[]; removals?: { performanceArtistId: string; removedAt: string }[] }) {
+    const { performanceId, bookmarks, removals } = dto;
 
     return this.prisma.$transaction(async (tx) => {
-      const lineups = await tx.scheduleLineup.findMany({
-        where: { scheduleId },
+      const artists = await tx.performanceArtist.findMany({
+        where: { performanceId },
         select: { id: true },
       });
-      const lineupIds = lineups.map((l) => l.id);
+      const artistIds = artists.map((a) => a.id);
 
       const serverRecords = await tx.userBookmark.findMany({
-        where: { userId, scheduleLineupId: { in: lineupIds } },
+        where: { userId, performanceArtistId: { in: artistIds } },
       });
       const serverMap = new Map(
-        serverRecords.map((r) => [r.scheduleLineupId, r]),
+        serverRecords.map((r) => [r.performanceArtistId, r]),
       );
 
       for (const item of bookmarks) {
-        const serverRecord = serverMap.get(item.lineupId);
+        const serverRecord = serverMap.get(item.performanceArtistId);
         if (!serverRecord || new Date(item.checkedAt) > serverRecord.checkedAt) {
           await tx.userBookmark.upsert({
-            where: { userId_scheduleLineupId: { userId, scheduleLineupId: item.lineupId } },
+            where: { userId_performanceArtistId: { userId, performanceArtistId: item.performanceArtistId } },
             update: { checkedAt: new Date(item.checkedAt) },
-            create: { userId, scheduleLineupId: item.lineupId, checkedAt: new Date(item.checkedAt) },
+            create: { userId, performanceArtistId: item.performanceArtistId, checkedAt: new Date(item.checkedAt) },
           });
         }
       }
 
       for (const removal of removals ?? []) {
-        const serverRecord = serverMap.get(removal.lineupId);
+        const serverRecord = serverMap.get(removal.performanceArtistId);
         if (serverRecord && new Date(removal.removedAt) > serverRecord.checkedAt) {
           await tx.userBookmark.delete({ where: { id: serverRecord.id } });
         }
       }
 
       const finalRecords = await tx.userBookmark.findMany({
-        where: { userId, scheduleLineupId: { in: lineupIds } },
+        where: { userId, performanceArtistId: { in: artistIds } },
       });
 
       return {
         bookmarks: finalRecords.map((r) => ({
-          scheduleLineupId: r.scheduleLineupId,
+          performanceArtistId: r.performanceArtistId,
           checkedAt: r.checkedAt.toISOString(),
         })),
       };

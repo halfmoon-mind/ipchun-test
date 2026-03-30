@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsObject, IsNotEmpty } from 'class-validator';
+import { IsString, IsOptional, IsObject, IsNotEmpty, IsInt } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateArtistDto {
   @IsString()
@@ -13,6 +14,11 @@ export class CreateArtistDto {
   @IsOptional()
   imageUrl?: string;
 
+  @ApiProperty({
+    type: 'object',
+    additionalProperties: { type: 'string' },
+    example: { instagram: 'https://instagram.com/artist', youtube: 'https://youtube.com/@artist' },
+  })
   @IsObject()
   @IsOptional()
   socialLinks?: Record<string, string>;
@@ -24,4 +30,13 @@ export class CreateArtistDto {
   @IsString()
   @IsOptional()
   spotifyUrl?: string;
+
+  @IsInt()
+  @IsOptional()
+  monthlyListeners?: number;
+
+  @IsObject()
+  @IsOptional()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  spotifyMeta?: Record<string, any>;
 }

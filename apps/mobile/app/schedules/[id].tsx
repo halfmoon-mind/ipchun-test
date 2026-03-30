@@ -3,8 +3,8 @@ import { YStack, XStack, Text, Image, ScrollView, Spinner, useTheme } from 'tama
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../../src/api/client';
-import type { CalendarSchedule } from '../../src/api/client';
-import { SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_LABELS } from '../../src/constants/schedule';
+import type { CalendarPerformance } from '../../src/api/client';
+import { GENRE_COLORS, GENRE_LABELS } from '../../src/constants/schedule';
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -16,19 +16,19 @@ function formatTime(dateStr: string): string {
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
 }
 
-export default function ScheduleDetailScreen() {
+export default function PerformanceDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const theme = useTheme();
-  const [schedule, setSchedule] = useState<CalendarSchedule | null>(null);
+  const [performance, setPerformance] = useState<CalendarPerformance | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    api.schedules.getOne(id)
-      .then(setSchedule)
+    api.performances.getOne(id)
+      .then(setPerformance)
       .catch((e) => setError(e instanceof Error ? e.message : '불러올 수 없습니다'))
       .finally(() => setLoading(false));
   }, [id]);
@@ -41,87 +41,90 @@ export default function ScheduleDetailScreen() {
     );
   }
 
-  if (error || !schedule) {
+  if (error || !performance) {
     return (
       <YStack flex={1} alignItems="center" justifyContent="center" backgroundColor="$background" padding="$4">
-        <Text fontFamily="$body" color="$negativeColor">{error ?? '일정을 찾을 수 없습니다'}</Text>
+        <Text fontFamily="$body" color="$negativeColor">{error ?? '공연을 찾을 수 없습니다'}</Text>
       </YStack>
     );
   }
 
-  const typeColor = SCHEDULE_TYPE_COLORS[schedule.type] ?? SCHEDULE_TYPE_COLORS.OTHER;
-  const typeLabel = SCHEDULE_TYPE_LABELS[schedule.type] ?? schedule.type;
+  const genreColor = GENRE_COLORS[performance.genre] ?? GENRE_COLORS.OTHER;
+  const genreLabel = GENRE_LABELS[performance.genre] ?? performance.genre;
 
   return (
     <ScrollView backgroundColor="$background">
-      {/* Hero image */}
-      {schedule.imageUrl && (
-        <Image source={{ uri: schedule.imageUrl }} width="100%" height={240} resizeMode="cover" />
+      {performance.posterUrl && (
+        <Image source={{ uri: performance.posterUrl }} width="100%" height={240} resizeMode="cover" />
       )}
 
       <YStack padding="$4" gap="$4" paddingBottom="$12">
-        {/* Type badge + title */}
         <YStack gap="$2">
           <XStack alignItems="center" gap="$2">
-            <YStack backgroundColor={typeColor} paddingHorizontal="$2" paddingVertical={3} borderRadius="$sm">
-              <Text fontSize={11} fontWeight="700" color="#FFFFFF">{typeLabel}</Text>
+            <YStack backgroundColor={genreColor} paddingHorizontal="$2" paddingVertical={3} borderRadius="$sm">
+              <Text fontSize={11} fontWeight="700" color="#FFFFFF">{genreLabel}</Text>
             </YStack>
           </XStack>
           <Text fontFamily="$heading" fontSize={22} fontWeight="700" color="$color">
-            {schedule.title}
+            {performance.title}
           </Text>
         </YStack>
 
-        {/* Date/Time */}
-        <XStack alignItems="center" gap="$2">
-          <Ionicons name="time-outline" size={16} color={theme.colorSecondary.val} />
-          <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
-            {formatDate(schedule.startDate)} {formatTime(schedule.startDate)}
-            {schedule.endDate && ` ~ ${formatDate(schedule.endDate)} ${formatTime(schedule.endDate)}`}
-          </Text>
-        </XStack>
+        {/* Schedules */}
+        {performance.schedules.length > 0 && (
+          <XStack alignItems="center" gap="$2">
+            <Ionicons name="time-outline" size={16} color={theme.colorSecondary.val} />
+            <YStack>
+              {performance.schedules.map((s) => (
+                <Text key={s.id} fontFamily="$body" fontSize={14} color="$colorSecondary">
+                  {formatDate(s.dateTime)} {formatTime(s.dateTime)}
+                </Text>
+              ))}
+            </YStack>
+          </XStack>
+        )}
 
-        {/* Location */}
-        {schedule.location && (
+        {/* Venue */}
+        {performance.venue && (
           <XStack alignItems="flex-start" gap="$2">
             <Ionicons name="location-outline" size={16} color={theme.colorSecondary.val} style={{ marginTop: 2 }} />
             <YStack flex={1} gap={2}>
-              <Text fontFamily="$body" fontSize={14} fontWeight="600" color="$color">{schedule.location}</Text>
-              {schedule.address && (
-                <Text fontFamily="$body" fontSize={12} color="$colorTertiary">{schedule.address}</Text>
+              <Text fontFamily="$body" fontSize={14} fontWeight="600" color="$color">{performance.venue.name}</Text>
+              {performance.venue.address && (
+                <Text fontFamily="$body" fontSize={12} color="$colorTertiary">{performance.venue.address}</Text>
               )}
             </YStack>
           </XStack>
         )}
 
         {/* Description */}
-        {schedule.description && (
+        {performance.description && (
           <YStack paddingTop="$2" borderTopWidth={0.5} borderTopColor="$separatorColor">
             <Text fontFamily="$body" fontSize={14} color="$colorSecondary" lineHeight={22}>
-              {schedule.description}
+              {performance.description}
             </Text>
           </YStack>
         )}
 
-        {/* Lineup */}
-        {schedule.lineups.length > 0 && (
+        {/* Artists */}
+        {performance.artists.length > 0 && (
           <YStack gap="$3" paddingTop="$2" borderTopWidth={0.5} borderTopColor="$separatorColor">
             <Text fontFamily="$heading" fontSize={16} fontWeight="700" color="$color">
-              라인업 ({schedule.lineups.length})
+              라인업 ({performance.artists.length})
             </Text>
-            {schedule.lineups.map((lineup, index) => (
+            {performance.artists.map((entry, index) => (
               <XStack
-                key={lineup.id}
+                key={entry.id}
                 gap="$3"
                 alignItems="center"
                 paddingVertical="$2"
                 borderTopWidth={index > 0 ? 0.5 : 0}
                 borderTopColor="$separatorColor"
-                onPress={() => router.push(`/artists/${lineup.artist.id}`)}
+                onPress={() => router.push(`/artists/${entry.artist.id}`)}
                 pressStyle={{ opacity: 0.7 }}
               >
-                {lineup.artist.imageUrl ? (
-                  <Image source={{ uri: lineup.artist.imageUrl }} width={44} height={44} borderRadius={999} />
+                {entry.artist.imageUrl ? (
+                  <Image source={{ uri: entry.artist.imageUrl }} width={44} height={44} borderRadius={999} />
                 ) : (
                   <YStack width={44} height={44} borderRadius={999} backgroundColor="$backgroundNested" alignItems="center" justifyContent="center">
                     <Ionicons name="musical-note" size={18} color={theme.colorTertiary.val} />
@@ -129,16 +132,16 @@ export default function ScheduleDetailScreen() {
                 )}
                 <YStack flex={1}>
                   <Text fontFamily="$body" fontSize={15} fontWeight="600" color="$color">
-                    {lineup.artist.name}
+                    {entry.artist.name}
                   </Text>
                   <XStack gap="$2">
-                    {lineup.stageName && (
-                      <Text fontSize={12} fontFamily="$body" color="$colorTertiary">{lineup.stageName}</Text>
+                    {entry.stageName && (
+                      <Text fontSize={12} fontFamily="$body" color="$colorTertiary">{entry.stageName}</Text>
                     )}
-                    {lineup.startTime && (
+                    {entry.startTime && (
                       <Text fontSize={12} fontFamily="$body" color="$colorSecondary">
-                        {formatTime(lineup.startTime)}
-                        {lineup.endTime && ` ~ ${formatTime(lineup.endTime)}`}
+                        {formatTime(entry.startTime)}
+                        {entry.endTime && ` ~ ${formatTime(entry.endTime)}`}
                       </Text>
                     )}
                   </XStack>

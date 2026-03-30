@@ -1,9 +1,9 @@
 import { YStack, XStack, Text } from 'tamagui';
-import { SCHEDULE_TYPE_COLORS } from '../../constants/schedule';
+import { GENRE_COLORS } from '../../constants/schedule';
 
 interface CalendarDayCellProps {
   day: number;
-  dayOfWeek: number; // 0=Sun, 6=Sat
+  dayOfWeek: number;
   isCurrentMonth: boolean;
   isToday: boolean;
   isSelected: boolean;
@@ -41,7 +41,7 @@ export function CalendarDayCell({ day, dayOfWeek, isCurrentMonth, isToday, isSel
             width={5}
             height={5}
             borderRadius={999}
-            backgroundColor={SCHEDULE_TYPE_COLORS[type] ?? SCHEDULE_TYPE_COLORS.OTHER}
+            backgroundColor={GENRE_COLORS[type] ?? GENRE_COLORS.OTHER}
           />
         ))}
         {types.length > maxDots && (

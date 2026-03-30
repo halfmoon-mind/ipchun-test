@@ -42,6 +42,7 @@ const pretendardFont = createFont({
   },
   face: {
     400: { normal: 'Pretendard-Regular' },
+    500: { normal: 'Pretendard-Medium' },
     600: { normal: 'Pretendard-SemiBold' },
     700: { normal: 'Pretendard-Bold' },
   },

@@ -2,53 +2,68 @@ import { createTokens } from 'tamagui';
 
 export const tokens = createTokens({
   color: {
-    // Background layers (Apple dark mode)
-    bg: '#000000',
-    bgElevated: '#1C1C1E',
-    bgNested: '#2C2C2E',
+    // Background layers (Light — editorial warm off-white)
+    bg: '#FDFCF9',
+    bgElevated: '#FFFFFF',
+    bgNested: '#F5F2ED',
 
-    // Background layers (Light mode)
-    bgLight: '#FFFFFF',
-    bgElevatedLight: '#F2F2F7',
-    bgNestedLight: '#E5E5EA',
-
-    // Text (Dark)
-    textPrimary: 'rgba(255,255,255,0.92)',
-    textSecondary: 'rgba(255,255,255,0.60)',
-    textTertiary: 'rgba(255,255,255,0.32)',
+    // Background layers (Dark)
+    bgDark: '#1A1A1A',
+    bgElevatedDark: '#2A2A2A',
+    bgNestedDark: '#333333',
 
     // Text (Light)
-    textPrimaryLight: 'rgba(0,0,0,0.88)',
-    textSecondaryLight: 'rgba(0,0,0,0.56)',
-    textTertiaryLight: 'rgba(0,0,0,0.36)', // 0.28 → 0.36 for WCAG AA (3:1 대형 텍스트)
+    textPrimary: '#1A1A1A',
+    textSecondary: '#777777',
+    textTertiary: '#E5E2DC',
 
-    // Accent (Gold)
-    accent: '#F5A623',
-    accentSubtle: 'rgba(245,166,35,0.14)',
-    accentPressed: '#D48E1F',
-    accentDisabled: 'rgba(245,166,35,0.32)',
-    accentLight: '#D4910E',
+    // Text (Dark)
+    textPrimaryDark: '#FDFCF9',
+    textSecondaryDark: 'rgba(253,252,249,0.60)',
+    textTertiaryDark: 'rgba(253,252,249,0.32)',
 
-    // Accent (Gold - Light mode variants)
-    accentSubtleLight: 'rgba(212,145,14,0.10)',
-    accentPressedLight: '#B87A0A',
-    accentDisabledLight: 'rgba(212,145,14,0.32)',
+    // Primary (Monochromatic black)
+    primary: '#1A1A1A',
+    primaryForeground: '#FFFFFF',
+
+    // Secondary
+    secondary: '#F5F2ED',
+    secondaryForeground: '#1A1A1A',
+
+    // Accent
+    accent: '#E8E5DF',
+    accentForeground: '#1A1A1A',
+
+    // Muted
+    muted: '#F5F2ED',
+    mutedForeground: '#777777',
+
+    // Border / Input
+    border: '#E5E2DC',
+    input: '#E5E2DC',
+    ring: '#1A1A1A',
+
+    // Dark mode borders
+    borderDark: '#333333',
+    inputDark: '#333333',
 
     // Interactive surfaces
-    surfacePressed: 'rgba(255,255,255,0.06)',
-    surfaceHover: 'rgba(255,255,255,0.04)',
-    surfacePressedLight: 'rgba(0,0,0,0.04)',
-    surfaceHoverLight: 'rgba(0,0,0,0.02)',
+    surfacePressed: 'rgba(26,26,26,0.04)',
+    surfaceHover: 'rgba(26,26,26,0.02)',
+    surfacePressedDark: 'rgba(255,255,255,0.06)',
+    surfaceHoverDark: 'rgba(255,255,255,0.04)',
 
     // Separators
-    separator: 'rgba(255,255,255,0.08)',
-    separatorOpaque: '#38383A',
-    separatorLight: 'rgba(0,0,0,0.08)',
+    separator: '#E5E2DC',
+    separatorDark: '#333333',
 
     // Semantic
-    negative: '#FF453A',
-    positive: '#30D158',
-    warning: '#FFD60A',
+    destructive: '#DC2626',
+    destructiveForeground: '#FFFFFF',
+    success: '#22C55E',
+    successForeground: '#FFFFFF',
+    warning: '#F59E0B',
+    warningForeground: '#FFFFFF',
 
     // Utility
     transparent: 'transparent',
@@ -89,12 +104,12 @@ export const tokens = createTokens({
 
   radius: {
     0: 0,
-    sm: 8,
-    md: 12,
-    lg: 16,
-    xl: 20,
+    sm: 0,
+    md: 0,
+    lg: 0,
+    xl: 0,
     full: 9999,
-    true: 12, // default radius
+    true: 0, // default radius — editorial zero-radius
   },
 
   zIndex: {

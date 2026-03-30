@@ -6,5 +6,5 @@
 
 */
 -- AlterTable
-ALTER TABLE "artists" DROP COLUMN "followers",
-DROP COLUMN "monthly_listeners";
+ALTER TABLE "artists" DROP COLUMN IF EXISTS "followers",
+DROP COLUMN IF EXISTS "monthly_listeners";

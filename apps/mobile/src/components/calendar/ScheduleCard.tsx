@@ -1,9 +1,10 @@
 import { XStack, YStack, Text } from 'tamagui';
-import { SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_LABELS } from '../../constants/schedule';
-import type { CalendarSchedule } from '../../api/client';
+import { GENRE_COLORS, GENRE_LABELS } from '../../constants/schedule';
+import type { CalendarPerformance } from '../../api/client';
 
 interface ScheduleCardProps {
-  schedule: CalendarSchedule;
+  performance: CalendarPerformance;
+  dateKey: string;
   onPress: () => void;
 }
 
@@ -12,10 +13,16 @@ function formatTime(dateStr: string): string {
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
 }
 
-export function ScheduleCard({ schedule, onPress }: ScheduleCardProps) {
-  const typeColor = SCHEDULE_TYPE_COLORS[schedule.type] ?? SCHEDULE_TYPE_COLORS.OTHER;
-  const typeLabel = SCHEDULE_TYPE_LABELS[schedule.type] ?? schedule.type;
-  const artistCount = schedule.lineups.length;
+export function ScheduleCard({ performance, dateKey, onPress }: ScheduleCardProps) {
+  const genreColor = GENRE_COLORS[performance.genre] ?? GENRE_COLORS.OTHER;
+  const genreLabel = GENRE_LABELS[performance.genre] ?? performance.genre;
+  const artistCount = performance.artists.length;
+
+  // Find schedule times for this specific date
+  const todaySchedules = performance.schedules.filter(
+    (s) => s.dateTime.slice(0, 10) === dateKey,
+  );
+  const firstTime = todaySchedules.length > 0 ? todaySchedules[0].dateTime : null;
 
   return (
     <XStack
@@ -26,27 +33,26 @@ export function ScheduleCard({ schedule, onPress }: ScheduleCardProps) {
       onPress={onPress}
       pressStyle={{ opacity: 0.7 }}
     >
-      {/* Color indicator bar */}
-      <YStack width={3} borderRadius="$full" backgroundColor={typeColor} alignSelf="stretch" />
+      <YStack width={3} borderRadius="$full" backgroundColor={genreColor} alignSelf="stretch" />
 
       <YStack flex={1} gap="$1">
         <XStack alignItems="center" gap="$2">
-          <Text fontSize={10} fontFamily="$body" color={typeColor} fontWeight="600">
-            {typeLabel}
+          <Text fontSize={10} fontFamily="$body" color={genreColor} fontWeight="600">
+            {genreLabel}
           </Text>
         </XStack>
         <Text fontSize={15} fontFamily="$heading" fontWeight="600" color="$color" numberOfLines={1}>
-          {schedule.title}
+          {performance.title}
         </Text>
-        <XStack gap="$2" alignItems="center">
+        {firstTime && (
           <Text fontSize={12} fontFamily="$body" color="$colorSecondary">
-            {formatTime(schedule.startDate)}
-            {schedule.endDate && ` ~ ${formatTime(schedule.endDate)}`}
+            {formatTime(firstTime)}
+            {todaySchedules.length > 1 && ` 외 ${todaySchedules.length - 1}회`}
           </Text>
-        </XStack>
-        {schedule.location && (
+        )}
+        {performance.venue && (
           <Text fontSize={12} fontFamily="$body" color="$colorTertiary" numberOfLines={1}>
-            {schedule.location}
+            {performance.venue.name}
           </Text>
         )}
         {artistCount > 0 && (

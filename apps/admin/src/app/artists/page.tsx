@@ -63,6 +63,20 @@ export default function ArtistsPage() {
                     Spotify
                   </a>
                 )}
+                {artist.socialLinks &&
+                  Object.entries(artist.socialLinks)
+                    .filter(([key]) => key !== 'spotify')
+                    .map(([key, url]) => (
+                      <a
+                        key={key}
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-gray-600 hover:text-gray-900 text-sm capitalize"
+                      >
+                        {key}
+                      </a>
+                    ))}
                 <Link
                   href={`/artists/${artist.id}/edit`}
                   className="text-indigo-600 hover:text-indigo-800 text-sm"

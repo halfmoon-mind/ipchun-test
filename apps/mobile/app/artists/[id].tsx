@@ -4,7 +4,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, Spinner, Text, XStack, YStack, useTheme } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { api, type Artist, type CalendarSchedule, type PaginatedScheduleResponse } from '../../src/api/client';
+import { api, type Artist, type CalendarPerformance, type PaginatedPerformanceResponse } from '../../src/api/client';
 
 export default function ArtistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -13,8 +13,8 @@ export default function ArtistDetailScreen() {
   const insets = useSafeAreaInsets();
 
   const [artist, setArtist] = useState<Artist | null>(null);
-  const [upcoming, setUpcoming] = useState<CalendarSchedule[]>([]);
-  const [past, setPast] = useState<CalendarSchedule[]>([]);
+  const [upcoming, setUpcoming] = useState<CalendarPerformance[]>([]);
+  const [past, setPast] = useState<CalendarPerformance[]>([]);
   const [pastCursor, setPastCursor] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,8 +29,8 @@ export default function ArtistDetailScreen() {
     try {
       const [artistData, upcomingData, pastData] = await Promise.all([
         api.artists.getOne(id),
-        api.schedules.getByArtist(id, { period: 'upcoming' }),
-        api.schedules.getByArtist(id, { period: 'past', limit: 10 }),
+        api.performances.getByArtist(id, { period: 'upcoming' }),
+        api.performances.getByArtist(id, { period: 'past', limit: 10 }),
       ]);
       setArtist(artistData);
       setUpcoming(upcomingData.data);
@@ -49,7 +49,7 @@ export default function ArtistDetailScreen() {
     if (!id || !pastCursor || loadingMore) return;
     setLoadingMore(true);
     try {
-      const res = await api.schedules.getByArtist(id, {
+      const res = await api.performances.getByArtist(id, {
         period: 'past',
         cursor: pastCursor,
         limit: 10,
@@ -64,7 +64,7 @@ export default function ArtistDetailScreen() {
   const headerOptions = {
     headerShown: true,
     title: artist?.name ?? '',
-    headerBackTitleVisible: false,
+    headerBackButtonDisplayMode: 'minimal' as const,
     headerStyle: {
       backgroundColor: theme.background.val,
     },
@@ -106,7 +106,6 @@ export default function ArtistDetailScreen() {
     <YStack flex={1} backgroundColor="$background">
       <Stack.Screen options={headerOptions} />
       <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 16 }}>
-        {/* Compact Header */}
         <XStack padding="$4" gap="$4" alignItems="flex-start">
           <YStack
             width={72}
@@ -130,7 +129,6 @@ export default function ArtistDetailScreen() {
             <Text fontFamily="$heading" fontSize="$title" fontWeight="$title" color="$color">
               {artist.name}
             </Text>
-            {/* Spotify Link */}
             {artist.spotifyUrl && (
               <Pressable onPress={() => Linking.openURL(artist.spotifyUrl!)}>
                 <XStack alignItems="center" gap="$1">
@@ -162,7 +160,6 @@ export default function ArtistDetailScreen() {
           </YStack>
         </XStack>
 
-        {/* Description */}
         {artist.description && (
           <YStack paddingHorizontal="$4" paddingBottom="$4">
             <Text
@@ -188,10 +185,8 @@ export default function ArtistDetailScreen() {
           </YStack>
         )}
 
-        {/* Divider */}
         <YStack height={8} backgroundColor="$backgroundElevated" />
 
-        {/* Upcoming Schedules */}
         {upcoming.length > 0 && (
           <YStack padding="$4" gap="$2">
             <Text
@@ -201,25 +196,23 @@ export default function ArtistDetailScreen() {
               letterSpacing={1}
               textTransform="uppercase"
             >
-              다가오는 일정
+              다가오는 공연
             </Text>
-            {upcoming.map((schedule) => (
-              <ScheduleCard
-                key={schedule.id}
-                schedule={schedule}
+            {upcoming.map((perf) => (
+              <PerformanceCard
+                key={perf.id}
+                performance={perf}
                 variant="upcoming"
-                onPress={() => router.push(`/schedules/${schedule.id}`)}
+                onPress={() => router.push(`/schedules/${perf.id}`)}
               />
             ))}
           </YStack>
         )}
 
-        {/* Separator */}
         {upcoming.length > 0 && past.length > 0 && (
           <YStack height={1} backgroundColor="$backgroundNested" marginHorizontal="$4" />
         )}
 
-        {/* Past Schedules */}
         {past.length > 0 && (
           <YStack padding="$4" gap="$2">
             <Text
@@ -229,14 +222,14 @@ export default function ArtistDetailScreen() {
               letterSpacing={1}
               textTransform="uppercase"
             >
-              지난 일정
+              지난 공연
             </Text>
-            {past.map((schedule) => (
-              <ScheduleCard
-                key={schedule.id}
-                schedule={schedule}
+            {past.map((perf) => (
+              <PerformanceCard
+                key={perf.id}
+                performance={perf}
                 variant="past"
-                onPress={() => router.push(`/schedules/${schedule.id}`)}
+                onPress={() => router.push(`/schedules/${perf.id}`)}
               />
             ))}
             {pastCursor && (
@@ -253,11 +246,10 @@ export default function ArtistDetailScreen() {
           </YStack>
         )}
 
-        {/* Empty state */}
         {upcoming.length === 0 && past.length === 0 && (
           <YStack padding="$6" alignItems="center">
             <Text color="$colorSecondary" fontSize="$body">
-              아직 등록된 일정이 없습니다
+              아직 등록된 공연이 없습니다
             </Text>
           </YStack>
         )}
@@ -266,20 +258,18 @@ export default function ArtistDetailScreen() {
   );
 }
 
-// --- Schedule Card Component ---
-
-function ScheduleCard({
-  schedule,
+function PerformanceCard({
+  performance,
   variant,
   onPress,
 }: {
-  schedule: CalendarSchedule;
+  performance: CalendarPerformance;
   variant: 'upcoming' | 'past';
   onPress: () => void;
 }) {
   const isPast = variant === 'past';
-  const date = new Date(schedule.startDate);
-  const formatted = formatScheduleDate(date);
+  const firstSchedule = performance.schedules[0];
+  const formatted = firstSchedule ? formatPerformanceDate(new Date(firstSchedule.dateTime)) : '';
 
   return (
     <Pressable onPress={onPress}>
@@ -304,11 +294,11 @@ function ScheduleCard({
             fontWeight="600"
             color={isPast ? '$colorSecondary' : '$color'}
           >
-            {schedule.title}
+            {performance.title}
           </Text>
-          {schedule.location && (
+          {performance.venue && (
             <Text fontSize="$caption" color={isPast ? '$colorTertiary' : '$colorSecondary'}>
-              {schedule.location}
+              {performance.venue.name}
             </Text>
           )}
         </YStack>
@@ -318,14 +308,14 @@ function ScheduleCard({
           paddingHorizontal="$2"
           paddingVertical="$1"
         >
-          <Text fontSize="$caption" color="$colorTertiary">{schedule.type}</Text>
+          <Text fontSize="$caption" color="$colorTertiary">{performance.genre}</Text>
         </YStack>
       </XStack>
     </Pressable>
   );
 }
 
-function formatScheduleDate(date: Date): string {
+function formatPerformanceDate(date: Date): string {
   const month = date.getMonth() + 1;
   const day = date.getDate();
   const dayNames = ['일', '월', '화', '수', '목', '금', '토'];

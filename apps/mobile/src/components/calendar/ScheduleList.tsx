@@ -2,12 +2,12 @@ import { YStack, Text } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'tamagui';
 import { ScheduleCard } from './ScheduleCard';
-import type { CalendarSchedule } from '../../api/client';
+import type { CalendarPerformance } from '../../api/client';
 
 interface ScheduleListProps {
   date: string;
-  schedules: CalendarSchedule[];
-  onSchedulePress: (schedule: CalendarSchedule) => void;
+  performances: CalendarPerformance[];
+  onPerformancePress: (performance: CalendarPerformance) => void;
 }
 
 function formatDateLabel(dateStr: string): string {
@@ -16,7 +16,7 @@ function formatDateLabel(dateStr: string): string {
   return `${d.getMonth() + 1}월 ${d.getDate()}일 (${weekdays[d.getDay()]})`;
 }
 
-export function ScheduleList({ date, schedules, onSchedulePress }: ScheduleListProps) {
+export function ScheduleList({ date, performances, onPerformancePress }: ScheduleListProps) {
   const theme = useTheme();
 
   return (
@@ -24,7 +24,7 @@ export function ScheduleList({ date, schedules, onSchedulePress }: ScheduleListP
       <Text fontFamily="$heading" fontSize={15} fontWeight="600" color="$color">
         {formatDateLabel(date)}
       </Text>
-      {schedules.length === 0 ? (
+      {performances.length === 0 ? (
         <YStack padding="$6" alignItems="center" gap="$2">
           <Ionicons name="calendar-outline" size={32} color={theme.colorTertiary.val} />
           <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
@@ -33,8 +33,8 @@ export function ScheduleList({ date, schedules, onSchedulePress }: ScheduleListP
         </YStack>
       ) : (
         <YStack gap="$2">
-          {schedules.map((s) => (
-            <ScheduleCard key={s.id} schedule={s} onPress={() => onSchedulePress(s)} />
+          {performances.map((p) => (
+            <ScheduleCard key={p.id} performance={p} dateKey={date} onPress={() => onPerformancePress(p)} />
           ))}
         </YStack>
       )}

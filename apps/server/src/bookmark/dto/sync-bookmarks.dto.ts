@@ -9,7 +9,7 @@ import {
 
 export class BookmarkItemDto {
   @IsUUID()
-  lineupId!: string;
+  performanceArtistId!: string;
 
   @IsDateString()
   checkedAt!: string;
@@ -17,7 +17,7 @@ export class BookmarkItemDto {
 
 export class BookmarkRemovalDto {
   @IsUUID()
-  lineupId!: string;
+  performanceArtistId!: string;
 
   @IsDateString()
   removedAt!: string;
@@ -25,7 +25,7 @@ export class BookmarkRemovalDto {
 
 export class SyncBookmarksDto {
   @IsUUID()
-  scheduleId!: string;
+  performanceId!: string;
 
   @IsArray()
   @ValidateNested({ each: true })

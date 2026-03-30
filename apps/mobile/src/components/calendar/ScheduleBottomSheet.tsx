@@ -3,11 +3,11 @@ import { YStack, XStack, Text, Image, ScrollView, Button } from 'tamagui';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import { useTheme } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
-import { SCHEDULE_TYPE_COLORS, SCHEDULE_TYPE_LABELS } from '../../constants/schedule';
-import type { CalendarSchedule } from '../../api/client';
+import { GENRE_COLORS, GENRE_LABELS } from '../../constants/schedule';
+import type { CalendarPerformance } from '../../api/client';
 
 interface ScheduleBottomSheetProps {
-  schedule: CalendarSchedule | null;
+  performance: CalendarPerformance | null;
   onClose: () => void;
   onDetail: (id: string) => void;
 }
@@ -21,7 +21,7 @@ function formatDateTime(dateStr: string): string {
   return `${month}/${day} ${hours}:${minutes}`;
 }
 
-export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBottomSheetProps) {
+export function ScheduleBottomSheet({ performance, onClose, onDetail }: ScheduleBottomSheetProps) {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const theme = useTheme();
   const snapPoints = useMemo(() => ['50%', '80%'], []);
@@ -30,10 +30,10 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
     if (index === -1) onClose();
   }, [onClose]);
 
-  if (!schedule) return null;
+  if (!performance) return null;
 
-  const typeColor = SCHEDULE_TYPE_COLORS[schedule.type] ?? SCHEDULE_TYPE_COLORS.OTHER;
-  const typeLabel = SCHEDULE_TYPE_LABELS[schedule.type] ?? schedule.type;
+  const genreColor = GENRE_COLORS[performance.genre] ?? GENRE_COLORS.OTHER;
+  const genreLabel = GENRE_LABELS[performance.genre] ?? performance.genre;
 
   return (
     <BottomSheet
@@ -48,52 +48,46 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
       <BottomSheetView style={{ flex: 1 }}>
         <ScrollView>
           <YStack padding="$4" gap="$3">
-            {/* Schedule image */}
-            {schedule.imageUrl && (
-              <Image source={{ uri: schedule.imageUrl }} width="100%" height={160} borderRadius="$md" />
+            {performance.posterUrl && (
+              <Image source={{ uri: performance.posterUrl }} width="100%" height={160} borderRadius="$md" />
             )}
 
-            {/* Title + Badge */}
             <XStack alignItems="center" gap="$2">
-              <YStack backgroundColor={typeColor} paddingHorizontal="$2" paddingVertical={2} borderRadius="$sm">
-                <Text fontSize={10} fontWeight="700" color="#FFFFFF">{typeLabel}</Text>
+              <YStack backgroundColor={genreColor} paddingHorizontal="$2" paddingVertical={2} borderRadius="$sm">
+                <Text fontSize={10} fontWeight="700" color="#FFFFFF">{genreLabel}</Text>
               </YStack>
             </XStack>
             <Text fontFamily="$heading" fontSize={20} fontWeight="700" color="$color">
-              {schedule.title}
+              {performance.title}
             </Text>
 
-            {/* Date/Time */}
-            <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
-              {formatDateTime(schedule.startDate)}
-              {schedule.endDate && ` ~ ${formatDateTime(schedule.endDate)}`}
-            </Text>
+            {/* Schedules (show times) */}
+            {performance.schedules.length > 0 && (
+              <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
+                {performance.schedules.map((s) => formatDateTime(s.dateTime)).join(' / ')}
+              </Text>
+            )}
 
-            {/* Location */}
-            {schedule.location && (
+            {/* Venue */}
+            {performance.venue && (
               <YStack gap="$1">
-                <Text fontFamily="$body" fontSize={14} color="$color">{schedule.location}</Text>
-                {schedule.address && (
-                  <Text fontFamily="$body" fontSize={12} color="$colorTertiary">{schedule.address}</Text>
+                <Text fontFamily="$body" fontSize={14} color="$color">{performance.venue.name}</Text>
+                {performance.venue.address && (
+                  <Text fontFamily="$body" fontSize={12} color="$colorTertiary">{performance.venue.address}</Text>
                 )}
               </YStack>
             )}
 
-            {/* Lineups */}
-            {schedule.lineups.length > 0 && (
+            {/* Artists */}
+            {performance.artists.length > 0 && (
               <YStack gap="$2" marginTop="$2">
                 <Text fontFamily="$heading" fontSize={14} fontWeight="600" color="$color">
-                  라인업 ({schedule.lineups.length})
+                  라인업 ({performance.artists.length})
                 </Text>
-                {schedule.lineups.map((lineup) => (
-                  <XStack key={lineup.id} gap="$3" alignItems="center" paddingVertical="$1">
-                    {lineup.artist.imageUrl ? (
-                      <Image
-                        source={{ uri: lineup.artist.imageUrl }}
-                        width={36}
-                        height={36}
-                        borderRadius={999}
-                      />
+                {performance.artists.map((entry) => (
+                  <XStack key={entry.id} gap="$3" alignItems="center" paddingVertical="$1">
+                    {entry.artist.imageUrl ? (
+                      <Image source={{ uri: entry.artist.imageUrl }} width={36} height={36} borderRadius={999} />
                     ) : (
                       <YStack width={36} height={36} borderRadius={999} backgroundColor="$backgroundNested" alignItems="center" justifyContent="center">
                         <Ionicons name="musical-note" size={14} color={theme.colorTertiary.val} />
@@ -101,16 +95,16 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
                     )}
                     <YStack flex={1}>
                       <Text fontFamily="$body" fontSize={14} fontWeight="600" color="$color">
-                        {lineup.artist.name}
+                        {entry.artist.name}
                       </Text>
                       <XStack gap="$2">
-                        {lineup.stageName && (
-                          <Text fontSize={11} fontFamily="$body" color="$colorTertiary">{lineup.stageName}</Text>
+                        {entry.stageName && (
+                          <Text fontSize={11} fontFamily="$body" color="$colorTertiary">{entry.stageName}</Text>
                         )}
-                        {lineup.startTime && (
+                        {entry.startTime && (
                           <Text fontSize={11} fontFamily="$body" color="$colorSecondary">
-                            {formatDateTime(lineup.startTime)}
-                            {lineup.endTime && ` ~ ${formatDateTime(lineup.endTime)}`}
+                            {formatDateTime(entry.startTime)}
+                            {entry.endTime && ` ~ ${formatDateTime(entry.endTime)}`}
                           </Text>
                         )}
                       </XStack>
@@ -120,11 +114,10 @@ export function ScheduleBottomSheet({ schedule, onClose, onDetail }: ScheduleBot
               </YStack>
             )}
 
-            {/* Detail button */}
             <Button
               marginTop="$3"
               backgroundColor="$accentColor"
-              onPress={() => onDetail(schedule.id)}
+              onPress={() => onDetail(performance.id)}
             >
               <Text fontFamily="$heading" fontWeight="700" color="#FFFFFF" fontSize={15}>
                 상세 보기
