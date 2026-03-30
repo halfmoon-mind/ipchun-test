@@ -80,6 +80,7 @@ enum TicketPlatform {
   MELON
   NOL
   TICKETLINK
+  YES24
 }
 
 enum LineupMode {

@@ -2,6 +2,7 @@ export enum TicketPlatformEnum {
   MELON = 'MELON',
   NOL = 'NOL',
   TICKETLINK = 'TICKETLINK',
+  YES24 = 'YES24',
 }
 
 export interface ParsedTicketUrl {

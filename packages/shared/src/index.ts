@@ -21,6 +21,7 @@ export enum TicketPlatform {
   MELON = 'MELON',
   NOL = 'NOL',
   TICKETLINK = 'TICKETLINK',
+  YES24 = 'YES24',
 }
 
 export enum LineupMode {
