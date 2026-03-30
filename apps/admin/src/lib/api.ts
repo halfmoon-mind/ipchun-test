@@ -78,6 +78,16 @@ export const api = {
         spotifyMeta: SpotifyMeta | null;
       }>;
     },
+    search: async (query: string) => {
+      const res = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error || `Spotify search failed: ${res.status}`);
+      }
+      return res.json() as Promise<{
+        artists: { spotifyId: string; name: string; imageUrl: string | null; followers: number }[];
+      }>;
+    },
   },
   youtube: {
     searchChannel: async (artistName: string) => {
@@ -129,7 +139,7 @@ export const api = {
         `/performances/calendar?${query.toString()}`,
       );
     },
-    replaceArtists: (id: string, artists: { artistId: string; role?: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number }[]) =>
+    replaceArtists: (id: string, artists: { artistId: string; role?: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number; stage?: string; performanceScheduleId?: string }[]) =>
       request<Performance>(`/performances/${id}/artists`, {
         method: 'PUT',
         body: JSON.stringify({ artists }),
