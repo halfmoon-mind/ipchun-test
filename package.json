@@ -16,7 +16,7 @@
     "deploy:web": "pnpm --filter @ipchun/web run deploy",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "autoparse": "pnpm --filter @ipchun/autoparse start"
+    "autoparse": "tsx tools/autoparse/index.ts"
   },
   "devDependencies": {
     "prettier": "^3.5.0",
