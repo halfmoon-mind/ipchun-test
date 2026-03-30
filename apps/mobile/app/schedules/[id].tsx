@@ -4,7 +4,8 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../../src/api/client';
 import type { CalendarPerformance } from '../../src/api/client';
-import { GENRE_COLORS, GENRE_LABELS } from '../../src/constants/schedule';
+import { GENRE_COLORS, GENRE_LABELS, STATUS_LABELS, STATUS_COLORS, PLATFORM_LABELS } from '../../src/constants/schedule';
+import { Linking } from 'react-native';
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -14,6 +15,10 @@ function formatDate(dateStr: string): string {
 function formatTime(dateStr: string): string {
   const d = new Date(dateStr);
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function formatPrice(price: number): string {
+  return price.toLocaleString('ko-KR') + '원';
 }
 
 export default function PerformanceDetailScreen() {
@@ -64,6 +69,18 @@ export default function PerformanceDetailScreen() {
             <YStack backgroundColor={genreColor} paddingHorizontal="$2" paddingVertical={3} borderRadius="$sm">
               <Text fontSize={11} fontWeight="700" color="#FFFFFF">{genreLabel}</Text>
             </YStack>
+            {performance.status && performance.status !== 'SCHEDULED' && (
+              <YStack
+                backgroundColor={STATUS_COLORS[performance.status] ?? '#A8A8A8'}
+                paddingHorizontal="$2"
+                paddingVertical={3}
+                borderRadius="$sm"
+              >
+                <Text fontSize={11} fontWeight="700" color="#FFFFFF">
+                  {STATUS_LABELS[performance.status] ?? performance.status}
+                </Text>
+              </YStack>
+            )}
           </XStack>
           <Text fontFamily="$heading" fontSize={22} fontWeight="700" color="$color">
             {performance.title}
@@ -95,6 +112,37 @@ export default function PerformanceDetailScreen() {
               )}
             </YStack>
           </XStack>
+        )}
+
+        {/* Meta info */}
+        {(performance.runtime || performance.ageRating || performance.organizer) && (
+          <YStack gap="$2">
+            {performance.runtime && (
+              <XStack alignItems="center" gap="$2">
+                <Ionicons name="hourglass-outline" size={16} color={theme.colorSecondary.val} />
+                <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
+                  {performance.runtime}분
+                  {performance.intermission ? ` (인터미션 ${performance.intermission}분)` : ''}
+                </Text>
+              </XStack>
+            )}
+            {performance.ageRating && (
+              <XStack alignItems="center" gap="$2">
+                <Ionicons name="person-outline" size={16} color={theme.colorSecondary.val} />
+                <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
+                  {performance.ageRating}
+                </Text>
+              </XStack>
+            )}
+            {performance.organizer && (
+              <XStack alignItems="center" gap="$2">
+                <Ionicons name="business-outline" size={16} color={theme.colorSecondary.val} />
+                <Text fontFamily="$body" fontSize={14} color="$colorSecondary">
+                  주최: {performance.organizer}
+                </Text>
+              </XStack>
+            )}
+          </YStack>
         )}
 
         {/* Description */}
@@ -148,6 +196,60 @@ export default function PerformanceDetailScreen() {
                 </YStack>
                 <Ionicons name="chevron-forward" size={16} color={theme.colorTertiary.val} />
               </XStack>
+            ))}
+          </YStack>
+        )}
+        {/* Ticket booking */}
+        {performance.sources && performance.sources.length > 0 && (
+          <YStack gap="$3" paddingTop="$2" borderTopWidth={0.5} borderTopColor="$separatorColor">
+            <Text fontFamily="$heading" fontSize={16} fontWeight="700" color="$color">
+              예매
+            </Text>
+            {performance.sources.map((source) => (
+              <YStack key={source.id} gap="$2">
+                <XStack
+                  backgroundColor="$backgroundNested"
+                  padding="$3"
+                  borderRadius="$md"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  onPress={() => Linking.openURL(source.sourceUrl)}
+                  pressStyle={{ opacity: 0.7 }}
+                >
+                  <YStack>
+                    <Text fontFamily="$body" fontSize={15} fontWeight="700" color="$color">
+                      {PLATFORM_LABELS[source.platform] ?? source.platform}
+                    </Text>
+                    {source.salesStatus && (
+                      <Text fontFamily="$body" fontSize={12} color="$colorTertiary" marginTop={2}>
+                        {source.salesStatus}
+                      </Text>
+                    )}
+                  </YStack>
+                  <Ionicons name="open-outline" size={18} color={theme.colorSecondary.val} />
+                </XStack>
+
+                {source.ticketOpenAt && (
+                  <Text fontFamily="$body" fontSize={12} color="$colorTertiary" paddingHorizontal="$1">
+                    티켓 오픈: {formatDate(source.ticketOpenAt)} {formatTime(source.ticketOpenAt)}
+                  </Text>
+                )}
+
+                {source.tickets.length > 0 && (
+                  <YStack paddingHorizontal="$1" gap={4}>
+                    {source.tickets.map((ticket) => (
+                      <XStack key={ticket.id} justifyContent="space-between">
+                        <Text fontFamily="$body" fontSize={13} color="$colorTertiary">
+                          {ticket.seatGrade}
+                        </Text>
+                        <Text fontFamily="$body" fontSize={13} fontWeight="600" color="$color">
+                          {formatPrice(ticket.price)}
+                        </Text>
+                      </XStack>
+                    ))}
+                  </YStack>
+                )}
+              </YStack>
             ))}
           </YStack>
         )}
