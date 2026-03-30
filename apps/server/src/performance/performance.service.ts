@@ -6,6 +6,7 @@ import { parseTicketUrl } from './fetchers/url-parser';
 import { fetchFromNol } from './fetchers/nol.fetcher';
 import { fetchFromMelon } from './fetchers/melon.fetcher';
 import { fetchFromTicketlink } from './fetchers/ticketlink.fetcher';
+import { fetchFromYes24 } from './fetchers/yes24.fetcher';
 import type { FetchedPerformance } from '@ipchun/shared';
 
 const PERFORMANCE_INCLUDE = {
@@ -46,6 +47,8 @@ export class PerformanceService {
         return fetchFromMelon(externalId);
       case 'TICKETLINK':
         return fetchFromTicketlink(externalId);
+      case 'YES24':
+        return fetchFromYes24(externalId);
       default:
         throw new Error(`지원하지 않는 플랫폼: ${platform}`);
     }
