@@ -23,6 +23,11 @@ export enum TicketPlatform {
   TICKETLINK = 'TICKETLINK',
 }
 
+export enum LineupMode {
+  LINEUP = 'LINEUP',
+  TIMETABLE = 'TIMETABLE',
+}
+
 export interface SpotifyMeta {
   genres: string[];
   popularity: number;
@@ -80,6 +85,7 @@ export interface Performance {
   intermission: number | null;
   posterUrl: string | null;
   status: PerformanceStatus;
+  lineupMode: LineupMode | null;
   venueId: string | null;
   venue: Venue | null;
   organizer: string | null;
@@ -111,8 +117,10 @@ export interface PerformanceArtistItem {
   id: string;
   artistId: string;
   artist?: Artist;
+  performanceScheduleId: string | null;
   role: string | null;
   stageName: string | null;
+  stage: string | null;
   startTime: string | null;
   endTime: string | null;
   performanceOrder: number | null;
