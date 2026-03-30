@@ -1,29 +1,39 @@
 import Link from "next/link";
-import type { Schedule, ScheduleLineup } from "@ipchun/shared";
+import type { Performance } from "@ipchun/shared";
 
-type ScheduleWithLineups = Schedule & {
-  lineups: (ScheduleLineup & {
-    artist: { id: string; name: string; imageUrl: string | null };
-  })[];
-};
-
-const TYPE_LABELS: Record<string, string> = {
+const GENRE_LABELS: Record<string, string> = {
   CONCERT: "공연",
-  BUSKING: "버스킹",
+  MUSICAL: "뮤지컬",
+  PLAY: "연극",
+  CLASSIC: "클래식",
   FESTIVAL: "페스티벌",
+  BUSKING: "버스킹",
   RELEASE: "발매",
   OTHER: "기타",
 };
 
-export function ScheduleCard({ schedule }: { schedule: ScheduleWithLineups }) {
-  const date = new Date(schedule.startDate);
+const STATUS_LABELS: Record<string, string> = {
+  ON_SALE: "판매중",
+  SOLD_OUT: "매진",
+  CANCELLED: "취소",
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  ON_SALE: "var(--color-success)",
+  SOLD_OUT: "var(--destructive)",
+  CANCELLED: "var(--destructive)",
+};
+
+export function ScheduleCard({ performance }: { performance: Performance }) {
+  const firstSchedule = performance.schedules[0];
+  const date = firstSchedule ? new Date(firstSchedule.dateTime) : new Date();
   const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
   const dayStr = dayNames[date.getDay()];
-  const artists = schedule.lineups.map((l) => l.artist.name).join(", ");
+  const artists = performance.artists.map((a) => a.artist?.name ?? a.stageName ?? "").filter(Boolean).join(", ");
 
   return (
     <Link
-      href={`/schedule/${schedule.id}`}
+      href={`/schedule/${performance.id}`}
       className="block border-b px-4 py-4"
       style={{ borderColor: "var(--border)" }}
     >
@@ -43,20 +53,28 @@ export function ScheduleCard({ schedule }: { schedule: ScheduleWithLineups }) {
               className="text-[10px] font-semibold tracking-wider uppercase"
               style={{ color: "var(--muted-foreground)" }}
             >
-              {TYPE_LABELS[schedule.type] || schedule.type}
+              {GENRE_LABELS[performance.genre] || performance.genre}
             </span>
+            {performance.status && STATUS_LABELS[performance.status] && (
+              <span
+                className="text-[10px] font-bold"
+                style={{ color: STATUS_COLORS[performance.status] }}
+              >
+                {STATUS_LABELS[performance.status]}
+              </span>
+            )}
           </div>
           <h3 className="text-sm font-bold leading-snug truncate">
-            {schedule.title}
+            {performance.title}
           </h3>
           {artists && (
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
               {artists}
             </p>
           )}
-          {schedule.location && (
+          {performance.venue && (
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
-              📍 {schedule.location}
+              {performance.venue.name}
             </p>
           )}
         </div>
