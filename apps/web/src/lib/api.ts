@@ -1,4 +1,4 @@
-import type { Schedule, ScheduleLineup } from "@ipchun/shared";
+import type { Performance } from "@ipchun/shared";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -16,20 +16,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 export interface CalendarResponse {
   year: number;
   month: number;
-  schedules: (Schedule & {
-    lineups: (ScheduleLineup & { artist: { id: string; name: string; imageUrl: string | null } })[];
-  })[];
+  performances: Performance[];
   dates: Record<string, string[]>;
 }
 
 export const api = {
   calendar: (year: number, month: number) =>
-    request<CalendarResponse>(`/schedules/calendar?year=${year}&month=${month}`),
+    request<CalendarResponse>(`/performances/calendar?year=${year}&month=${month}`),
 
-  schedule: (id: string) =>
-    request<
-      Schedule & {
-        lineups: (ScheduleLineup & { artist: { id: string; name: string; imageUrl: string | null } })[];
-      }
-    >(`/schedules/${id}`),
+  performance: (id: string) =>
+    request<Performance>(`/performances/${id}`),
 };

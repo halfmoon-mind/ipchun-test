@@ -1,40 +1,30 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { Schedule, ScheduleLineup } from "@ipchun/shared";
+import type { Performance } from "@ipchun/shared";
 import { ScheduleCard } from "./ScheduleCard";
 
-type ScheduleWithLineups = Schedule & {
-  lineups: (ScheduleLineup & {
-    artist: { id: string; name: string; imageUrl: string | null };
-  })[];
-};
-
 interface ScheduleListProps {
-  schedules: ScheduleWithLineups[];
+  performances: Performance[];
   selectedDate: string | null;
 }
 
-export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
+export function ScheduleList({ performances, selectedDate }: ScheduleListProps) {
   const closestRef = useRef<HTMLDivElement>(null);
 
   const filtered = selectedDate
-    ? schedules.filter((s) => {
-        const start = s.startDate.slice(0, 10);
-        const end = s.endDate ? s.endDate.slice(0, 10) : start;
-        return selectedDate >= start && selectedDate <= end;
-      })
-    : schedules;
+    ? performances.filter((p) =>
+        p.schedules.some((s) => s.dateTime.slice(0, 10) === selectedDate),
+      )
+    : performances;
 
   const todayStr = new Date().toISOString().slice(0, 10);
 
   let closestIndex = -1;
   if (!selectedDate && filtered.length > 0) {
-    // Find the first upcoming schedule (startDate >= today)
-    closestIndex = filtered.findIndex(
-      (s) => s.startDate.slice(0, 10) >= todayStr
+    closestIndex = filtered.findIndex((p) =>
+      p.schedules.some((s) => s.dateTime.slice(0, 10) >= todayStr),
     );
-    // If all are past, point to the last one
     if (closestIndex === -1) {
       closestIndex = filtered.length - 1;
     }
@@ -42,7 +32,6 @@ export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
 
   useEffect(() => {
     if (!selectedDate && closestRef.current) {
-      // Delay slightly so the DOM is fully laid out
       requestAnimationFrame(() => {
         closestRef.current?.scrollIntoView({
           block: "center",
@@ -50,7 +39,7 @@ export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
         });
       });
     }
-  }, [selectedDate, schedules]);
+  }, [selectedDate, performances]);
 
   if (filtered.length === 0) {
     return (
@@ -62,9 +51,9 @@ export function ScheduleList({ schedules, selectedDate }: ScheduleListProps) {
 
   return (
     <div>
-      {filtered.map((schedule, i) => (
-        <div key={schedule.id} ref={i === closestIndex ? closestRef : undefined}>
-          <ScheduleCard schedule={schedule} />
+      {filtered.map((performance, i) => (
+        <div key={performance.id} ref={i === closestIndex ? closestRef : undefined}>
+          <ScheduleCard performance={performance} />
         </div>
       ))}
     </div>

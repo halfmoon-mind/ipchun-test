@@ -53,7 +53,7 @@ export default function HomePage() {
           </div>
         ) : (
           <ScheduleList
-            schedules={data?.schedules ?? []}
+            performances={data?.performances ?? []}
             selectedDate={selectedDate}
           />
         )}
