@@ -87,6 +87,7 @@ export class PerformanceService {
           status: dto.status ?? 'SCHEDULED',
           venueId,
           organizer: dto.organizer ?? null,
+          lineupMode: dto.lineupMode ?? null,
         },
       });
 
@@ -190,6 +191,7 @@ export class PerformanceService {
           posterUrl: dto.posterUrl,
           status: dto.status,
           organizer: dto.organizer,
+          lineupMode: dto.lineupMode,
           ...(venueId !== undefined && { venueId }),
         },
       });
@@ -360,7 +362,7 @@ export class PerformanceService {
 
   async replaceArtists(
     performanceId: string,
-    artists: { artistId: string; role?: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number }[],
+    artists: { artistId: string; role?: string; stageName?: string; startTime?: string; endTime?: string; performanceOrder?: number; stage?: string; performanceScheduleId?: string }[],
   ) {
     return this.prisma.$transaction(async (tx) => {
       await tx.performanceArtist.deleteMany({ where: { performanceId } });
@@ -374,6 +376,8 @@ export class PerformanceService {
             startTime: a.startTime ? new Date(a.startTime) : null,
             endTime: a.endTime ? new Date(a.endTime) : null,
             performanceOrder: a.performanceOrder ?? null,
+            stage: a.stage ?? null,
+            performanceScheduleId: a.performanceScheduleId ?? null,
           })),
         });
       }
