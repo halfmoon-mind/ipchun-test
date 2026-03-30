@@ -150,6 +150,27 @@ export default function ScheduleDetailPage() {
             <span>{performance.venue.address}</span>
           </div>
         )}
+        {performance.runtime && (
+          <div className="flex gap-2">
+            <span className="text-muted-foreground w-12 flex-shrink-0">시간</span>
+            <span>
+              {performance.runtime}분
+              {performance.intermission ? ` (인터미션 ${performance.intermission}분)` : ""}
+            </span>
+          </div>
+        )}
+        {performance.ageRating && (
+          <div className="flex gap-2">
+            <span className="text-muted-foreground w-12 flex-shrink-0">등급</span>
+            <span>{performance.ageRating}</span>
+          </div>
+        )}
+        {performance.organizer && (
+          <div className="flex gap-2">
+            <span className="text-muted-foreground w-12 flex-shrink-0">주최</span>
+            <span>{performance.organizer}</span>
+          </div>
+        )}
       </div>
 
       {/* Description */}
