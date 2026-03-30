@@ -258,14 +258,14 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
         <section className="max-w-2xl mb-10 p-5 border" style={{ borderColor: 'var(--border)', background: 'var(--secondary)' }}>
           <label className="form-label mb-1">티켓 URL로 자동 채우기</label>
           <p className="text-sm mb-3" style={{ color: 'var(--muted-foreground)' }}>
-            멜론 티켓, NOL(인터파크), 티켓링크 URL을 입력하면 공연 정보를 자동으로 가져옵니다.
+            멜론 티켓, NOL(인터파크), 티켓링크, YES24 URL을 입력하면 공연 정보를 자동으로 가져옵니다.
           </p>
           <div className="flex gap-2">
             <input
               type="url"
               value={fetchUrl}
               onChange={(e) => setFetchUrl(e.target.value)}
-              placeholder="https://tickets.interpark.com/goods/..."
+              placeholder="https://ticket.yes24.com/Perf/..."
               className="form-input flex-1"
             />
             <button

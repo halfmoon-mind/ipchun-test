@@ -16,7 +16,7 @@ const statusLabels: Record<string, string> = {
 };
 
 const platformLabels: Record<string, string> = {
-  MELON: '멜론', NOL: 'NOL', TICKETLINK: '티켓링크',
+  MELON: '멜론', NOL: 'NOL', TICKETLINK: '티켓링크', YES24: 'YES24',
 };
 
 function formatDateTime(iso: string) {

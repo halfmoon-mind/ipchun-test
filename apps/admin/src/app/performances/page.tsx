@@ -9,6 +9,7 @@ const platformLabels: Record<string, string> = {
   MELON: '멜론',
   NOL: 'NOL',
   TICKETLINK: '티켓링크',
+  YES24: 'YES24',
 };
 
 function formatDate(iso: string) {
