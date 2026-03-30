@@ -74,6 +74,13 @@ export async function fetchFromTicketlink(
   // "|티켓링크" 접미사 제거
   title = title.replace(/\s*\|\s*티켓링크$/, '');
 
+  // 삭제/종료된 공연 감지: JSON-LD에 이벤트 데이터가 없으면 빈 페이지
+  if (!title) {
+    throw new Error(
+      `티켓링크 페이지 요청 실패: 유효한 공연 데이터 없음 (삭제/종료된 페이지) — ${pageUrl}`,
+    );
+  }
+
   // ── Layer 2: MAPI — 회차 날짜+시각 ──
   const schedules: Array<{ dateTime: string }> = [];
   try {

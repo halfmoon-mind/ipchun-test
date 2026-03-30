@@ -66,6 +66,13 @@ export async function parseTicketlink(url: string): Promise<ScrapedSchedule> {
     title = title.replace(/\s*\|\s*티켓링크$/, '');
   }
 
+  // 삭제/종료된 공연 감지: 제목이 없으면 유효한 공연 데이터가 없는 페이지
+  if (!title) {
+    throw new Error(
+      `티켓링크 페이지 요청 실패: 유효한 공연 데이터 없음 (삭제/종료된 페이지) — ${url}`,
+    );
+  }
+
   return {
     title,
     description,

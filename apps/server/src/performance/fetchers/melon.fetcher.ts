@@ -37,6 +37,11 @@ export async function fetchFromMelon(
   if (!res.ok) throw new Error(`멜론 티켓 페이지 요청 실패: ${res.status}`);
   const html = await res.text();
 
+  // 삭제/만료된 공연 페이지 감지: gate_val이 비어있으면 "상품이 존재하지 않습니다"
+  if (html.includes('상품이 존재하지 않습니다') || /gate_val\s*=\s*""/.test(html)) {
+    throw new Error(`멜론 티켓 페이지 요청 실패: 삭제/만료된 공연 (prodId: ${externalId})`);
+  }
+
   // 제목: <p class="tit">...</p>
   let title = '';
   const titleMatch = html.match(

@@ -15,6 +15,11 @@ function koreanDateToIso(dateStr: string): string | null {
 export async function parseMelonTicket(url: string): Promise<ScrapedSchedule> {
   const html = await fetchHtml(url);
 
+  // 삭제/만료된 공연 페이지 감지
+  if (html.includes('상품이 존재하지 않습니다') || /gate_val\s*=\s*""/.test(html)) {
+    throw new Error(`멜론 티켓 페이지 요청 실패: 삭제/만료된 공연 (${url})`);
+  }
+
   // 제목 추출: <p class="tit">...</p> 또는 <span class="txt">...</span>
   let title: string | null = null;
   const titleMatch = html.match(/<(?:p class="tit"|span class="txt")>([\s\S]*?)<\/(?:p|span)>/);
