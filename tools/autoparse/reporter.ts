@@ -31,12 +31,14 @@ const SERVER_FILES: Record<Platform, string> = {
   melon: 'apps/server/src/performance/fetchers/melon.fetcher.ts',
   nol: 'apps/server/src/performance/fetchers/nol.fetcher.ts',
   ticketlink: 'apps/server/src/performance/fetchers/ticketlink.fetcher.ts',
+  yes24: 'apps/server/src/performance/fetchers/yes24.fetcher.ts',
 };
 
 const ADMIN_FILES: Record<Platform, string> = {
   melon: 'apps/admin/src/app/api/scrape-schedule/parsers/melon.ts',
   nol: 'apps/admin/src/app/api/scrape-schedule/parsers/interpark.ts',
   ticketlink: 'apps/admin/src/app/api/scrape-schedule/parsers/ticketlink.ts',
+  yes24: 'apps/admin/src/app/api/scrape-schedule/parsers/yes24.ts',
 };
 
 export function getServerFile(platform: Platform): string {

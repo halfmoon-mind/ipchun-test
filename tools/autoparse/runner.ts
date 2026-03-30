@@ -20,6 +20,7 @@ const ADMIN_SOURCE_MAP: Record<Platform, string> = {
   melon: 'melon',
   nol: 'interpark',
   ticketlink: 'ticketlink',
+  yes24: 'yes24',
 };
 
 function sleep(ms: number): Promise<void> {
@@ -50,6 +51,11 @@ async function runSingle(
         '../../apps/server/src/performance/fetchers/nol.fetcher.js'
       );
       fetched = await fetchFromNol(externalId);
+    } else if (platform === 'yes24') {
+      const { fetchFromYes24 } = await import(
+        '../../apps/server/src/performance/fetchers/yes24.fetcher.js'
+      );
+      fetched = await fetchFromYes24(externalId);
     } else {
       const { fetchFromTicketlink } = await import(
         '../../apps/server/src/performance/fetchers/ticketlink.fetcher.js'
@@ -102,6 +108,11 @@ async function runSingle(
         '../../apps/admin/src/app/api/scrape-schedule/parsers/interpark.js'
       );
       scraped = await parseInterpark(url);
+    } else if (platform === 'yes24') {
+      const { parseYes24 } = await import(
+        '../../apps/admin/src/app/api/scrape-schedule/parsers/yes24.js'
+      );
+      scraped = await parseYes24(url);
     } else {
       const { parseTicketlink } = await import(
         '../../apps/admin/src/app/api/scrape-schedule/parsers/ticketlink.js'
