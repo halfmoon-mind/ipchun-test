@@ -53,14 +53,38 @@ export interface PerformanceSchedule {
   dateTime: string;
 }
 
+export interface TicketItem {
+  id: string;
+  seatGrade: string;
+  price: number;
+}
+
+export interface PerformanceSourceItem {
+  id: string;
+  platform: string;
+  externalId: string;
+  sourceUrl: string;
+  ticketOpenAt: string | null;
+  bookingEndAt: string | null;
+  salesStatus: string | null;
+  lastSyncedAt: string;
+  tickets: TicketItem[];
+}
+
 export interface CalendarPerformance {
   id: string;
   title: string;
+  subtitle: string | null;
   description: string | null;
   genre: string;
+  ageRating: string | null;
+  runtime: number | null;
+  intermission: number | null;
   posterUrl: string | null;
   status: string;
+  organizer: string | null;
   venue: { name: string; address: string | null } | null;
+  sources: PerformanceSourceItem[];
   schedules: PerformanceSchedule[];
   artists: PerformanceArtist[];
 }
