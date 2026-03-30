@@ -43,6 +43,10 @@ function formatDateTime(iso: string) {
   return `${d.getFullYear()}. ${d.getMonth() + 1}. ${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
 }
 
+function formatPrice(price: number) {
+  return price.toLocaleString("ko-KR") + "원";
+}
+
 export default function ScheduleDetailPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -188,6 +192,67 @@ export default function ScheduleDetailPage() {
                 <span className="text-sm font-medium">
                   {entry.artist?.name ?? entry.stageName ?? "Unknown"}
                 </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Ticket info */}
+      {performance.sources.length > 0 && (
+        <div className="mb-6">
+          <h2
+            className="text-sm font-bold mb-3"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            예매
+          </h2>
+          <div className="space-y-3">
+            {performance.sources.map((source) => (
+              <div key={source.id}>
+                <a
+                  href={source.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between py-3 px-4 border"
+                  style={{
+                    borderColor: "var(--border)",
+                    background: "var(--secondary)",
+                  }}
+                >
+                  <div>
+                    <div className="text-sm font-bold">
+                      {PLATFORM_LABELS[source.platform] ?? source.platform}
+                    </div>
+                    {source.salesStatus && (
+                      <div className="text-xs text-muted-foreground mt-0.5">
+                        {source.salesStatus}
+                      </div>
+                    )}
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 17l9.2-9.2M17 17V7H7" />
+                  </svg>
+                </a>
+
+                {/* Ticket open date */}
+                {source.ticketOpenAt && (
+                  <div className="text-xs text-muted-foreground mt-1 px-1">
+                    티켓 오픈: {formatDateTime(source.ticketOpenAt)}
+                  </div>
+                )}
+
+                {/* Prices */}
+                {source.tickets.length > 0 && (
+                  <div className="mt-2 px-1 space-y-0.5">
+                    {source.tickets.map((ticket) => (
+                      <div key={ticket.id} className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">{ticket.seatGrade}</span>
+                        <span className="font-medium">{formatPrice(ticket.price)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>
