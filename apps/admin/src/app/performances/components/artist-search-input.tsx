@@ -67,12 +67,19 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
   async function handleSelectSpotify(item: { spotifyId: string; name: string; imageUrl: string | null; followers: number }) {
     setCreating(item.spotifyId);
     try {
-      const detail = await api.spotify.getArtist(item.spotifyId);
+      const [detail, youtube] = await Promise.all([
+        api.spotify.getArtist(item.spotifyId),
+        api.youtube.searchChannel(item.name),
+      ]);
+      const socialLinks: Record<string, string> = { spotify: detail.spotifyUrl };
+      if (youtube?.channelUrl) {
+        socialLinks.youtube = youtube.channelUrl;
+      }
       const artist = await api.artists.create({
         name: detail.name,
         description: detail.description,
         imageUrl: detail.imageUrl,
-        socialLinks: { spotify: detail.spotifyUrl },
+        socialLinks,
         spotifyId: detail.spotifyId,
         spotifyUrl: detail.spotifyUrl,
         monthlyListeners: detail.monthlyListeners,
@@ -97,6 +104,7 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onFocus={() => hasResults && setOpen(true)}
+        onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); }}
         placeholder="아티스트 이름으로 검색..."
         className="form-input w-full"
       />
