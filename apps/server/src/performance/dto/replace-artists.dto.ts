@@ -24,6 +24,14 @@ export class ArtistEntryDto {
   @IsInt()
   @IsOptional()
   performanceOrder?: number;
+
+  @IsString()
+  @IsOptional()
+  stage?: string;
+
+  @IsUUID()
+  @IsOptional()
+  performanceScheduleId?: string;
 }
 
 export class ReplaceArtistsDto {

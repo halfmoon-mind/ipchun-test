@@ -37,6 +37,11 @@ enum TicketPlatform {
   TICKETLINK = 'TICKETLINK',
 }
 
+enum LineupMode {
+  LINEUP = 'LINEUP',
+  TIMETABLE = 'TIMETABLE',
+}
+
 export class ScheduleEntryDto {
   @IsDateString()
   dateTime!: string;
@@ -91,6 +96,11 @@ export class CreatePerformanceDto {
   @IsString()
   @IsOptional()
   organizer?: string;
+
+  @ApiProperty({ enum: LineupMode, enumName: 'LineupMode' })
+  @IsEnum(LineupMode)
+  @IsOptional()
+  lineupMode?: LineupMode;
 
   // ── Venue ──
   @IsString()
