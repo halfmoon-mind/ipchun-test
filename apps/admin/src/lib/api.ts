@@ -99,6 +99,11 @@ export const api = {
         method: 'POST',
         body: JSON.stringify(data),
       }),
+    update: (id: string, data: Record<string, unknown>) =>
+      request<Performance>(`/performances/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      }),
     delete: (id: string) =>
       request<void>(`/performances/${id}`, { method: 'DELETE' }),
     fetch: (url: string) =>
