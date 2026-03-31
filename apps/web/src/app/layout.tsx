@@ -2,14 +2,34 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "입춘 — 인디 공연 일정",
+  metadataBase: new URL("https://ipchun.live"),
+  title: {
+    default: "입춘 — 인디 공연 일정",
+    template: "%s | 입춘",
+  },
   description: "인디 밴드·아티스트 공연 일정을 한눈에 확인하세요.",
+  openGraph: {
+    type: "website",
+    locale: "ko_KR",
+    siteName: "입춘",
+    title: "입춘 — 인디 공연 일정",
+    description: "인디 밴드·아티스트 공연 일정을 한눈에 확인하세요.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "입춘 — 인디 공연 일정",
+    description: "인디 밴드·아티스트 공연 일정을 한눈에 확인하세요.",
+  },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#1A1A1A",
 };
 
 export default function RootLayout({
