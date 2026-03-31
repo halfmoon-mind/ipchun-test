@@ -1,15 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Calendar } from "@/components/Calendar";
 import { ScheduleList } from "@/components/ScheduleList";
 import { api, type CalendarResponse } from "@/lib/api";
 
-export default function HomePage() {
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const now = new Date();
-  const [year, setYear] = useState(now.getFullYear());
-  const [month, setMonth] = useState(now.getMonth() + 1);
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const year = Number(searchParams.get("year")) || now.getFullYear();
+  const month = Number(searchParams.get("month")) || now.getMonth() + 1;
+  const selectedDate = searchParams.get("date");
+
   const [data, setData] = useState<CalendarResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -21,10 +26,25 @@ export default function HomePage() {
     });
   }, [year, month]);
 
+  const updateParams = useCallback(
+    (params: Record<string, string | null>) => {
+      const next = new URLSearchParams(searchParams.toString());
+      for (const [key, value] of Object.entries(params)) {
+        if (value === null) next.delete(key);
+        else next.set(key, value);
+      }
+      const qs = next.toString();
+      router.push(qs ? `?${qs}` : "/");
+    },
+    [router, searchParams],
+  );
+
   const handleChangeMonth = (y: number, m: number) => {
-    setYear(y);
-    setMonth(m);
-    setSelectedDate(null);
+    updateParams({ year: String(y), month: String(m), date: null });
+  };
+
+  const handleSelectDate = (date: string | null) => {
+    updateParams({ date });
   };
 
   return (
@@ -35,7 +55,7 @@ export default function HomePage() {
         month={month}
         dates={data?.dates ?? {}}
         selectedDate={selectedDate}
-        onSelectDate={setSelectedDate}
+        onSelectDate={handleSelectDate}
         onChangeMonth={handleChangeMonth}
       />
 
@@ -59,5 +79,19 @@ export default function HomePage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="py-16 text-center text-sm text-muted-foreground">
+          불러오는 중...
+        </div>
+      }
+    >
+      <HomeContent />
+    </Suspense>
   );
 }
