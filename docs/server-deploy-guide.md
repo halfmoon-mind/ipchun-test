@@ -16,9 +16,22 @@ NestJS 서버를 새로운 환경에 배포하는 절차.
 |------|------|--------|
 | `NODE_ENV` | `production` 설정 시 `.env.production` 로드 | `development` |
 | `DATABASE_URL` | PostgreSQL 연결 문자열 | (필수) |
-| `PORT` | 서버 포트 | `3000` |
+| `PORT` | 서버 포트 | `3001` |
 
 현재 프로덕션 DB는 **Supabase** (AWS AP Northeast 2 - 서울) 사용 중.
+
+### `.env.production` 파일
+
+`prisma.config.ts`는 `NODE_ENV`에 따라 `.env.{NODE_ENV}` 파일을 로드한다.
+프로덕션 서버의 `apps/server/` 디렉토리에 `.env.production` 파일이 존재해야 한다.
+
+```bash
+# apps/server/.env.production
+DATABASE_URL="postgresql://..."
+PORT=3001
+```
+
+> `.env.production`이 없으면 `prisma migrate deploy` 시 `datasource.url property is required` 에러 발생.
 
 ## 배포 절차
 
@@ -96,7 +109,7 @@ pnpm build:server
 이후 프로세스 매니저(pm2 등)나 컨테이너로 실행:
 
 ```bash
-NODE_ENV=production PORT=3000 node apps/server/dist/main.js
+NODE_ENV=production PORT=3001 node apps/server/dist/main.js
 ```
 
 ## 주요 설정 참고
