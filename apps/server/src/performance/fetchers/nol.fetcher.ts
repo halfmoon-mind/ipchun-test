@@ -24,16 +24,21 @@ function parseNolDate(s: string | null | undefined): string | null {
   return `${y}-${m}-${d}T${h}:${min}:00+09:00`;
 }
 
-/** playTime 텍스트에서 "YYYY년 M월 D일 … 오후 H시" 패턴 파싱 */
+/** playTime 텍스트에서 회차별 날짜/시간 파싱
+ *  - 한국어: "2026년 4월 3일(금) 오후 8시 30분"
+ *  - 영문:   "2026년 4월 3일(금) 8PM(KST)" 또는 "8:30PM(KST)"
+ */
 function parsePlayTimeSchedules(
   playTime: string | null | undefined,
 ): Array<{ dateTime: string }> {
   if (!playTime) return [];
   const results: Array<{ dateTime: string }> = [];
-  const re =
+
+  // 한국어 오전/오후 패턴
+  const reKo =
     /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일[^)]*\)\s*(오전|오후)\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/g;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(playTime)) !== null) {
+  while ((match = reKo.exec(playTime)) !== null) {
     const [, y, mo, d, ampm, hRaw, minRaw] = match;
     let h = parseInt(hRaw, 10);
     if (ampm === '오후' && h < 12) h += 12;
@@ -41,6 +46,21 @@ function parsePlayTimeSchedules(
     const iso = `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}T${String(h).padStart(2, '0')}:${(minRaw || '00').padStart(2, '0')}:00+09:00`;
     results.push({ dateTime: iso });
   }
+
+  // 영문 AM/PM 패턴 (예: "8PM", "8:30PM", "8PM(KST)")
+  if (results.length === 0) {
+    const reEn =
+      /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일[^)]*\)\s*(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/gi;
+    while ((match = reEn.exec(playTime)) !== null) {
+      const [, y, mo, d, hRaw, minRaw, ampm] = match;
+      let h = parseInt(hRaw, 10);
+      if (ampm.toUpperCase() === 'PM' && h < 12) h += 12;
+      if (ampm.toUpperCase() === 'AM' && h === 12) h = 0;
+      const iso = `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}T${String(h).padStart(2, '0')}:${(minRaw || '00').padStart(2, '0')}:00+09:00`;
+      results.push({ dateTime: iso });
+    }
+  }
+
   return results;
 }
 
@@ -232,7 +252,9 @@ export async function fetchFromNol(
     subtitle: null,
     genre: GENRE_MAP[summary.genreName] || Genre.OTHER,
     ageRating: summary.viewRateName || null,
-    runtime: summary.runningTime ? parseInt(summary.runningTime, 10) : null,
+    runtime: summary.runningTime && parseInt(summary.runningTime, 10) > 0
+      ? parseInt(summary.runningTime, 10)
+      : null,
     intermission: summary.interMissionTime
       ? parseInt(summary.interMissionTime, 10) || null
       : null,
