@@ -231,7 +231,7 @@ export default function ArtistDetail() {
             style={{ borderColor: "var(--border)" }}
           >
             {upcoming.map((p) => (
-              <ScheduleCard key={p.id} performance={p} />
+              <ScheduleCard key={p.id} performance={p} selectedDate={null} />
             ))}
           </div>
         ) : (
@@ -255,7 +255,7 @@ export default function ArtistDetail() {
             style={{ borderColor: "var(--border)" }}
           >
             {past.map((p) => (
-              <ScheduleCard key={p.id} performance={p} />
+              <ScheduleCard key={p.id} performance={p} selectedDate={null} />
             ))}
           </div>
           {pastCursor && (

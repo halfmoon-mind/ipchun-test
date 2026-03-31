@@ -24,12 +24,21 @@ const STATUS_COLORS: Record<string, string> = {
   CANCELLED: "var(--destructive)",
 };
 
-export function ScheduleCard({ performance }: { performance: Performance }) {
-  const firstSchedule = performance.schedules[0];
-  const date = firstSchedule ? new Date(firstSchedule.dateTime) : new Date();
+interface ScheduleCardProps {
+  performance: Performance;
+  selectedDate: string | null;
+}
+
+export function ScheduleCard({ performance, selectedDate }: ScheduleCardProps) {
+  // 선택된 날짜와 매칭되는 스케줄, 없으면 첫 스케줄
+  const displaySchedule = selectedDate
+    ? performance.schedules.find((s) => s.dateTime.slice(0, 10) === selectedDate) ?? performance.schedules[0]
+    : performance.schedules[0];
+  const date = displaySchedule ? new Date(displaySchedule.dateTime) : new Date();
   const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
   const dayStr = dayNames[date.getDay()];
   const artists = performance.artists.map((a) => a.artist?.name ?? a.stageName ?? "").filter(Boolean).join(", ");
+  const hasMultipleDates = performance.schedules.length > 1;
 
   return (
     <Link
@@ -76,6 +85,29 @@ export function ScheduleCard({ performance }: { performance: Performance }) {
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
               {performance.venue.name}
             </p>
+          )}
+
+          {/* Multi-date row: 2개 이상 스케줄일 때만 표시 */}
+          {hasMultipleDates && (
+            <div className="flex items-center gap-1.5 mt-1.5">
+              {performance.schedules.map((s) => {
+                const d = new Date(s.dateTime);
+                const dateStr = d.toISOString().slice(0, 10);
+                const isSelected = selectedDate === dateStr;
+                return (
+                  <span
+                    key={s.id}
+                    className="text-xs"
+                    style={{
+                      color: isSelected ? "var(--foreground)" : "var(--muted-foreground)",
+                      fontWeight: isSelected ? 700 : 400,
+                    }}
+                  >
+                    {d.getMonth() + 1}/{d.getDate()}
+                  </span>
+                );
+              })}
+            </div>
           )}
         </div>
       </div>

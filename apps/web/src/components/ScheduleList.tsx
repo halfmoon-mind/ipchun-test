@@ -53,7 +53,7 @@ export function ScheduleList({ performances, selectedDate }: ScheduleListProps) 
     <div>
       {filtered.map((performance, i) => (
         <div key={performance.id} ref={i === closestIndex ? closestRef : undefined}>
-          <ScheduleCard performance={performance} />
+          <ScheduleCard performance={performance} selectedDate={selectedDate} />
         </div>
       ))}
     </div>
