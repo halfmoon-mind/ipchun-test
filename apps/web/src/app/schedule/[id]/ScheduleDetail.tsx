@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { api } from "@/lib/api";
 import type { Performance } from "@ipchun/shared";
 
@@ -81,7 +82,8 @@ export default function ScheduleDetail() {
       {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-muted-foreground mb-4"
+        className="flex items-center gap-1 text-sm text-muted-foreground mb-4 min-h-[44px] -ml-2 px-2 active:opacity-70 transition-opacity"
+        aria-label="뒤로 가기"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6" />
@@ -92,14 +94,14 @@ export default function ScheduleDetail() {
       {/* Genre & Status badges */}
       <div className="flex items-center gap-2 mb-2">
         <span
-          className="text-[10px] font-semibold tracking-wider uppercase"
+          className="text-xs font-semibold tracking-wider uppercase"
           style={{ color: "var(--muted-foreground)" }}
         >
           {GENRE_LABELS[performance.genre] || performance.genre}
         </span>
         {performance.status && performance.status !== "SCHEDULED" && (
           <span
-            className="text-[10px] font-bold"
+            className="text-xs font-bold"
             style={{ color: STATUS_COLORS[performance.status] ?? "var(--muted-foreground)" }}
           >
             {STATUS_LABELS[performance.status] ?? performance.status}
@@ -117,10 +119,10 @@ export default function ScheduleDetail() {
 
       {/* Poster */}
       {performance.posterUrl && (
-        <div className="mb-6 flex justify-center">
+        <div className="mb-6 flex justify-center" style={{ aspectRatio: "3/4", maxHeight: 280 }}>
           <img
             src={performance.posterUrl}
-            alt={performance.title}
+            alt={`${performance.title} 포스터`}
             className="max-h-[280px] max-w-full object-contain"
           />
         </div>
@@ -190,31 +192,63 @@ export default function ScheduleDetail() {
             라인업
           </h2>
           <div className="space-y-2">
-            {performance.artists.map((entry) => (
-              <div
-                key={entry.id}
-                className="flex items-center gap-3 py-2 border-b"
-                style={{ borderColor: "var(--border)" }}
-              >
-                {entry.artist?.imageUrl ? (
-                  <img
-                    src={entry.artist.imageUrl}
-                    alt={entry.artist.name}
-                    className="w-8 h-8 object-cover"
-                  />
-                ) : (
-                  <div
-                    className="w-8 h-8 flex items-center justify-center text-xs font-bold"
-                    style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}
-                  >
-                    {(entry.artist?.name ?? entry.stageName ?? "?")[0]}
-                  </div>
-                )}
-                <span className="text-sm font-medium">
-                  {entry.artist?.name ?? entry.stageName ?? "Unknown"}
-                </span>
-              </div>
-            ))}
+            {performance.artists.map((entry) => {
+              const content = (
+                <>
+                  {entry.artist?.imageUrl ? (
+                    <img
+                      src={entry.artist.imageUrl}
+                      alt={entry.artist.name}
+                      className="w-8 h-8 object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-8 h-8 flex items-center justify-center text-xs font-bold"
+                      style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}
+                    >
+                      {(entry.artist?.name ?? entry.stageName ?? "?")[0]}
+                    </div>
+                  )}
+                  <span className="text-sm font-medium">
+                    {entry.artist?.name ?? entry.stageName ?? "Unknown"}
+                  </span>
+                  {entry.artist?.id && (
+                    <svg
+                      className="ml-auto flex-shrink-0"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                  )}
+                </>
+              );
+
+              return entry.artist?.id ? (
+                <Link
+                  key={entry.id}
+                  href={`/artists/${entry.artist.id}`}
+                  className="flex items-center gap-3 py-2 border-b"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  {content}
+                </Link>
+              ) : (
+                <div
+                  key={entry.id}
+                  className="flex items-center gap-3 py-2 border-b"
+                  style={{ borderColor: "var(--border)" }}
+                >
+                  {content}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
