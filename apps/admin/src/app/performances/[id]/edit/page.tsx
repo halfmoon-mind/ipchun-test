@@ -24,6 +24,9 @@ export default function EditPerformancePage() {
 
   async function handleSubmit(data: Record<string, unknown>) {
     await api.performances.update(id, data);
+  }
+
+  function handleSuccess() {
     router.push(`/performances/${id}`);
   }
 
@@ -34,7 +37,7 @@ export default function EditPerformancePage() {
   return (
     <div>
       <h1 className="page-heading mb-8">공연 수정</h1>
-      <PerformanceForm mode="edit" initialData={performance} onSubmit={handleSubmit} />
+      <PerformanceForm mode="edit" initialData={performance} onSubmit={handleSubmit} onSuccess={handleSuccess} />
     </div>
   );
 }

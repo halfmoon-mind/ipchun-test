@@ -8,7 +8,11 @@ export default function NewPerformancePage() {
   const router = useRouter();
 
   async function handleSubmit(data: Record<string, unknown>) {
-    await api.performances.create(data);
+    const created = await api.performances.create(data);
+    return created.id;
+  }
+
+  function handleSuccess() {
     router.push('/performances');
   }
 
@@ -19,7 +23,7 @@ export default function NewPerformancePage() {
   return (
     <div>
       <h1 className="page-heading mb-8">새 공연 등록</h1>
-      <PerformanceForm mode="create" onSubmit={handleSubmit} onFetch={handleFetch} />
+      <PerformanceForm mode="create" onSubmit={handleSubmit} onSuccess={handleSuccess} onFetch={handleFetch} />
     </div>
   );
 }

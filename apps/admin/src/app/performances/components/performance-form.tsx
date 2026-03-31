@@ -56,11 +56,12 @@ function toDatetimeLocal(iso: string | null): string {
 interface PerformanceFormProps {
   mode: 'create' | 'edit';
   initialData?: Performance;
-  onSubmit: (data: Record<string, unknown>) => Promise<void>;
+  onSubmit: (data: Record<string, unknown>) => Promise<string | void>;
+  onSuccess?: () => void;
   onFetch?: (url: string) => Promise<FetchedPerformance>;
 }
 
-export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: PerformanceFormProps) {
+export function PerformanceForm({ mode, initialData, onSubmit, onSuccess, onFetch }: PerformanceFormProps) {
   // UI state
   const [fetchUrl, setFetchUrl] = useState('');
   const [fetching, setFetching] = useState(false);
@@ -201,11 +202,11 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
         payload.salesStatus = salesStatus || undefined;
       }
 
-      await onSubmit(payload);
+      const resultId = await onSubmit(payload);
 
       // Save artists if any
       if (artistEntries.length > 0 || (initialData?.artists ?? []).length > 0) {
-        const perfId = initialData?.id;
+        const perfId = resultId || initialData?.id;
         if (perfId) {
           await api.performances.replaceArtists(
             perfId,
@@ -221,6 +222,8 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
           );
         }
       }
+
+      onSuccess?.();
     } catch (err) {
       setError(err instanceof Error ? err.message : '저장에 실패했습니다');
     } finally {
