@@ -292,13 +292,6 @@ export class PerformanceService {
       include: PERFORMANCE_INCLUDE,
     });
 
-    // 첫 번째 스케줄 날짜 기준 오름차순 정렬
-    performances.sort((a, b) => {
-      const aTime = a.schedules[0]?.dateTime ?? '';
-      const bTime = b.schedules[0]?.dateTime ?? '';
-      return new Date(aTime).getTime() - new Date(bTime).getTime();
-    });
-
     // Build dates map from PerformanceSchedule dateTimes
     const dates: Record<string, string[]> = {};
     for (const perf of performances) {
