@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: "cover",
   themeColor: "#1A1A1A",
 };
 
@@ -52,15 +54,17 @@ export default function RootLayout({
       <body className="min-h-dvh">
         <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
           <div className="mx-auto max-w-lg px-4 py-3">
-            <h1
-              className="text-lg font-bold tracking-tight"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              입춘
-            </h1>
+            <Link href="/">
+              <h1
+                className="text-lg font-bold tracking-tight"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                입춘
+              </h1>
+            </Link>
           </div>
         </header>
-        <main className="mx-auto max-w-lg">{children}</main>
+        <main className="mx-auto max-w-lg pb-24">{children}</main>
       </body>
     </html>
   );

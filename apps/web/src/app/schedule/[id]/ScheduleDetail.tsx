@@ -77,28 +77,17 @@ export default function ScheduleDetail() {
   }
 
   return (
-    <div className="px-4 py-6">
+    <div className="px-4 pt-6 pb-6" style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}>
       {/* Back button */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-1 text-sm text-muted-foreground mb-6"
+        className="flex items-center gap-1 text-sm text-muted-foreground mb-4"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="15 18 9 12 15 6" />
         </svg>
         뒤로
       </button>
-
-      {/* Poster */}
-      {performance.posterUrl && (
-        <div className="mb-4 -mx-4">
-          <img
-            src={performance.posterUrl}
-            alt={performance.title}
-            className="w-full object-cover max-h-[300px]"
-          />
-        </div>
-      )}
 
       {/* Genre & Status badges */}
       <div className="flex items-center gap-2 mb-2">
@@ -125,6 +114,17 @@ export default function ScheduleDetail() {
       >
         {performance.title}
       </h1>
+
+      {/* Poster */}
+      {performance.posterUrl && (
+        <div className="mb-6 flex justify-center">
+          <img
+            src={performance.posterUrl}
+            alt={performance.title}
+            className="max-h-[280px] max-w-full object-contain"
+          />
+        </div>
+      )}
 
       {/* Info */}
       <div className="space-y-2 text-sm mb-6">

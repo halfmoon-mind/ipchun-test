@@ -45,3 +45,7 @@ body {
   background: var(--secondary);
   color: var(--foreground);
 }
+
+button, [role="button"] {
+  cursor: pointer;
+}
