@@ -1,5 +1,6 @@
 import type { FetchedPerformance } from '@ipchun/shared';
 import { Genre, TicketPlatform } from '@ipchun/shared';
+import { extractArtistNames } from './extract-artist-names';
 
 const MAPI = 'https://mapi.ticketlink.co.kr/mapi';
 
@@ -30,6 +31,7 @@ export async function fetchFromTicketlink(
   let organizer: string | null = null;
   let representativePrice: number | null = null;
   let salesStatus: string | null = null;
+  let ldPerformer: string | null = null;
 
   const jsonLdMatches = html.matchAll(
     /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g,
@@ -56,6 +58,14 @@ export async function fetchFromTicketlink(
           typeof ld.organizer === 'string'
             ? ld.organizer
             : ld.organizer.name || null;
+      }
+      if (ld.performer) {
+        ldPerformer =
+          typeof ld.performer === 'string'
+            ? ld.performer
+            : Array.isArray(ld.performer)
+              ? ld.performer.map((p: any) => (typeof p === 'string' ? p : p.name)).filter(Boolean).join(',')
+              : ld.performer.name || null;
       }
       if (ld.offers?.price) {
         representativePrice = parseInt(ld.offers.price);
@@ -117,6 +127,15 @@ export async function fetchFromTicketlink(
     tickets.push({ seatGrade: '일반', price: representativePrice });
   }
 
+  // 아티스트 이름 추출
+  const performers: string[] = [];
+  if (ldPerformer) {
+    performers.push(
+      ...ldPerformer.split(/[,、/]/).map((s) => s.trim()).filter(Boolean),
+    );
+  }
+  const artistNames = extractArtistNames(title, { performers });
+
   return {
     title,
     subtitle: null,
@@ -144,5 +163,6 @@ export async function fetchFromTicketlink(
       bookingEndAt: null,
       salesStatus,
     },
+    artistNames,
   };
 }

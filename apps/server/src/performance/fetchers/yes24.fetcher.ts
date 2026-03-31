@@ -1,5 +1,6 @@
 import type { FetchedPerformance } from '@ipchun/shared';
 import { Genre, TicketPlatform } from '@ipchun/shared';
+import { extractArtistNames } from './extract-artist-names';
 
 const GENRE_MAP: Record<string, Genre> = {
   콘서트: Genre.CONCERT,
@@ -176,6 +177,15 @@ export async function fetchFromYes24(
     };
   }
 
+  // 아티스트 이름 추출 (ldPerformer는 이미 JSON-LD에서 추출됨)
+  const performers: string[] = [];
+  if (ldPerformer) {
+    performers.push(
+      ...ldPerformer.split(/[,、/]/).map((s) => s.trim()).filter(Boolean),
+    );
+  }
+  const artistNames = extractArtistNames(ldTitle, { performers });
+
   return {
     title: ldTitle,
     subtitle: null,
@@ -196,5 +206,6 @@ export async function fetchFromYes24(
       bookingEndAt: null,
       salesStatus: null,
     },
+    artistNames,
   };
 }

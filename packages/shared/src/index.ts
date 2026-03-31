@@ -158,6 +158,8 @@ export interface FetchedPerformance {
     bookingEndAt: string | null;
     salesStatus: string | null;
   };
+  /** 티켓 페이지에서 추출한 아티스트 이름 후보 (추천용, 자동 연결 아님) */
+  artistNames: string[];
 }
 
 export interface AttendanceDto {

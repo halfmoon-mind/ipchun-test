@@ -1,5 +1,6 @@
 import type { FetchedPerformance } from '@ipchun/shared';
 import { Genre, TicketPlatform } from '@ipchun/shared';
+import { extractArtistNames } from './extract-artist-names';
 
 /** "2026.02.27" → "2026-02-27" */
 function koreanDateToIso(dateStr: string): string | null {
@@ -232,6 +233,18 @@ export async function fetchFromMelon(
     salesStatus = 'SCHEDULED';
   }
 
+  // 아티스트 이름 추출
+  const performers: string[] = [];
+  const castMatch = html.match(
+    /<dt[^>]*>출연<\/dt>\s*<dd[^>]*>([\s\S]*?)<\/dd>/,
+  );
+  if (castMatch) {
+    const castText = castMatch[1].replace(/<[^>]*>/g, '').trim();
+    const castNames = castText.split(/[,、/]/).map((s) => s.trim()).filter(Boolean);
+    performers.push(...castNames);
+  }
+  const artistNames = extractArtistNames(title, { performers });
+
   return {
     title,
     subtitle,
@@ -254,5 +267,6 @@ export async function fetchFromMelon(
       bookingEndAt: null,
       salesStatus,
     },
+    artistNames,
   };
 }

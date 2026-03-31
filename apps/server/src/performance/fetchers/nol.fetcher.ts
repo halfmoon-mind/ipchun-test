@@ -1,5 +1,6 @@
 import type { FetchedPerformance } from '@ipchun/shared';
 import { Genre, PerformanceStatus, TicketPlatform } from '@ipchun/shared';
+import { extractArtistNames } from './extract-artist-names';
 
 const NOL_API = 'https://api-ticketfront.interpark.com';
 
@@ -206,6 +207,26 @@ export async function fetchFromNol(
     posterUrl = `https:${posterUrl}`;
   }
 
+  // 5) 아티스트 이름 추출
+  const performers: string[] = [];
+  if (summary.bizInfo) {
+    const orgMatch = (summary.bizInfo as string).match(/주최\s*:\s*([^/]+)/);
+    if (orgMatch) {
+      const name = orgMatch[1].trim();
+      if (name && !/\(주\)|\(재\)|재단|협회|기획|엔터|컴퍼니|프로덕션|스튜디오/i.test(name)) {
+        performers.push(name);
+      }
+    }
+  }
+  if (summary.castingInfo) {
+    const castNames = (summary.castingInfo as string)
+      .split(/[,、/]/)
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    performers.push(...castNames);
+  }
+  const artistNames = extractArtistNames(summary.goodsName || '', { performers });
+
   return {
     title: summary.goodsName || '',
     subtitle: null,
@@ -228,5 +249,6 @@ export async function fetchFromNol(
       bookingEndAt: parseNolDate(summary.bookingEndDate),
       salesStatus: mapNolStatus(summary),
     },
+    artistNames,
   };
 }

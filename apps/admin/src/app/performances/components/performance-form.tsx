@@ -8,6 +8,7 @@ import {
   type FetchedPerformance,
 } from '@ipchun/shared';
 import { ArtistSection } from './artist-section';
+import { ArtistSuggestions } from './artist-suggestions';
 import type { ArtistEntry } from './artist-section';
 import type { LineupMode, PerformanceScheduleItem } from '@ipchun/shared';
 import { api } from '@/lib/api';
@@ -103,6 +104,7 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
   const [lineupMode, setLineupMode] = useState<LineupMode | null>(
     initialData?.lineupMode ?? null,
   );
+  const [suggestedArtistNames, setSuggestedArtistNames] = useState<string[]>([]);
   const [artistEntries, setArtistEntries] = useState<ArtistEntry[]>(
     (initialData?.artists ?? []).map((a) => ({
       artistId: a.artistId,
@@ -147,6 +149,7 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
 
     setSchedules(data.schedules.map((s) => ({ dateTime: toDatetimeLocal(s.dateTime) })));
     setTickets(data.tickets);
+    setSuggestedArtistNames(data.artistNames ?? []);
     setFetched(true);
   }
 
@@ -460,6 +463,18 @@ export function PerformanceForm({ mode, initialData, onSubmit, onFetch }: Perfor
 
         {/* ── 아티스트 ── */}
         <div className="border-t pt-6" style={{ borderColor: 'var(--border)' }}>
+          {suggestedArtistNames.length > 0 && (
+            <ArtistSuggestions
+              artistNames={suggestedArtistNames}
+              excludeIds={artistEntries.map((a) => a.artistId)}
+              onSelect={(artist) => {
+                setArtistEntries((prev) => [
+                  ...prev,
+                  { artistId: artist.id, artist, performanceScheduleId: null, role: null, stage: null, startTime: null, endTime: null, performanceOrder: prev.length },
+                ]);
+              }}
+            />
+          )}
           <ArtistSection
             genre={genre}
             lineupMode={lineupMode}
