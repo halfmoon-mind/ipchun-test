@@ -65,6 +65,15 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
   }
 
   async function handleSelectSpotify(item: { spotifyId: string; name: string; imageUrl: string | null; followers: number }) {
+    // DB에 이미 등록된 아티스트라면 바로 선택
+    const existingInDb = dbResults.find((a) => a.spotifyId === item.spotifyId);
+    if (existingInDb) {
+      onSelect(existingInDb);
+      setQuery('');
+      setOpen(false);
+      return;
+    }
+
     setCreating(item.spotifyId);
     try {
       const [detail, youtube] = await Promise.all([
@@ -75,16 +84,38 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
       if (youtube?.channelUrl) {
         socialLinks.youtube = youtube.channelUrl;
       }
-      const artist = await api.artists.create({
-        name: detail.name,
-        description: detail.description,
-        imageUrl: detail.imageUrl,
-        socialLinks,
-        spotifyId: detail.spotifyId,
-        spotifyUrl: detail.spotifyUrl,
-        monthlyListeners: detail.monthlyListeners,
-        spotifyMeta: detail.spotifyMeta,
+
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const res = await fetch(`${API_BASE}/artists`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: detail.name,
+          description: detail.description,
+          imageUrl: detail.imageUrl,
+          socialLinks,
+          spotifyId: detail.spotifyId,
+          spotifyUrl: detail.spotifyUrl,
+          monthlyListeners: detail.monthlyListeners,
+          spotifyMeta: detail.spotifyMeta,
+        }),
       });
+
+      if (res.status === 409) {
+        const data = await res.json();
+        if (data.existingArtist) {
+          onSelect(data.existingArtist);
+          setQuery('');
+          setOpen(false);
+          return;
+        }
+      }
+
+      if (!res.ok) {
+        throw new Error(`아티스트 등록 실패: ${res.status}`);
+      }
+
+      const artist = await res.json();
       onSelect(artist);
       setQuery('');
       setOpen(false);
@@ -95,7 +126,11 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
     }
   }
 
-  const hasResults = dbResults.length > 0 || spotifyResults.length > 0;
+  // DB에 이미 등록된 spotifyId는 Spotify 결과에서 제외
+  const dbSpotifyIds = new Set(dbResults.map((a) => a.spotifyId).filter(Boolean));
+  const filteredSpotifyResults = spotifyResults.filter((s) => !dbSpotifyIds.has(s.spotifyId));
+
+  const hasResults = dbResults.length > 0 || filteredSpotifyResults.length > 0;
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
@@ -148,7 +183,7 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
             </>
           )}
 
-          {spotifyResults.length > 0 && (
+          {filteredSpotifyResults.length > 0 && (
             <>
               <div style={{
                 padding: '6px 12px', fontSize: 11, color: 'var(--muted-foreground)',
@@ -156,7 +191,7 @@ export function ArtistSearchInput({ onSelect, excludeIds = [] }: ArtistSearchInp
               }}>
                 Spotify 검색 결과
               </div>
-              {spotifyResults.map((a) => (
+              {filteredSpotifyResults.map((a) => (
                 <button
                   key={a.spotifyId}
                   type="button"

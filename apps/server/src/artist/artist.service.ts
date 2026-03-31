@@ -13,7 +13,10 @@ export class ArtistService {
         where: { spotifyId: dto.spotifyId },
       });
       if (existing) {
-        throw new ConflictException(`이미 등록된 Spotify 아티스트입니다: ${existing.name}`);
+        throw new ConflictException({
+          message: `이미 등록된 Spotify 아티스트입니다: ${existing.name}`,
+          existingArtist: existing,
+        });
       }
     }
     return this.prisma.artist.create({ data: dto });
