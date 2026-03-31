@@ -77,7 +77,7 @@ export default function ScheduleDetail() {
   }
 
   return (
-    <div className="px-4 pt-6 pb-6" style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom, 0px))" }}>
+    <div className="px-4 pt-6 pb-6">
       {/* Back button */}
       <button
         onClick={() => router.back()}
