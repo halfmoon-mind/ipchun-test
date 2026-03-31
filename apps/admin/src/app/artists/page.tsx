@@ -34,7 +34,11 @@ export default function ArtistsPage() {
       ) : (
         <div className="grid gap-4">
           {artists.map((artist) => (
-            <div key={artist.id} className="card flex items-center gap-4 p-4">
+            <Link
+              key={artist.id}
+              href={`/artists/${artist.id}`}
+              className="card flex items-center gap-4 p-4 hover:bg-[var(--secondary)] transition-colors"
+            >
               {artist.imageUrl ? (
                 <img
                   src={artist.imageUrl}
@@ -43,7 +47,7 @@ export default function ArtistsPage() {
                 />
               ) : (
                 <div className="w-14 h-14 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xl">
-                  ♪
+                  &#9835;
                 </div>
               )}
               <div className="flex-1">
@@ -54,37 +58,48 @@ export default function ArtistsPage() {
               </div>
               <div className="flex items-center gap-3">
                 {artist.spotifyUrl && (
-                  <a
-                    href={artist.spotifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-green-600 hover:text-green-800 text-sm"
+                  <span
+                    role="link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      window.open(artist.spotifyUrl!, '_blank', 'noopener,noreferrer');
+                    }}
+                    className="text-green-600 hover:text-green-800 text-sm cursor-pointer"
                   >
                     Spotify
-                  </a>
+                  </span>
                 )}
                 {artist.socialLinks &&
                   Object.entries(artist.socialLinks)
                     .filter(([key]) => key !== 'spotify')
                     .map(([key, url]) => (
-                      <a
+                      <span
                         key={key}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-600 hover:text-gray-900 text-sm capitalize"
+                        role="link"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                        }}
+                        className="text-gray-600 hover:text-gray-900 text-sm capitalize cursor-pointer"
                       >
                         {key}
-                      </a>
+                      </span>
                     ))}
-                <Link
-                  href={`/artists/${artist.id}/edit`}
-                  className="text-indigo-600 hover:text-indigo-800 text-sm"
+                <span
+                  role="link"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = `/artists/${artist.id}/edit`;
+                  }}
+                  className="text-indigo-600 hover:text-indigo-800 text-sm cursor-pointer"
                 >
                   수정
-                </Link>
+                </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
