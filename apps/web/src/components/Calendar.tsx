@@ -91,6 +91,7 @@ export function Calendar({
             <button
               key={dateStr}
               onClick={() => onSelectDate(isSelected ? null : dateStr)}
+              aria-label={`${month}월 ${day}일${hasSchedule ? ", 일정 있음" : ""}${isSelected ? ", 선택됨" : ""}`}
               className={`
                 relative flex flex-col items-center justify-center py-2 text-sm
                 ${isSelected ? "bg-primary text-primary-foreground font-bold" : ""}

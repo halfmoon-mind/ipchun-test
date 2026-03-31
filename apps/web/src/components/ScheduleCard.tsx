@@ -34,7 +34,7 @@ export function ScheduleCard({ performance }: { performance: Performance }) {
   return (
     <Link
       href={`/schedule/${performance.id}`}
-      className="block border-b px-4 py-4"
+      className="block border-b px-4 py-4 active:opacity-70 transition-opacity"
       style={{ borderColor: "var(--border)" }}
     >
       <div className="flex items-start gap-4">
@@ -50,14 +50,14 @@ export function ScheduleCard({ performance }: { performance: Performance }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <span
-              className="text-[10px] font-semibold tracking-wider uppercase"
+              className="text-xs font-semibold tracking-wider uppercase"
               style={{ color: "var(--muted-foreground)" }}
             >
               {GENRE_LABELS[performance.genre] || performance.genre}
             </span>
             {performance.status && STATUS_LABELS[performance.status] && (
               <span
-                className="text-[10px] font-bold"
+                className="text-xs font-bold"
                 style={{ color: STATUS_COLORS[performance.status] }}
               >
                 {STATUS_LABELS[performance.status]}
