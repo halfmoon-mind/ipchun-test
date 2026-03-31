@@ -7,6 +7,7 @@
     "db:migrate": "pnpm --filter @ipchun/server exec prisma migrate dev",
     "db:seed": "pnpm --filter @ipchun/server exec prisma db seed",
     "dev:server": "docker compose up -d && pnpm --filter @ipchun/shared build && pnpm --filter @ipchun/server dev",
+    "dev:server:prod": "pnpm --filter @ipchun/shared build && NODE_ENV=production pnpm --filter @ipchun/server dev",
     "dev:mobile": "pnpm --filter @ipchun/mobile start",
     "dev:admin": "pnpm --filter @ipchun/admin dev",
     "build:server": "pnpm --filter @ipchun/server build",
@@ -23,7 +24,7 @@
     "typescript": "^5.7.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "packageManager": "pnpm@10.6.0"
 }
