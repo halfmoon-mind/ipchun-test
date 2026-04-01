@@ -19,6 +19,8 @@ export function Calendar({
   onSelectDate,
   onChangeMonth,
 }: CalendarProps) {
+  const today = new Date();
+
   const firstDay = new Date(year, month - 1, 1).getDay();
   const daysInMonth = new Date(year, month, 0).getDate();
 
@@ -32,6 +34,10 @@ export function Calendar({
     else onChangeMonth(year, month + 1);
   };
 
+  const goToToday = () => {
+    onChangeMonth(today.getFullYear(), today.getMonth() + 1);
+  };
+
   const days: (number | null)[] = [];
   for (let i = 0; i < firstDay; i++) days.push(null);
   for (let d = 1; d <= daysInMonth; d++) days.push(d);
@@ -39,7 +45,7 @@ export function Calendar({
   return (
     <div className="px-4 py-4">
       {/* Month navigation */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-1">
         <button
           onClick={prevMonth}
           className="p-2 text-muted-foreground"
@@ -65,6 +71,26 @@ export function Calendar({
           </svg>
         </button>
       </div>
+
+      {/* Today shortcut */}
+      {(year !== today.getFullYear() || month !== today.getMonth() + 1) ? (
+        <div className="text-center mb-3">
+          <button
+            onClick={goToToday}
+            className="text-xs tracking-wide"
+            style={{
+              color: "var(--muted-foreground)",
+              borderBottom: "1px solid var(--border)",
+              paddingBottom: "1px",
+            }}
+            aria-label="오늘 날짜로 이동"
+          >
+            오늘로
+          </button>
+        </div>
+      ) : (
+        <div className="mb-3" />
+      )}
 
       {/* Weekday headers */}
       <div className="grid grid-cols-7 mb-1">
