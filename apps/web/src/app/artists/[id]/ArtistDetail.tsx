@@ -1,40 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { ScheduleCard } from "@/components/ScheduleCard";
 import type { Artist, Performance } from "@ipchun/shared";
 
-export default function ArtistDetail() {
-  const { id } = useParams<{ id: string }>();
-  const router = useRouter();
-  const [artist, setArtist] = useState<Artist | null>(null);
-  const [upcoming, setUpcoming] = useState<Performance[]>([]);
-  const [past, setPast] = useState<Performance[]>([]);
-  const [pastCursor, setPastCursor] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+interface ArtistDetailProps {
+  artist: Artist;
+  initialUpcoming: Performance[];
+  initialPast: Performance[];
+  initialPastCursor: string | null;
+}
 
-  useEffect(() => {
-    Promise.all([
-      api.artist(id),
-      api.performances({ artistId: id, period: "upcoming" }),
-      api.performances({ artistId: id, period: "past", limit: 5 }),
-    ]).then(([artistData, upcomingData, pastData]) => {
-      setArtist(artistData);
-      setUpcoming(upcomingData.data);
-      setPast(pastData.data);
-      setPastCursor(pastData.nextCursor);
-      setLoading(false);
-    });
-  }, [id]);
+export default function ArtistDetail({
+  artist,
+  initialUpcoming,
+  initialPast,
+  initialPastCursor,
+}: ArtistDetailProps) {
+  const router = useRouter();
+  const [past, setPast] = useState(initialPast);
+  const [pastCursor, setPastCursor] = useState(initialPastCursor);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const loadMorePast = async () => {
     if (!pastCursor || loadingMore) return;
     setLoadingMore(true);
     const res = await api.performances({
-      artistId: id,
+      artistId: artist.id,
       period: "past",
       cursor: pastCursor,
       limit: 5,
@@ -44,22 +38,7 @@ export default function ArtistDetail() {
     setLoadingMore(false);
   };
 
-  if (loading) {
-    return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        불러오는 중...
-      </div>
-    );
-  }
-
-  if (!artist) {
-    return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        아티스트를 찾을 수 없습니다
-      </div>
-    );
-  }
-
+  const upcoming = initialUpcoming;
   const spotifyMeta = artist.spotifyMeta;
   const heroImage =
     artist.imageUrl || spotifyMeta?.images?.[0]?.url || null;

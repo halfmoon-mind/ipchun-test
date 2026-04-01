@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { api } from "@/lib/api";
 import type { Performance } from "@ipchun/shared";
 
 const GENRE_LABELS: Record<string, string> = {
@@ -48,34 +46,8 @@ function formatPrice(price: number) {
   return price.toLocaleString("ko-KR") + "원";
 }
 
-export default function ScheduleDetail() {
-  const { id } = useParams<{ id: string }>();
+export default function ScheduleDetail({ performance }: { performance: Performance }) {
   const router = useRouter();
-  const [performance, setPerformance] = useState<Performance | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.performance(id).then((res) => {
-      setPerformance(res);
-      setLoading(false);
-    });
-  }, [id]);
-
-  if (loading) {
-    return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        불러오는 중...
-      </div>
-    );
-  }
-
-  if (!performance) {
-    return (
-      <div className="py-16 text-center text-sm text-muted-foreground">
-        공연을 찾을 수 없습니다
-      </div>
-    );
-  }
 
   return (
     <div className="px-4 pt-6 pb-6">
