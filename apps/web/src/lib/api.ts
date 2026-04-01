@@ -2,7 +2,17 @@ import type { Artist, Performance, PaginatedResponse } from "@ipchun/shared";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+/* ── In-memory cache (client-side only) ── */
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const cache = new Map<string, { data: unknown; ts: number }>();
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const key = path;
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.ts < CACHE_TTL) {
+    return cached.data as T;
+  }
+
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { "Content-Type": "application/json", ...options?.headers },
     ...options,
@@ -10,7 +20,9 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   if (!res.ok) {
     throw new Error(`API Error: ${res.status} ${res.statusText}`);
   }
-  return res.json();
+  const data: T = await res.json();
+  cache.set(key, { data, ts: Date.now() });
+  return data;
 }
 
 export interface CalendarResponse {
