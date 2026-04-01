@@ -31,5 +31,8 @@ coverage/
 # autoparse 런타임 데이터
 tools/autoparse/data/
 
+# Turbo
+.turbo/
+
 # Misc
 *.log
