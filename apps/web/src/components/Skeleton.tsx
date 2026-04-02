@@ -119,6 +119,47 @@ export function ScheduleDetailSkeleton() {
   );
 }
 
+/** 아티스트 카드 스켈레톤 */
+export function ArtistCardSkeleton() {
+  return (
+    <div
+      className="flex items-center gap-3 px-4 py-3 border-b"
+      style={{ borderColor: "var(--border)" }}
+    >
+      <Skeleton className="w-11 h-11 flex-shrink-0" />
+      <div className="flex-1 min-w-0 space-y-1.5">
+        <Skeleton className="h-3.5 w-28" />
+        <Skeleton className="h-3 w-20" />
+      </div>
+      <Skeleton className="h-3 w-8 flex-shrink-0" />
+    </div>
+  );
+}
+
+/** 아티스트 리스트 스켈레톤 */
+export function ArtistListSkeleton({ count = 8 }: { count?: number }) {
+  return (
+    <div>
+      {/* Search skeleton */}
+      <div className="px-4 py-3">
+        <Skeleton className="h-9 w-full" />
+      </div>
+      <div className="px-4 pb-2">
+        <Skeleton className="h-3 w-24" />
+      </div>
+      {/* Cards */}
+      <div
+        className="border-t"
+        style={{ borderColor: "var(--border)" }}
+      >
+        {Array.from({ length: count }).map((_, i) => (
+          <ArtistCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** 아티스트 상세 스켈레톤 */
 export function ArtistDetailSkeleton() {
   return (
