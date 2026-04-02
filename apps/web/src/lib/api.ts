@@ -42,6 +42,13 @@ export const api = {
   artist: (id: string) =>
     request<Artist>(`/artists/${id}`),
 
+  artists: (search?: string) => {
+    const sp = new URLSearchParams();
+    if (search) sp.set("search", search);
+    const qs = sp.toString();
+    return request<Artist[]>(`/artists${qs ? `?${qs}` : ""}`);
+  },
+
   performances: (params: {
     artistId: string;
     period?: "upcoming" | "past";
