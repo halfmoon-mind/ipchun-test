@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
+import { HeaderTabs } from "@/components/HeaderTabs";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -53,7 +54,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-dvh">
         <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
-          <div className="mx-auto max-w-lg px-4 py-3">
+          <div className="mx-auto max-w-lg px-4 py-3 flex items-center justify-between">
             <Link href="/">
               <h1
                 className="text-lg font-bold tracking-tight"
@@ -62,6 +63,7 @@ export default function RootLayout({
                 입춘
               </h1>
             </Link>
+            <HeaderTabs />
           </div>
         </header>
         <main className="mx-auto max-w-lg pb-24">{children}</main>
