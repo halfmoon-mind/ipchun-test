@@ -14,10 +14,17 @@ export default async function HomePage({ searchParams }: Props) {
   const month = Number(params.month) || now.getMonth() + 1;
   const selectedDate = params.date ?? null;
 
-  const res = await fetch(
-    `${API_BASE}/performances/calendar?year=${year}&month=${month}`,
-  );
-  const data: CalendarResponse = await res.json();
+  let data: CalendarResponse;
+  try {
+    const res = await fetch(
+      `${API_BASE}/performances/calendar?year=${year}&month=${month}`,
+    );
+    data = res.ok
+      ? await res.json()
+      : { year, month, performances: [], dates: {} };
+  } catch {
+    data = { year, month, performances: [], dates: {} };
+  }
 
   return (
     <HomeContent
