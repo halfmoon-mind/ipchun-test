@@ -9,7 +9,8 @@
     "dev": {
       "dependsOn": ["^build"],
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "passThroughEnv": ["NODE_ENV", "DATABASE_URL", "PORT"]
     },
     "lint": {
       "dependsOn": ["^build"]
