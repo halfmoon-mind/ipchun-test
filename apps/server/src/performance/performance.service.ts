@@ -326,12 +326,17 @@ export class PerformanceService {
     const { period, cursor, limit = 10 } = options ?? {};
     const now = new Date();
 
+    // Schedules are included with orderBy dateTime asc,
+    // so schedules[0] is the earliest date for each performance.
+    const earliestDate = (p: { schedules: { dateTime: Date }[] }) =>
+      p.schedules[0]?.dateTime?.getTime() ?? 0;
+
     if (!period) {
-      return this.prisma.performance.findMany({
+      const performances = await this.prisma.performance.findMany({
         where: { artists: { some: { artistId } } },
         include: PERFORMANCE_INCLUDE,
-        orderBy: { createdAt: 'asc' },
       });
+      return performances.sort((a, b) => earliestDate(a) - earliestDate(b));
     }
 
     const isUpcoming = period === 'upcoming';
@@ -343,26 +348,32 @@ export class PerformanceService {
       ? { schedules: { some: { dateTime: { gte: now } } } }
       : { schedules: { every: { dateTime: { lt: now } } }, NOT: { schedules: { none: {} } } };
 
-    const take = isUpcoming ? undefined : limit + 1;
-
-    let cursorFilter = {};
-    if (cursor && !isUpcoming) {
-      cursorFilter = { id: { lt: cursor } };
-    }
-
     const performances = await this.prisma.performance.findMany({
-      where: { ...baseWhere, ...scheduleFilter, ...cursorFilter },
+      where: { ...baseWhere, ...scheduleFilter },
       include: PERFORMANCE_INCLUDE,
-      orderBy: { createdAt: isUpcoming ? 'asc' : 'desc' },
-      ...(take && { take }),
     });
+
+    // Sort by earliest schedule date: upcoming asc (soonest first), past desc (most recent first)
+    performances.sort((a, b) =>
+      isUpcoming
+        ? earliestDate(a) - earliestDate(b)
+        : earliestDate(b) - earliestDate(a),
+    );
 
     if (isUpcoming) {
       return { data: performances, nextCursor: null };
     }
 
-    const hasMore = performances.length > limit;
-    const data = hasMore ? performances.slice(0, limit) : performances;
+    // Cursor-based pagination over the date-sorted list
+    let startIndex = 0;
+    if (cursor) {
+      const idx = performances.findIndex((p) => p.id === cursor);
+      if (idx !== -1) startIndex = idx + 1;
+    }
+
+    const slice = performances.slice(startIndex, startIndex + limit + 1);
+    const hasMore = slice.length > limit;
+    const data = hasMore ? slice.slice(0, limit) : slice;
     const nextCursor = hasMore ? data[data.length - 1].id : null;
 
     return { data, nextCursor };
