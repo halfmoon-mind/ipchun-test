@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Performance } from "@ipchun/shared";
 
 const GENRE_LABELS: Record<string, string> = {
-  CONCERT: "공연",
+  CONCERT: "콘서트",
   MUSICAL: "뮤지컬",
   PLAY: "연극",
   CLASSIC: "클래식",
@@ -13,14 +13,18 @@ const GENRE_LABELS: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
+  SCHEDULED: "예정",
   ON_SALE: "판매중",
   SOLD_OUT: "매진",
+  COMPLETED: "종료",
   CANCELLED: "취소",
 };
 
 const STATUS_COLORS: Record<string, string> = {
+  SCHEDULED: "var(--muted-foreground)",
   ON_SALE: "var(--color-success)",
   SOLD_OUT: "var(--destructive)",
+  COMPLETED: "var(--muted-foreground)",
   CANCELLED: "var(--destructive)",
 };
 

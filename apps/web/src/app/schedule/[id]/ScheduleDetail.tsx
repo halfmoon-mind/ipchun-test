@@ -6,7 +6,7 @@ import Link from "next/link";
 import type { Performance, PerformanceArtistItem } from "@ipchun/shared";
 
 const GENRE_LABELS: Record<string, string> = {
-  CONCERT: "공연",
+  CONCERT: "콘서트",
   MUSICAL: "뮤지컬",
   PLAY: "연극",
   CLASSIC: "클래식",
@@ -30,6 +30,14 @@ const STATUS_COLORS: Record<string, string> = {
   SOLD_OUT: "var(--destructive)",
   COMPLETED: "var(--muted-foreground)",
   CANCELLED: "var(--destructive)",
+};
+
+const SALES_STATUS_LABELS: Record<string, string> = {
+  SCHEDULED: "예매 예정",
+  ON_SALE: "예매중",
+  SOLD_OUT: "매진",
+  COMPLETED: "예매 종료",
+  CANCELLED: "취소",
 };
 
 const PLATFORM_LABELS: Record<string, string> = {
@@ -406,7 +414,7 @@ export default function ScheduleDetail({ performance }: { performance: Performan
                     </div>
                     {source.salesStatus && (
                       <div className="text-xs text-muted-foreground mt-0.5">
-                        {source.salesStatus}
+                        {SALES_STATUS_LABELS[source.salesStatus] ?? source.salesStatus}
                       </div>
                     )}
                   </div>
