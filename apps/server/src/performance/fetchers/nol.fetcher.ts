@@ -61,6 +61,53 @@ function parsePlayTimeSchedules(
     }
   }
 
+  // 24시간 형식 (예: "19:30", "20:00")
+  if (results.length === 0) {
+    const re24 =
+      /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일[^)]*\)\s*(\d{1,2}):(\d{2})/g;
+    while ((match = re24.exec(playTime)) !== null) {
+      const [, y, mo, d, hRaw, minRaw] = match;
+      const iso = `${y}-${mo.padStart(2, '0')}-${d.padStart(2, '0')}T${hRaw.padStart(2, '0')}:${minRaw}:00+09:00`;
+      results.push({ dateTime: iso });
+    }
+  }
+
+  // 날짜와 시간이 별도 줄에 있는 경우 (예: "2026년 04월 25일(토)\n11시 30분")
+  if (results.length === 0) {
+    const dateOnly =
+      /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일/g;
+    const dates: Array<{ y: string; mo: string; d: string }> = [];
+    while ((match = dateOnly.exec(playTime)) !== null) {
+      dates.push({ y: match[1], mo: match[2], d: match[3] });
+    }
+
+    if (dates.length > 0) {
+      let h = 0;
+      let min = 0;
+      // 오전/오후 N시 (M분)
+      const timeKo = playTime.match(
+        /(?:^|[\s\r\n])(오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?(?:\s|$)/m,
+      );
+      // HH:MM
+      const time24 = playTime.match(/(?:^|[\s\r\n])(\d{1,2}):(\d{2})(?:\s|$)/m);
+
+      if (timeKo) {
+        h = parseInt(timeKo[2], 10);
+        min = timeKo[3] ? parseInt(timeKo[3], 10) : 0;
+        if (timeKo[1] === '오후' && h < 12) h += 12;
+        if (timeKo[1] === '오전' && h === 12) h = 0;
+      } else if (time24) {
+        h = parseInt(time24[1], 10);
+        min = parseInt(time24[2], 10);
+      }
+
+      for (const dt of dates) {
+        const iso = `${dt.y}-${dt.mo.padStart(2, '0')}-${dt.d.padStart(2, '0')}T${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:00+09:00`;
+        results.push({ dateTime: iso });
+      }
+    }
+  }
+
   return results;
 }
 
@@ -245,6 +292,28 @@ export async function fetchFromNol(
       .filter(Boolean);
     performers.push(...castNames);
   }
+
+  // castingInfo가 비어있으면 캐스팅 API에서 출연진 조회 (페스티벌 등)
+  if (performers.length === 0) {
+    try {
+      const castRes = await fetch(
+        `${NOL_API}/v1/goods/casting?goodsCode=${externalId}&castingRole=ALL`,
+        { headers },
+      );
+      if (castRes.ok) {
+        const castRaw: any = await castRes.json();
+        const castData: any[] = castRaw.data ?? [];
+        for (const entry of castData) {
+          if (entry.manName) {
+            performers.push(entry.manName);
+          }
+        }
+      }
+    } catch {
+      /* 캐스팅 API 실패 시 무시 */
+    }
+  }
+
   const artistNames = extractArtistNames(summary.goodsName || '', { performers });
 
   return {
