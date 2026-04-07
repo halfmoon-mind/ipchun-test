@@ -277,10 +277,10 @@ export async function fetchFromNol(
   // 5) 아티스트 이름 추출
   const performers: string[] = [];
   if (summary.bizInfo) {
-    const orgMatch = (summary.bizInfo as string).match(/주최\s*:\s*([^/]+)/);
+    const orgMatch = (summary.bizInfo as string).match(/주최\s*:\s*([^/\r\n]+)/);
     if (orgMatch) {
       const name = orgMatch[1].trim();
-      if (name && !/\(주\)|\(재\)|재단|협회|기획|엔터|컴퍼니|프로덕션|스튜디오/i.test(name)) {
+      if (name && !/\(주\)|\(재\)|재단|협회|기획|엔터|컴퍼니|프로덕션|스튜디오|entertainment|company/i.test(name)) {
         performers.push(name);
       }
     }
@@ -329,7 +329,11 @@ export async function fetchFromNol(
       : null,
     posterUrl,
     venue,
-    organizer: summary.bizInfo || null,
+    organizer: (() => {
+      if (!summary.bizInfo) return null;
+      const m = (summary.bizInfo as string).match(/주최\s*:\s*([^/\r\n]+)/);
+      return m ? m[1].trim() : (summary.bizInfo as string).split(/[\r\n]/)[0].trim() || null;
+    })(),
     schedules,
     tickets,
     source: {
