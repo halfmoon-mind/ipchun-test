@@ -1,0 +1,37 @@
+{
+  "eval_id": 1,
+  "eval_name": "url-register",
+  "prompt": "NOL에 있는 이 공연 등록해줘 https://tickets.interpark.com/goods/26005789",
+  "assertions": [
+    {
+      "id": "api-fetch-called",
+      "text": "POST /performances/fetch API를 호출하여 공연 데이터를 파싱했는가",
+      "type": "manual"
+    },
+    {
+      "id": "artist-handling",
+      "text": "artistNames에서 추출한 이름으로 GET /artists?search= 검색 후, 없으면 POST /artists로 생성했는가",
+      "type": "manual"
+    },
+    {
+      "id": "performance-created",
+      "text": "POST /performances API로 공연을 DB에 등록했는가 (직접 Prisma 사용 아님)",
+      "type": "manual"
+    },
+    {
+      "id": "artists-linked",
+      "text": "PUT /performances/:id/artists로 아티스트를 공연에 연결했는가",
+      "type": "manual"
+    },
+    {
+      "id": "state-saved",
+      "text": "tools/register/data/ 에 상태 파일(nol.json, global.json)을 저장했는가",
+      "type": "file_exists"
+    },
+    {
+      "id": "result-report",
+      "text": "등록 결과를 사용자에게 간결하게 보고했는가 (공연명, 아티스트, 상태 등)",
+      "type": "manual"
+    }
+  ]
+}

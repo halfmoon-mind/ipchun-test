@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "all-scan",
+  "prompt": "/register all",
+  "assertions": [
+    {
+      "id": "all-platforms",
+      "text": "4개 플랫폼(melon, nol, ticketlink, yes24) 모두 처리했는가",
+      "type": "manual"
+    },
+    {
+      "id": "parallel-intent",
+      "text": "병렬 서브에이전트 디스패치를 시도했거나, 병렬 처리 의도를 명확히 보였는가",
+      "type": "manual"
+    },
+    {
+      "id": "per-platform-state",
+      "text": "각 플랫폼별 상태 파일을 독립적으로 관리했는가",
+      "type": "manual"
+    },
+    {
+      "id": "global-state",
+      "text": "global.json에 크로스 플랫폼 매핑 데이터를 저장했는가",
+      "type": "file_exists"
+    },
+    {
+      "id": "integrated-report",
+      "text": "4개 플랫폼 결과를 통합하여 보고했는가",
+      "type": "manual"
+    }
+  ]
+}

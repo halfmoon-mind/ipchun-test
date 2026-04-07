@@ -1,0 +1,23 @@
+{
+  "skill_name": "register-performance",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "NOL에 있는 이 공연 등록해줘 https://tickets.interpark.com/goods/26005789",
+      "expected_output": "URL에서 공연 데이터를 fetch하고, 아티스트가 없으면 생성하고, DB에 등록한 뒤 결과를 보고",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/register melon",
+      "expected_output": "멜론 플랫폼의 시드 ID를 기반으로 미탐색 ID를 스캔하고, 유효한 공연을 찾아 등록하며, 상태 파일을 업데이트하고 결과를 보고",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "/register all",
+      "expected_output": "4개 플랫폼(melon, nol, ticketlink, yes24)을 병렬 서브에이전트로 동시 스캔하고, 각 플랫폼별 결과를 통합 보고",
+      "files": []
+    }
+  ]
+}

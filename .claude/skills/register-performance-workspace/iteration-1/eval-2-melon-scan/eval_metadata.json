@@ -1,0 +1,37 @@
+{
+  "eval_id": 2,
+  "eval_name": "melon-scan",
+  "prompt": "/register melon",
+  "assertions": [
+    {
+      "id": "seeds-loaded",
+      "text": "tools/autoparse/seeds.json에서 멜론 시드 ID를 로드했는가",
+      "type": "manual"
+    },
+    {
+      "id": "id-exploration",
+      "text": "시드 기반으로 미탐색 ID를 선정하여 순차 스캔했는가",
+      "type": "manual"
+    },
+    {
+      "id": "request-delay",
+      "text": "요청 간 2초 이상 딜레이를 적용했는가",
+      "type": "manual"
+    },
+    {
+      "id": "api-only",
+      "text": "모든 DB 수정을 REST API(curl)로 수행했는가 (Prisma 직접 호출 없음)",
+      "type": "manual"
+    },
+    {
+      "id": "state-persisted",
+      "text": "tools/register/data/melon.json에 explored/registered/failed 상태를 저장했는가",
+      "type": "file_exists"
+    },
+    {
+      "id": "scan-report",
+      "text": "스캔 결과를 요약 보고했는가 (탐색 수, 등록 수, 스킵 수 등)",
+      "type": "manual"
+    }
+  ]
+}
