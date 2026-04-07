@@ -26,7 +26,7 @@ export class PerformanceController {
   @Post('fetch')
   @ApiOperation({ summary: 'URL에서 공연 데이터 fetch (프리뷰용)' })
   fetchFromUrl(@Body() dto: FetchUrlDto) {
-    return this.service.fetchFromUrl(dto.url);
+    return this.service.fetchFromUrl(dto.url, dto.skipDuplicateCheck);
   }
 
   @Get('calendar')

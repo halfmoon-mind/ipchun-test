@@ -27,17 +27,19 @@ const PERFORMANCE_INCLUDE = {
 export class PerformanceService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async fetchFromUrl(url: string): Promise<FetchedPerformance> {
+  async fetchFromUrl(url: string, skipDuplicateCheck = false): Promise<FetchedPerformance> {
     const { platform, externalId } = parseTicketUrl(url);
 
-    const existing = await this.prisma.performanceSource.findUnique({
-      where: { platform_externalId: { platform, externalId } },
-      include: { performance: true },
-    });
-    if (existing) {
-      throw new ConflictException(
-        `이미 등록된 공연입니다: "${existing.performance.title}" (${platform} ${externalId})`,
-      );
+    if (!skipDuplicateCheck) {
+      const existing = await this.prisma.performanceSource.findUnique({
+        where: { platform_externalId: { platform, externalId } },
+        include: { performance: true },
+      });
+      if (existing) {
+        throw new ConflictException(
+          `이미 등록된 공연입니다: "${existing.performance.title}" (${platform} ${externalId})`,
+        );
+      }
     }
 
     switch (platform) {
@@ -305,7 +307,9 @@ export class PerformanceService {
       for (const sched of perf.schedules) {
         const d = new Date(sched.dateTime);
         if (d >= monthStart && d < monthEnd) {
-          const key = d.toISOString().slice(0, 10);
+          // KST (UTC+9) 기준 날짜 키 — toISOString()은 UTC라 자정 공연이 전날로 밀림
+          const kst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+          const key = kst.toISOString().slice(0, 10);
           if (!dates[key]) dates[key] = [];
           if (!dates[key].includes(perf.genre)) {
             dates[key].push(perf.genre);
