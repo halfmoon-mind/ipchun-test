@@ -18,6 +18,7 @@ import { SpotifyService } from '../spotify/spotify.service';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { FindOrCreateArtistDto } from './dto/find-or-create-artist.dto';
+import { BulkDeleteArtistDto } from './dto/bulk-delete-artist.dto';
 
 @ApiTags('Artists')
 @Controller('artists')
@@ -60,6 +61,13 @@ export class ArtistController {
   @ApiQuery({ name: 'search', required: false, description: '아티스트 이름 검색' })
   findAll(@Query('search') search?: string) {
     return this.artistService.findAll(search);
+  }
+
+  @Delete('bulk')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: '아티스트 일괄 삭제' })
+  bulkRemove(@Body() dto: BulkDeleteArtistDto) {
+    return this.artistService.removeMany(dto.ids);
   }
 
   @Get(':id')

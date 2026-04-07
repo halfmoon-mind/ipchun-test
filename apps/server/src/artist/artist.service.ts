@@ -37,16 +37,10 @@ export class ArtistService {
       return { artist: dbResults[0], created: false };
     }
 
-    // 2. Spotify search
+    // 2. Spotify search — trust Spotify's ranking (first result is most relevant)
     const spotifyResults = await this.spotify.search(name);
     if (spotifyResults.length > 0) {
-      const nameLower = name.trim().toLowerCase();
-
-      // Exact name match first, then highest followers
-      const exactMatch = spotifyResults.find(
-        (r) => r.name.trim().toLowerCase() === nameLower,
-      );
-      const best = exactMatch ?? spotifyResults[0];
+      const best = spotifyResults[0];
 
       // Check if this spotifyId already exists in DB
       const existingBySpotify = await this.prisma.artist.findUnique({
@@ -103,5 +97,11 @@ export class ArtistService {
 
   remove(id: string) {
     return this.prisma.artist.delete({ where: { id } });
+  }
+
+  removeMany(ids: string[]) {
+    return this.prisma.artist.deleteMany({
+      where: { id: { in: ids } },
+    });
   }
 }
