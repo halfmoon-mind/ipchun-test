@@ -4,13 +4,24 @@ import type { ExtractedLineup } from '@/app/api/ocr-lineup/route';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+class ApiError extends Error {
+  status: number;
+  body: Record<string, unknown>;
+  constructor(status: number, statusText: string, body: Record<string, unknown>) {
+    super(body.message as string || `API Error: ${status} ${statusText}`);
+    this.status = status;
+    this.body = body;
+  }
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     ...options,
   });
   if (!res.ok) {
-    throw new Error(`API Error: ${res.status} ${res.statusText}`);
+    const body = await res.json().catch(() => ({}));
+    throw new ApiError(res.status, res.statusText, body);
   }
   return res.json();
 }
@@ -124,10 +135,10 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/performances/${id}`, { method: 'DELETE' }),
-    fetch: (url: string) =>
+    fetch: (url: string, skipDuplicateCheck = false) =>
       request<FetchedPerformance>('/performances/fetch', {
         method: 'POST',
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url, skipDuplicateCheck }),
       }),
     calendar: (params: { year: number; month: number; artistId?: string }) => {
       const query = new URLSearchParams({

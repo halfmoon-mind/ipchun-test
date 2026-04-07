@@ -63,7 +63,7 @@ interface PerformanceFormProps {
 
 export function PerformanceForm({ mode, initialData, onSubmit, onSuccess, onFetch }: PerformanceFormProps) {
   // UI state
-  const [fetchUrl, setFetchUrl] = useState('');
+  const [fetchUrl, setFetchUrl] = useState(initialData?.sources?.[0]?.sourceUrl ?? '');
   const [fetching, setFetching] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -259,12 +259,14 @@ export function PerformanceForm({ mode, initialData, onSubmit, onSuccess, onFetc
     <>
       {error && <div className="alert-error mb-6">{error}</div>}
 
-      {/* ── URL 자동 채우기 (create mode only) ── */}
-      {mode === 'create' && onFetch && (
+      {/* ── URL 자동 채우기 ── */}
+      {onFetch && (
         <section className="max-w-2xl mb-10 p-5 border" style={{ borderColor: 'var(--border)', background: 'var(--secondary)' }}>
           <label className="form-label mb-1">티켓 URL로 자동 채우기</label>
           <p className="text-sm mb-3" style={{ color: 'var(--muted-foreground)' }}>
-            멜론 티켓, NOL(인터파크), 티켓링크, YES24 URL을 입력하면 공연 정보를 자동으로 가져옵니다.
+            {mode === 'edit'
+              ? 'URL에서 최신 정보를 다시 가져와 폼에 반영합니다.'
+              : '멜론 티켓, NOL(인터파크), 티켓링크, YES24 URL을 입력하면 공연 정보를 자동으로 가져옵니다.'}
           </p>
           <div className="flex gap-2">
             <input
@@ -280,7 +282,7 @@ export function PerformanceForm({ mode, initialData, onSubmit, onSuccess, onFetc
               disabled={fetching || !fetchUrl.trim()}
               className="btn-primary whitespace-nowrap"
             >
-              {fetching ? '가져오는 중...' : '가져오기'}
+              {fetching ? '가져오는 중...' : mode === 'edit' ? '다시 가져오기' : '가져오기'}
             </button>
           </div>
         </section>
@@ -470,6 +472,8 @@ export function PerformanceForm({ mode, initialData, onSubmit, onSuccess, onFetc
             <ArtistSuggestions
               artistNames={suggestedArtistNames}
               excludeIds={artistEntries.map((a) => a.artistId)}
+              excludeSpotifyIds={artistEntries.map((a) => a.artist.spotifyId).filter((id): id is string => !!id)}
+              excludeNames={artistEntries.map((a) => a.artist.name)}
               onSelect={(artist) => {
                 setArtistEntries((prev) => [
                   ...prev,

@@ -14,20 +14,25 @@ interface ArtistMatch {
 interface ArtistSuggestionsProps {
   artistNames: string[];
   excludeIds: string[];
+  excludeSpotifyIds: string[];
+  excludeNames: string[];
   onSelect: (artist: Artist) => void;
 }
 
-export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistSuggestionsProps) {
+export function ArtistSuggestions({ artistNames, excludeIds, excludeSpotifyIds, excludeNames, onSelect }: ArtistSuggestionsProps) {
   const [matches, setMatches] = useState<ArtistMatch[]>([]);
   const [creating, setCreating] = useState<string | null>(null);
+  const [resolvedNames, setResolvedNames] = useState<Set<string>>(new Set());
+
+  const namesToSearch = artistNames.filter((name) => !excludeNames.includes(name));
 
   useEffect(() => {
-    if (artistNames.length === 0) {
+    if (namesToSearch.length === 0) {
       setMatches([]);
       return;
     }
 
-    const initial = artistNames.map((name) => ({
+    const initial = namesToSearch.map((name) => ({
       name,
       dbResults: [],
       spotifyResults: [],
@@ -35,7 +40,7 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
     }));
     setMatches(initial);
 
-    artistNames.forEach(async (name, idx) => {
+    namesToSearch.forEach(async (name, idx) => {
       try {
         const [db, spotify] = await Promise.all([
           api.artists.list(name),
@@ -47,7 +52,7 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
               ? {
                   ...m,
                   dbResults: db.filter((a) => !excludeIds.includes(a.id)),
-                  spotifyResults: spotify.artists,
+                  spotifyResults: spotify.artists.filter((s: { spotifyId: string }) => !excludeSpotifyIds.includes(s.spotifyId)),
                   loading: false,
                 }
               : m,
@@ -59,7 +64,7 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
         );
       }
     });
-  }, [artistNames.join(',')]);
+  }, [namesToSearch.join(',')]);
 
   async function handleSelectSpotify(
     item: { spotifyId: string; name: string; imageUrl: string | null; followers: number },
@@ -70,6 +75,7 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
       onSelect(existing);
       return;
     }
+    const matchName = matches.find((m) => m.spotifyResults.some((s) => s.spotifyId === item.spotifyId))?.name;
 
     setCreating(item.spotifyId);
     try {
@@ -91,15 +97,25 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
         monthlyListeners: detail.monthlyListeners,
         spotifyMeta: detail.spotifyMeta,
       });
+      if (matchName) setResolvedNames((prev) => new Set(prev).add(matchName));
       onSelect(artist);
-    } catch (err) {
+    } catch (err: unknown) {
+      const apiErr = err as { status?: number; body?: { existingArtist?: Artist } };
+      if (apiErr.status === 409 && apiErr.body?.existingArtist) {
+        if (matchName) setResolvedNames((prev) => new Set(prev).add(matchName));
+        onSelect(apiErr.body.existingArtist as Artist);
+        return;
+      }
       alert(err instanceof Error ? err.message : '아티스트 등록 실패');
     } finally {
       setCreating(null);
     }
   }
 
-  if (matches.length === 0) return null;
+  const hasVisibleResults = matches.some(
+    (m) => m.loading || m.dbResults.some((a) => !excludeIds.includes(a.id) && !excludeNames.includes(a.name)) || m.spotifyResults.some((s) => !excludeSpotifyIds.includes(s.spotifyId) && !excludeNames.includes(s.name)),
+  );
+  if (matches.length === 0 || !hasVisibleResults) return null;
 
   return (
     <div style={{
@@ -120,42 +136,43 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
         티켓 페이지에서 추출한 아티스트입니다. 클릭하여 추가하세요.
       </p>
 
-      {matches.map((m) => (
-        <div key={m.name} style={{ marginBottom: 12 }}>
-          <div style={{ fontSize: 12, color: 'var(--muted-foreground)', marginBottom: 6 }}>
-            &ldquo;{m.name}&rdquo; 검색 결과
-          </div>
+      {matches.map((m) => {
+        const visibleDb = m.dbResults.filter((a) => !excludeIds.includes(a.id) && !excludeNames.includes(a.name));
+        const visibleSpotify = m.spotifyResults.filter((s) => !excludeSpotifyIds.includes(s.spotifyId) && !excludeNames.includes(s.name)).slice(0, 3);
+        if (resolvedNames.has(m.name)) return null;
+        if (!m.loading && visibleDb.length === 0 && visibleSpotify.length === 0) return null;
 
-          {m.loading && (
-            <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>검색중...</span>
-          )}
+        return (
+          <div key={m.name} style={{ marginBottom: 12 }}>
+            <div style={{ fontSize: 12, color: 'var(--muted-foreground)', marginBottom: 6 }}>
+              &ldquo;{m.name}&rdquo; 검색 결과
+            </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {m.dbResults.map((a) => (
-              <button
-                key={a.id}
-                type="button"
-                onClick={() => onSelect(a)}
-                disabled={excludeIds.includes(a.id)}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  padding: '4px 10px', fontSize: 13, border: '1px solid var(--border)',
-                  background: excludeIds.includes(a.id) ? 'var(--muted)' : '#fff',
-                  cursor: excludeIds.includes(a.id) ? 'default' : 'pointer',
-                  opacity: excludeIds.includes(a.id) ? 0.5 : 1,
-                }}
-              >
-                {a.imageUrl && (
-                  <img src={a.imageUrl} alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
-                )}
-                <span>{a.name}</span>
-                <span style={{ fontSize: 11, color: 'var(--muted-foreground)' }}>DB</span>
-              </button>
-            ))}
+            {m.loading && (
+              <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>검색중...</span>
+            )}
 
-            {m.spotifyResults
-              .slice(0, 3)
-              .map((s) => (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {visibleDb.map((a) => (
+                <button
+                  key={a.id}
+                  type="button"
+                  onClick={() => { setResolvedNames((prev) => new Set(prev).add(m.name)); onSelect(a); }}
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '4px 10px', fontSize: 13, border: '1px solid var(--border)',
+                    background: '#fff', cursor: 'pointer',
+                  }}
+                >
+                  {a.imageUrl && (
+                    <img src={a.imageUrl} alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} />
+                  )}
+                  <span>{a.name}</span>
+                  <span style={{ fontSize: 11, color: 'var(--muted-foreground)' }}>DB</span>
+                </button>
+              ))}
+
+              {visibleSpotify.map((s) => (
                 <button
                   key={s.spotifyId}
                   type="button"
@@ -177,12 +194,13 @@ export function ArtistSuggestions({ artistNames, excludeIds, onSelect }: ArtistS
                 </button>
               ))}
 
-            {!m.loading && m.dbResults.length === 0 && m.spotifyResults.length === 0 && (
-              <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>결과 없음</span>
-            )}
+              {!m.loading && visibleDb.length === 0 && visibleSpotify.length === 0 && (
+                <span style={{ fontSize: 12, color: 'var(--muted-foreground)' }}>결과 없음</span>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

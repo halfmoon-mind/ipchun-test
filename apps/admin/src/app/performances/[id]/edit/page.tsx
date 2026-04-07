@@ -34,10 +34,14 @@ export default function EditPerformancePage() {
   if (error) return <div className="alert-error">{error}</div>;
   if (!performance) return <div className="alert-error">공연을 찾을 수 없습니다</div>;
 
+  async function handleFetch(url: string) {
+    return api.performances.fetch(url, true);
+  }
+
   return (
     <div>
       <h1 className="page-heading mb-8">공연 수정</h1>
-      <PerformanceForm mode="edit" initialData={performance} onSubmit={handleSubmit} onSuccess={handleSuccess} />
+      <PerformanceForm mode="edit" initialData={performance} onSubmit={handleSubmit} onSuccess={handleSuccess} onFetch={handleFetch} />
     </div>
   );
 }
