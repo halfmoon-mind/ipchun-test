@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { Performance } from "@ipchun/shared";
+import type { Performance, PerformanceArtistItem } from "@ipchun/shared";
 
 const GENRE_LABELS: Record<string, string> = {
   CONCERT: "공연",
@@ -44,6 +45,218 @@ function formatDateTime(iso: string) {
 
 function formatPrice(price: number) {
   return price.toLocaleString("ko-KR") + "원";
+}
+
+function toDateKey(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function formatDayLabel(iso: string) {
+  const d = new Date(iso);
+  const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
+  return `${d.getMonth() + 1}.${d.getDate()} (${dayNames[d.getDay()]})`;
+}
+
+function formatTime(iso: string) {
+  const d = new Date(iso);
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function ArtistRow({ entry }: { entry: PerformanceArtistItem }) {
+  const name = entry.artist?.name ?? entry.stageName ?? "Unknown";
+  const initial = name[0];
+
+  const content = (
+    <div className="flex items-center gap-3 py-2.5">
+      {entry.startTime && (
+        <span
+          className="text-xs font-medium w-[90px] flex-shrink-0"
+          style={{ fontFamily: "monospace", color: "var(--muted-foreground)" }}
+        >
+          {formatTime(entry.startTime)}
+          {entry.endTime && ` – ${formatTime(entry.endTime)}`}
+        </span>
+      )}
+      {entry.artist?.imageUrl ? (
+        <img src={entry.artist.imageUrl} alt={name} className="w-8 h-8 object-cover flex-shrink-0" />
+      ) : (
+        <div
+          className="w-8 h-8 flex items-center justify-center text-xs font-bold flex-shrink-0"
+          style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}
+        >
+          {initial}
+        </div>
+      )}
+      <span className="text-sm font-medium flex-1 min-w-0 truncate">{name}</span>
+      {entry.artist?.id && (
+        <svg
+          className="flex-shrink-0"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      )}
+    </div>
+  );
+
+  if (entry.artist?.id) {
+    return (
+      <Link
+        href={`/artists/${entry.artist.id}`}
+        className="block border-b"
+        style={{ borderColor: "var(--border)" }}
+      >
+        {content}
+      </Link>
+    );
+  }
+  return (
+    <div className="border-b" style={{ borderColor: "var(--border)" }}>
+      {content}
+    </div>
+  );
+}
+
+function TimetableView({ performance }: { performance: Performance }) {
+  const { schedules, artists } = performance;
+
+  // Deduplicate days
+  const uniqueDays = schedules.reduce<typeof schedules>((acc, s) => {
+    const dateKey = toDateKey(s.dateTime);
+    if (!acc.find((x) => toDateKey(x.dateTime) === dateKey)) {
+      acc.push(s);
+    }
+    return acc;
+  }, []);
+
+  const [activeDay, setActiveDay] = useState(uniqueDays[0]?.id ?? "");
+  const [activeStage, setActiveStage] = useState<string | null>(null);
+
+  // Stages for the active day
+  const dayStages = [
+    ...new Set(
+      artists
+        .filter((a) => a.performanceScheduleId === activeDay && a.stage)
+        .map((a) => a.stage!)
+    ),
+  ];
+
+  // Auto-select first stage when day changes
+  const currentStage = activeStage && dayStages.includes(activeStage) ? activeStage : dayStages[0] ?? null;
+
+  // Artists for current day + stage, sorted by startTime (or performanceOrder)
+  const stageArtists = artists
+    .filter(
+      (a) =>
+        a.performanceScheduleId === activeDay &&
+        (dayStages.length === 0 || a.stage === currentStage)
+    )
+    .sort((a, b) =>
+      a.startTime && b.startTime
+        ? new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+        : (a.performanceOrder ?? 0) - (b.performanceOrder ?? 0)
+    );
+
+  return (
+    <div>
+      <h2
+        className="text-sm font-bold mb-3"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        타임테이블
+      </h2>
+
+      {/* Day tabs */}
+      {uniqueDays.length > 1 && (
+        <div className="flex gap-0 mb-3 overflow-x-auto">
+          {uniqueDays.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => {
+                setActiveDay(s.id);
+                setActiveStage(null);
+              }}
+              className="px-4 py-2 text-xs font-medium whitespace-nowrap border transition-colors"
+              style={{
+                borderColor: activeDay === s.id ? "var(--foreground)" : "var(--border)",
+                background: activeDay === s.id ? "var(--foreground)" : "transparent",
+                color: activeDay === s.id ? "var(--background)" : "var(--muted-foreground)",
+              }}
+            >
+              Day {i + 1} · {formatDayLabel(s.dateTime)}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Stage tabs */}
+      {dayStages.length > 1 && (
+        <div className="flex gap-0 mb-3 overflow-x-auto">
+          {dayStages.map((stage) => (
+            <button
+              key={stage}
+              onClick={() => setActiveStage(stage)}
+              className="px-3 py-1.5 text-xs whitespace-nowrap border transition-colors"
+              style={{
+                borderColor: currentStage === stage ? "var(--foreground)" : "var(--border)",
+                background: currentStage === stage ? "var(--foreground)" : "transparent",
+                color: currentStage === stage ? "var(--background)" : "var(--muted-foreground)",
+                fontWeight: currentStage === stage ? 600 : 400,
+              }}
+            >
+              {stage}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Single stage label when only one */}
+      {dayStages.length === 1 && (
+        <div className="text-xs font-medium mb-2" style={{ color: "var(--muted-foreground)" }}>
+          {dayStages[0]}
+        </div>
+      )}
+
+      {/* Artist list */}
+      {stageArtists.length > 0 ? (
+        <div>
+          {stageArtists.map((entry) => (
+            <ArtistRow key={entry.id} entry={entry} />
+          ))}
+        </div>
+      ) : (
+        <p className="text-xs" style={{ color: "var(--muted-foreground)" }}>
+          배정된 아티스트가 없습니다.
+        </p>
+      )}
+    </div>
+  );
+}
+
+function LineupView({ artists }: { artists: PerformanceArtistItem[] }) {
+  return (
+    <div>
+      <h2
+        className="text-sm font-bold mb-3"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
+        라인업
+      </h2>
+      <div>
+        {artists.map((entry) => (
+          <ArtistRow key={entry.id} entry={entry} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default function ScheduleDetail({ performance }: { performance: Performance }) {
@@ -154,74 +367,14 @@ export default function ScheduleDetail({ performance }: { performance: Performan
         </p>
       )}
 
-      {/* Artist lineup */}
+      {/* Artist lineup / timetable */}
       {performance.artists.length > 0 && (
         <div className="mb-6">
-          <h2
-            className="text-sm font-bold mb-3"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            라인업
-          </h2>
-          <div className="space-y-2">
-            {performance.artists.map((entry) => {
-              const content = (
-                <>
-                  {entry.artist?.imageUrl ? (
-                    <img
-                      src={entry.artist.imageUrl}
-                      alt={entry.artist.name}
-                      className="w-8 h-8 object-cover"
-                    />
-                  ) : (
-                    <div
-                      className="w-8 h-8 flex items-center justify-center text-xs font-bold"
-                      style={{ background: "var(--muted)", color: "var(--muted-foreground)" }}
-                    >
-                      {(entry.artist?.name ?? entry.stageName ?? "?")[0]}
-                    </div>
-                  )}
-                  <span className="text-sm font-medium">
-                    {entry.artist?.name ?? entry.stageName ?? "Unknown"}
-                  </span>
-                  {entry.artist?.id && (
-                    <svg
-                      className="ml-auto flex-shrink-0"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="9 18 15 12 9 6" />
-                    </svg>
-                  )}
-                </>
-              );
-
-              return entry.artist?.id ? (
-                <Link
-                  key={entry.id}
-                  href={`/artists/${entry.artist.id}`}
-                  className="flex items-center gap-3 py-2 border-b"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  {content}
-                </Link>
-              ) : (
-                <div
-                  key={entry.id}
-                  className="flex items-center gap-3 py-2 border-b"
-                  style={{ borderColor: "var(--border)" }}
-                >
-                  {content}
-                </div>
-              );
-            })}
-          </div>
+          {performance.lineupMode === "TIMETABLE" ? (
+            <TimetableView performance={performance} />
+          ) : (
+            <LineupView artists={performance.artists} />
+          )}
         </div>
       )}
 

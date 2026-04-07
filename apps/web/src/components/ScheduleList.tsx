@@ -8,10 +8,15 @@ interface ScheduleListProps {
   selectedDate: string | null;
 }
 
+function toDateKey(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 export function ScheduleList({ performances, selectedDate }: ScheduleListProps) {
   const filtered = selectedDate
     ? performances.filter((p) =>
-        p.schedules.some((s) => s.dateTime.slice(0, 10) === selectedDate),
+        p.schedules.some((s) => toDateKey(s.dateTime) === selectedDate),
       )
     : performances;
 

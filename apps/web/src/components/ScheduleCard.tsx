@@ -24,6 +24,11 @@ const STATUS_COLORS: Record<string, string> = {
   CANCELLED: "var(--destructive)",
 };
 
+function toDateKey(iso: string) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 interface ScheduleCardProps {
   performance: Performance;
   selectedDate: string | null;
@@ -32,7 +37,7 @@ interface ScheduleCardProps {
 export function ScheduleCard({ performance, selectedDate }: ScheduleCardProps) {
   // 선택된 날짜와 매칭되는 스케줄, 없으면 첫 스케줄
   const displaySchedule = selectedDate
-    ? performance.schedules.find((s) => s.dateTime.slice(0, 10) === selectedDate) ?? performance.schedules[0]
+    ? performance.schedules.find((s) => toDateKey(s.dateTime) === selectedDate) ?? performance.schedules[0]
     : performance.schedules[0];
   const date = displaySchedule ? new Date(displaySchedule.dateTime) : new Date();
   const dayNames = ["일", "월", "화", "수", "목", "금", "토"];
@@ -92,7 +97,7 @@ export function ScheduleCard({ performance, selectedDate }: ScheduleCardProps) {
             <div className="flex items-center gap-1.5 mt-1.5">
               {performance.schedules.map((s) => {
                 const d = new Date(s.dateTime);
-                const dateStr = d.toISOString().slice(0, 10);
+                const dateStr = toDateKey(s.dateTime);
                 const isSelected = selectedDate === dateStr;
                 return (
                   <span
