@@ -1,7 +1,9 @@
 {
-  "explored": [],
-  "registered": {},
+  "explored": ["212888"],
+  "registered": {
+    "212888": { "performanceId": "709aadd3-f085-4f37-8258-e8c5ac547eb6", "title": "현대카드 Curated 104 김승주" }
+  },
   "failed": [],
   "seeds": ["212888"],
-  "lastRun": null
+  "lastRun": "2026-04-08T06:03:00Z"
 }

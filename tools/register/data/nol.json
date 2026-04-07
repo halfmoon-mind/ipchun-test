@@ -1,10 +1,12 @@
 {
-  "explored": ["26003145", "26000869"],
+  "explored": ["26003142", "26003145", "26000869", "26002763"],
   "registered": {
+    "26003142": { "performanceId": "0a3cd73a-1ee2-4c8a-85bc-1b5a66b951a5", "title": "2026 YENA LIVE TOUR ［잡힐 듯 말 듯 한, 2세계!］ In Seoul" },
     "26003145": { "performanceId": "9eb800f6-d2a7-4141-b11b-5134f295555e", "title": "our spring moment" },
-    "26000869": { "performanceId": "5b3abec6-f7fd-421c-bc93-900eb8f5df5e", "title": "2026 그린캠프페스티벌" }
+    "26000869": { "performanceId": "5b3abec6-f7fd-421c-bc93-900eb8f5df5e", "title": "2026 그린캠프페스티벌" },
+    "26002763": { "performanceId": "cf6185a5-202e-4048-8128-790fd50cd5bf", "title": "2026 어썸뮤직페스티벌" }
   },
   "failed": [],
-  "seeds": ["26003142", "26003145", "26000869"],
-  "lastRun": "2026-04-07T14:56:00Z"
+  "seeds": ["26003142", "26003145", "26000869", "26002763"],
+  "lastRun": "2026-04-08T07:00:00Z"
 }

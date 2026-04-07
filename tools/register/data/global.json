@@ -1,5 +1,14 @@
 {
   "performances": {
+    "0a3cd73a-1ee2-4c8a-85bc-1b5a66b951a5": {
+      "title": "2026 YENA LIVE TOUR ［잡힐 듯 말 듯 한, 2세계!］ In Seoul",
+      "normalizedTitle": "yenalivetour잡힐듯말듯한2세계inseoul",
+      "venueName": "블루스퀘어 우리WON뱅킹홀",
+      "dates": ["2026-04-04", "2026-04-05"],
+      "sources": [
+        { "platform": "NOL", "externalId": "26003142" }
+      ]
+    },
     "9eb800f6-d2a7-4141-b11b-5134f295555e": {
       "title": "our spring moment",
       "normalizedTitle": "ourspringmoment",
@@ -16,6 +25,24 @@
       "dates": ["2026-04-18", "2026-04-19"],
       "sources": [
         { "platform": "NOL", "externalId": "26000869" }
+      ]
+    },
+    "709aadd3-f085-4f37-8258-e8c5ac547eb6": {
+      "title": "현대카드 Curated 104 김승주",
+      "normalizedTitle": "현대카드curated104김승주",
+      "venueName": "현대카드 언더스테이지",
+      "dates": ["2026-03-29"],
+      "sources": [
+        { "platform": "MELON", "externalId": "212888" }
+      ]
+    },
+    "cf6185a5-202e-4048-8128-790fd50cd5bf": {
+      "title": "2026 어썸뮤직페스티벌",
+      "normalizedTitle": "어썸뮤직페스티벌",
+      "venueName": "난지한강공원",
+      "dates": ["2026-04-25", "2026-04-26"],
+      "sources": [
+        { "platform": "NOL", "externalId": "26002763" }
       ]
     }
   }
