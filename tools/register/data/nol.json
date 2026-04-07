@@ -1,0 +1,10 @@
+{
+  "explored": ["26003145", "26000869"],
+  "registered": {
+    "26003145": { "performanceId": "9eb800f6-d2a7-4141-b11b-5134f295555e", "title": "our spring moment" },
+    "26000869": { "performanceId": "5b3abec6-f7fd-421c-bc93-900eb8f5df5e", "title": "2026 그린캠프페스티벌" }
+  },
+  "failed": [],
+  "seeds": ["26003142", "26003145", "26000869"],
+  "lastRun": "2026-04-07T14:56:00Z"
+}
