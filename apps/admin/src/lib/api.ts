@@ -45,6 +45,11 @@ export const api = {
       }),
     delete: (id: string) =>
       request<void>(`/artists/${id}`, { method: 'DELETE' }),
+    bulkDelete: (ids: string[]) =>
+      request<{ count: number }>('/artists/bulk', {
+        method: 'DELETE',
+        body: JSON.stringify({ ids }),
+      }),
   },
   scrape: {
     schedule: async (url: string): Promise<ScrapedSchedule> => {
