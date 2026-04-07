@@ -73,13 +73,8 @@ export const api = {
     },
   },
   spotify: {
-    getArtist: async (spotifyId: string) => {
-      const res = await fetch(`/api/spotify?id=${spotifyId}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || `Spotify fetch failed: ${res.status}`);
-      }
-      return res.json() as Promise<{
+    getArtist: (spotifyId: string) =>
+      request<{
         name: string;
         imageUrl: string | null;
         description: string | null;
@@ -87,18 +82,11 @@ export const api = {
         spotifyUrl: string;
         monthlyListeners: number | null;
         spotifyMeta: SpotifyMeta | null;
-      }>;
-    },
-    search: async (query: string) => {
-      const res = await fetch(`/api/spotify/search?q=${encodeURIComponent(query)}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error || `Spotify search failed: ${res.status}`);
-      }
-      return res.json() as Promise<{
+      }>(`/artists/spotify/${spotifyId}`),
+    search: (query: string) =>
+      request<{
         artists: { spotifyId: string; name: string; imageUrl: string | null; followers: number }[];
-      }>;
-    },
+      }>(`/artists/spotify/search?q=${encodeURIComponent(query)}`),
   },
   youtube: {
     searchChannel: async (artistName: string) => {

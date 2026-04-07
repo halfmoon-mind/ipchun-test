@@ -93,6 +93,16 @@ curl -X POST $BASE_URL/performances/{id}/sources \
 
 ## Artist
 
+### Find or Create (Spotify 자동 매칭)
+```bash
+curl -X POST $BASE_URL/artists/find-or-create \
+  -H "Content-Type: application/json" \
+  -d '{"name": "아티스트이름"}'
+```
+- 200: 기존 아티스트 반환
+- 201: 새로 생성 (Spotify 데이터 포함)
+- 서버가 자동으로 DB 검색 → Spotify 매칭 → 생성
+
 ### Search
 ```bash
 curl "$BASE_URL/artists?search=아티스트이름"
@@ -112,6 +122,18 @@ curl -X POST $BASE_URL/artists \
 ```bash
 curl $BASE_URL/artists/{id}
 ```
+
+### Spotify Search (Admin UI용)
+```bash
+curl "$BASE_URL/artists/spotify/search?q=아티스트이름"
+```
+- Spotify 검색 결과 반환 (DB 저장 안 함)
+
+### Spotify Detail (Admin UI용)
+```bash
+curl "$BASE_URL/artists/spotify/{spotifyId}"
+```
+- Spotify 아티스트 상세 정보 반환
 
 ## Enums
 

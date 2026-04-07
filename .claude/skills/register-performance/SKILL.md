@@ -41,7 +41,7 @@ description: "공연 자동 등록 & 동기화 — 티켓 플랫폼(melon/nol/ti
 
 스캔 전 서버 상태 확인:
 ```bash
-curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/performances/calendar?year=2026&month=1
+curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/performances/calendar?year=2026&month=1"
 ```
 200이면 로컬 사용. 실패하면 프로덕션 사용. 둘 다 안 되면 중단하고 사용자에게 알림.
 
@@ -246,20 +246,6 @@ fetcher 데이터에 빈 필드가 있으면 네가 채울 수 있는 건 채운
   - 그 외 or 티켓 오픈 전 → `SCHEDULED`
 - **lineupMode**: 페스티벌이면 `TIMETABLE`, 일반 콘서트면 `LINEUP`.
 
-### 아티스트 생성 시 정보 보강
-
-`POST /artists`로 새 아티스트를 생성할 때, 이름만 넣지 말고 네가 아는 정보를 같이 넣는다:
-
-```json
-{
-  "name": "문별",
-  "description": "마마무 멤버, 솔로 아티스트. 본명 문별이(文星伊)."
-}
-```
-
-- 모르는 아티스트면 `name`만으로 생성해도 된다.
-- 확실하지 않은 정보는 넣지 않는다.
-
 ### 중복 매칭 판단
 
 제목 정규화 + 날짜 비교만으로 부족할 때, 네 판단이 필요하다:
@@ -272,12 +258,12 @@ fetcher 데이터에 빈 필드가 있으면 네가 채울 수 있는 건 채운
 
 아티스트 이름이 확정되면:
 
-1. **검색**: `GET /artists?search={name}`.
-2. **매칭 판단**:
-   - 검색 결과 중 이름이 **정확히** 일치하는 아티스트 → 해당 artistId 사용.
-   - 영문/한글 혼용 주의: DB에 "YENA"가 있고 fetcher가 "최예나"를 반환하면, 같은 아티스트인지 네가 판단.
-   - 없으면 → `POST /artists`로 생성. 아는 정보가 있으면 description도 같이.
-3. 모든 artistId를 모아 `PUT /performances/:id/artists` 호출:
+1. **find-or-create**: `POST /artists/find-or-create` with `{"name": "아티스트명"}`.
+   - 서버가 자동으로: DB 검색 → Spotify 매칭 → 풍부한 데이터로 생성.
+   - 200: 기존 아티스트 반환.
+   - 201: 새로 생성 (Spotify 이미지, 메타데이터 포함).
+   - Spotify에 없는 아티스트는 이름만으로 생성됨.
+2. 반환된 `id`를 모아 `PUT /performances/:id/artists` 호출:
    ```json
    {
      "artists": [
@@ -286,6 +272,8 @@ fetcher 데이터에 빈 필드가 있으면 네가 채울 수 있는 건 채운
      ]
    }
    ```
+
+더 이상 `GET /artists?search=` → `POST /artists`로 수동 생성할 필요 없음. find-or-create 하나로 끝.
 
 ## 중복 감지 (크로스 플랫폼)
 
