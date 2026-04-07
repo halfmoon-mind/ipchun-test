@@ -56,6 +56,7 @@ curl -X DELETE $BASE_URL/performances/{id}
 
 ### Replace Lineup
 ```bash
+# LINEUP 모드 (단순 순서만)
 curl -X PUT $BASE_URL/performances/{id}/artists \
   -H "Content-Type: application/json" \
   -d '{
@@ -64,7 +65,39 @@ curl -X PUT $BASE_URL/performances/{id}/artists \
       {"artistId": "uuid-2", "performanceOrder": 2}
     ]
   }'
+
+# TIMETABLE 모드 (날짜/시간/스테이지 포함)
+curl -X PUT $BASE_URL/performances/{id}/artists \
+  -H "Content-Type: application/json" \
+  -d '{
+    "artists": [
+      {
+        "artistId": "uuid-1",
+        "performanceOrder": 1,
+        "performanceScheduleId": "schedule-uuid-day1",
+        "startTime": "2026-05-01T14:00:00+09:00",
+        "endTime": "2026-05-01T14:40:00+09:00",
+        "stage": "MAIN STAGE"
+      },
+      {
+        "artistId": "uuid-2",
+        "performanceOrder": 1,
+        "performanceScheduleId": "schedule-uuid-day2",
+        "startTime": "2026-05-02T15:00:00+09:00",
+        "endTime": "2026-05-02T15:40:00+09:00",
+        "stage": "GREEN STAGE"
+      }
+    ]
+  }'
 ```
+
+**TIMETABLE 필드 설명:**
+- `performanceScheduleId`: 해당 아티스트가 출연하는 날짜의 schedule ID (GET /performances/:id 응답의 schedules[].id)
+- `startTime`: 출연 시작 시각 (ISO 8601)
+- `endTime`: 출연 종료 시각 (ISO 8601)
+- `stage`: 스테이지 이름 (예: "MAIN STAGE", "GREEN STAGE")
+- `role`: 역할 (선택)
+- `stageName`: 활동명이 다른 경우 (선택)
 
 ### Remove Single Artist
 ```bash
@@ -101,7 +134,7 @@ curl -X POST $BASE_URL/artists/find-or-create \
 ```
 - 200: 기존 아티스트 반환
 - 201: 새로 생성 (Spotify 데이터 포함)
-- 서버가 자동으로 DB 검색 → Spotify 매칭 → 생성
+- 서버가 자동으로 DB 검색 → Spotify 검색 (1위 결과 사용) → 생성
 
 ### Search
 ```bash

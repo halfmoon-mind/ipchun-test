@@ -3,21 +3,31 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "NOL에 있는 이 공연 등록해줘 https://tickets.interpark.com/goods/26005789",
-      "expected_output": "URL에서 공연 데이터를 fetch하고, 아티스트가 없으면 생성하고, DB에 등록한 뒤 결과를 보고",
-      "files": []
-    },
-    {
-      "id": 2,
-      "prompt": "/register melon",
-      "expected_output": "멜론 플랫폼의 시드 ID를 기반으로 미탐색 ID를 스캔하고, 유효한 공연을 찾아 등록하며, 상태 파일을 업데이트하고 결과를 보고",
-      "files": []
-    },
-    {
-      "id": 3,
-      "prompt": "/register all",
-      "expected_output": "4개 플랫폼(melon, nol, ticketlink, yes24)을 병렬 서브에이전트로 동시 스캔하고, 각 플랫폼별 결과를 통합 보고",
-      "files": []
+      "prompt": "https://tickets.interpark.com/goods/26002763 이거 등록해줘",
+      "expected_output": "2026 어썸뮤직페스티벌 등록 완료. 아티스트 12명 전부 등록, lineupMode=TIMETABLE, 날짜별 배치 완료",
+      "files": [],
+      "assertions": [
+        {
+          "name": "all-12-artists-registered",
+          "description": "fetcher가 반환한 12명의 아티스트가 전부 DB에 연결되었는지",
+          "type": "programmatic"
+        },
+        {
+          "name": "timetable-schedule-assigned",
+          "description": "아티스트의 performanceScheduleId가 null이 아닌지 (최소 1명 이상)",
+          "type": "programmatic"
+        },
+        {
+          "name": "lineup-mode-timetable",
+          "description": "lineupMode가 TIMETABLE로 설정되었는지",
+          "type": "programmatic"
+        },
+        {
+          "name": "genre-festival",
+          "description": "genre가 FESTIVAL로 보정되었는지",
+          "type": "programmatic"
+        }
+      ]
     }
   ]
 }
