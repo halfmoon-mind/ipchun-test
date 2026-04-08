@@ -1,7 +1,28 @@
 {
-  "explored": [],
-  "registered": {},
+  "explored": ["62107", "62108", "62109", "62110", "62111", "62112", "62113", "62114", "62115", "62116", "62117", "62118", "62119", "62120", "62121", "62122", "62123", "62124", "62125", "62126"],
+  "registered": {
+    "62107": { "performanceId": "33395df3-148d-400d-bfd6-085e3f891b37", "title": "NERD CONNECTION S/S 2026" },
+    "62108": { "performanceId": "d4239274-cacd-43b4-b0f7-663b7fd3d223", "title": "2026 박상민 'LOVE' 콘서트 - 울산" },
+    "62109": { "performanceId": "df7a4e8a-907d-4594-acd6-ce4930aeda62", "title": "순천시립소년소녀합창단 교류음악회 우리들의 이야기" },
+    "62110": { "performanceId": "2d841251-dd0f-4e91-a2ff-c1f174a2b06b", "title": "연극 <체인지 로그인>" },
+    "62111": { "performanceId": "ff97907d-ff76-4c6b-abbb-4dbca9aea764", "title": "2026 삼성라이온즈 정규리그" },
+    "62112": { "performanceId": "3e45f9f2-1399-4cbf-b053-1858684f3e86", "title": "제40회 김천시립국악단 정기연주회" },
+    "62113": { "performanceId": "176c8015-80fc-43e1-a1b9-0e717694d245", "title": "그루브 in 판소리 / 광주" },
+    "62114": { "performanceId": "4f77ea8d-0815-46ee-8cd8-255fb6163b87", "title": "에바 알머슨의 뮤지컬 체험전" },
+    "62115": { "performanceId": "ce2c1af3-1016-4b31-939c-a64bc932c8fa", "title": "리얼공룡쇼 <다이노> - 김해" },
+    "62116": { "performanceId": "c2807ea9-a6c0-448e-bebf-d7e907400a01", "title": "일요음악회 <Double life>" },
+    "62117": { "performanceId": "075e7f35-2577-43d4-a558-60544c1bf460", "title": "토요음악회 <시, 노래로 피어나다>" },
+    "62118": { "skipped": true, "reason": "토크콘서트 - 비음악" },
+    "62119": { "performanceId": "035d109a-f5c9-4c84-87df-e4bd1c6e72d6", "title": "베베핀 뮤지컬 <두근두근 새친구>" },
+    "62120": { "performanceId": "b4589f74-6e81-4dae-a806-22fbac906ab5", "title": "토요음악회 <라디오 클래식>" },
+    "62121": { "performanceId": "b8781918-96d1-4ae6-9a91-5d655f8f2681", "title": "디바제시카: 살인의 흔적" },
+    "62122": { "performanceId": "cd894852-47c1-4764-81a8-8ccac3da803f", "title": "2026 LoL 멸망전 시즌1 결승전" },
+    "62123": { "performanceId": "bfec0c37-3a07-4d61-be7f-044babfd221f", "title": "토요음악회 <벨칸토와 떠나는 노래 여행>" },
+    "62124": { "performanceId": "44ebc4a9-933d-4871-a759-0c9d239c9fc1", "title": "대구크리스챤콰이어 특별콘서트" },
+    "62125": { "performanceId": "1a6284e9-c31b-4fc2-b1e6-c8f6a92194bf", "title": "Cinema Classic 지브리&영화 OST 키즈클래식" },
+    "62126": { "performanceId": "55256615-fe78-4c62-9127-57025d9ec614", "title": "젊은 예술가 리사이틀 - 소프라노 김소미" }
+  },
   "failed": [],
-  "seeds": ["62107"],
-  "lastRun": null
+  "seeds": ["62107", "62108", "62109", "62110", "62111", "62112", "62113", "62114", "62115", "62116", "62117", "62118", "62119", "62120", "62121", "62122", "62123", "62124", "62125", "62126"],
+  "lastRun": "2026-04-08T01:40:00Z"
 }
