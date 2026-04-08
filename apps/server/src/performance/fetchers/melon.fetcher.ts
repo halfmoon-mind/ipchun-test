@@ -188,6 +188,7 @@ export async function fetchFromMelon(
   // 범위 형식 폴백: "2026년 4월 1일(수) ~ 4월 2일(목) 오후 8시"
   // 연도·시간이 한 번만 나오고 날짜가 ~ 로 연결된 형식
   if (concertTimeMatch && schedules.length === 0) {
+    const timeText = concertTimeMatch[1].replace(/<[^>]*>/g, '');
     const rangeMatch = timeText.match(
       /(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*\([^)]*\)\s*~\s*(?:(\d{1,2})\s*월\s*)?(\d{1,2})\s*일\s*\([^)]*\)\s*(오전|오후)\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/,
     );
