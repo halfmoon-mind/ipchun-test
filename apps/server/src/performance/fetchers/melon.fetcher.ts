@@ -185,6 +185,35 @@ export async function fetchFromMelon(
       });
     }
   }
+  // 범위 형식 폴백: "2026년 4월 1일(수) ~ 4월 2일(목) 오후 8시"
+  // 연도·시간이 한 번만 나오고 날짜가 ~ 로 연결된 형식
+  if (concertTimeMatch && schedules.length === 0) {
+    const rangeMatch = timeText.match(
+      /(\d{4})\s*년\s*(\d{1,2})\s*월\s*(\d{1,2})\s*일\s*\([^)]*\)\s*~\s*(?:(\d{1,2})\s*월\s*)?(\d{1,2})\s*일\s*\([^)]*\)\s*(오전|오후)\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/,
+    );
+    if (rangeMatch) {
+      const year = rangeMatch[1];
+      const month1 = rangeMatch[2];
+      const day1 = rangeMatch[3];
+      const month2 = rangeMatch[4] || month1;
+      const day2 = rangeMatch[5];
+      const ampm = rangeMatch[6];
+      let hour = parseInt(rangeMatch[7]);
+      if (ampm === '오후' && hour < 12) hour += 12;
+      if (ampm === '오전' && hour === 12) hour = 0;
+      const min = rangeMatch[8] ? rangeMatch[8].padStart(2, '0') : '00';
+      const timeStr = `${String(hour).padStart(2, '0')}:${min}:00+09:00`;
+
+      // 시작일~종료일 사이 모든 날짜 생성
+      const start = new Date(`${koreanFullDateToIso(year, month1, day1)}T00:00:00Z`);
+      const end = new Date(`${koreanFullDateToIso(year, month2, day2)}T00:00:00Z`);
+      for (let cur = start; cur <= end; cur.setDate(cur.getDate() + 1)) {
+        const d = cur.toISOString().slice(0, 10);
+        schedules.push({ dateTime: `${d}T${timeStr}` });
+      }
+    }
+  }
+
   // 폴백: box_concert_time 파싱 실패 시 공연기간 날짜 사용
   if (schedules.length === 0 && startDate) {
     schedules.push({ dateTime: `${startDate}T00:00:00+09:00` });
