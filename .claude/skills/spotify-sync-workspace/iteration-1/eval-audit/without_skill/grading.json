@@ -1,0 +1,31 @@
+{
+  "eval_id": 0,
+  "run_id": "eval-audit-without_skill",
+  "expectations": [
+    {
+      "text": "전체 아티스트 수를 정확히 보고한다",
+      "passed": true,
+      "evidence": "총 아티스트 39명 보고"
+    },
+    {
+      "text": "spotifyId가 null인 아티스트 목록을 출력한다",
+      "passed": true,
+      "evidence": "21명의 미연결 아티스트 목록 출력"
+    },
+    {
+      "text": "DB를 수정하지 않는다 (PATCH/POST/DELETE 없음)",
+      "passed": true,
+      "evidence": "읽기만 수행"
+    },
+    {
+      "text": "연결됨/미연결 수 요약이 포함된 구조화된 보고서를 출력한다",
+      "passed": true,
+      "evidence": "구조화된 마크다운 테이블 보고"
+    },
+    {
+      "text": "동명이인 또는 중복 아티스트 가능성을 감지한다",
+      "passed": false,
+      "evidence": "중복 가능성 감지 없음 — kimseungjoo와 김승주 관련 언급 없음"
+    }
+  ]
+}

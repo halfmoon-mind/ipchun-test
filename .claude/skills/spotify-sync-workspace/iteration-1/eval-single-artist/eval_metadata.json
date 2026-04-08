@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "single-artist-hyukoh",
+  "prompt": "혁오 스포티파이 연결해줘",
+  "assertions": [
+    {
+      "id": "db-search-first",
+      "text": "DB에서 먼저 아티스트를 검색한다",
+      "type": "correctness"
+    },
+    {
+      "id": "spotify-search",
+      "text": "Spotify 검색 API를 호출하여 매칭을 시도한다",
+      "type": "correctness"
+    },
+    {
+      "id": "correct-spotify-id",
+      "text": "혁오의 올바른 Spotify ID(57okaLdCtv3nVBSn5otJkp)를 찾는다",
+      "type": "correctness"
+    },
+    {
+      "id": "patch-update",
+      "text": "PATCH로 기존 아티스트를 업데이트한다 (POST로 새로 만들지 않음)",
+      "type": "correctness"
+    },
+    {
+      "id": "result-report",
+      "text": "연결 결과를 요약 보고한다",
+      "type": "quality"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "spotify-sync",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "spotify 연결 안된 아티스트 확인해줘",
+      "expected_output": "전체 아티스트 수, Spotify 연결/미연결 수 요약. 미연결 아티스트 목록 출력. DB 수정 없음.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "아티스트 spotify 전부 연결해줘",
+      "expected_output": "미연결 아티스트를 순회하며 Spotify 검색 후 매칭. 자동 매칭 또는 사용자 확인 요청. 최종 결과 리포트.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "혁오 스포티파이 연결해줘",
+      "expected_output": "혁오를 Spotify에서 검색하여 매칭. DB에서 해당 아티스트를 찾고 PATCH로 업데이트.",
+      "files": []
+    }
+  ]
+}

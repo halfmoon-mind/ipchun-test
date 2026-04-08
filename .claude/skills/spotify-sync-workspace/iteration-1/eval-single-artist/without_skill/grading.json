@@ -1,0 +1,31 @@
+{
+  "eval_id": 2,
+  "run_id": "eval-single-artist-without_skill",
+  "expectations": [
+    {
+      "text": "DB에서 먼저 아티스트를 검색한다",
+      "passed": true,
+      "evidence": "DB에서 혁오 검색 후 미등록 확인"
+    },
+    {
+      "text": "Spotify 검색 API를 호출하여 매칭을 시도한다",
+      "passed": false,
+      "evidence": "find-or-create 사용했으나 Spotify API 인증 실패. sandbox 제한."
+    },
+    {
+      "text": "혁오의 올바른 Spotify ID(57okaLdCtv3nVBSn5otJkp)를 찾는다",
+      "passed": true,
+      "evidence": "MusicBrainz 외부 링크에서 올바른 ID 확인"
+    },
+    {
+      "text": "PATCH로 기존 아티스트를 업데이트한다 (POST로 새로 만들지 않음)",
+      "passed": false,
+      "evidence": "POST /artists로 새 아티스트를 생성 — 기존 레코드가 없었기 때문이지만, with_skill은 find-or-create 사용 후 PATCH로 보완"
+    },
+    {
+      "text": "연결 결과를 요약 보고한다",
+      "passed": true,
+      "evidence": "테이블 형식으로 결과 보고, 비고 포함"
+    }
+  ]
+}
