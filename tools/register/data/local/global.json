@@ -1,0 +1,67 @@
+{
+  "performances": {
+    "1099e709-be6d-4826-959c-f874774ff7dc": {
+      "title": "2026 서울히어로락페스티벌 X 트리헌드레드",
+      "normalizedTitle": "서울히어로락페스티벌트리헌드레드",
+      "venueName": "문화비축기지",
+      "dates": ["2026-04-25", "2026-04-26"],
+      "sources": [{ "platform": "MELON", "externalId": "212916" }]
+    },
+    "41a5dbd4-e70e-4bed-acfc-70f2b3db4b85": {
+      "title": "TAEHO Mini Live Concert 'THE FIRST [ X ]'",
+      "normalizedTitle": "taehominiliveconvertthefirstx",
+      "venueName": "클럽온에어",
+      "dates": ["2026-04-05"],
+      "sources": [{ "platform": "MELON", "externalId": "212917" }]
+    },
+    "33e2f3cc-3881-4bdc-854b-b58c959c240a": {
+      "title": "LiVE is Smile Always～15～ in Seoul",
+      "normalizedTitle": "liveissmilealwaysinseoul",
+      "venueName": "올림픽공원올림픽홀",
+      "dates": ["2026-08-01", "2026-08-02"],
+      "sources": [{ "platform": "MELON", "externalId": "212918" }]
+    },
+    "c0dea4e9-76b0-472e-ab47-79c53f14fd1b": {
+      "title": "관악청년포크협의회 2026년 임시총회",
+      "normalizedTitle": "관악청년포크협의회임시총회",
+      "venueName": "클럽온에어",
+      "dates": ["2026-04-12"],
+      "sources": [{ "platform": "MELON", "externalId": "212919" }]
+    },
+    "21611614-5a73-41d5-9ebf-5dab13dfb115": {
+      "title": "Noridogam Asia Tour 2026 - Seoul",
+      "normalizedTitle": "noridogamasiatourseoul",
+      "venueName": "Vel.R(벨르)",
+      "dates": ["2026-04-25"],
+      "sources": [{ "platform": "MELON", "externalId": "212920" }]
+    },
+    "468d200d-2f99-49c2-a2e2-ea030449110c": {
+      "title": "NERD CONNECTION S/S 2026",
+      "normalizedTitle": "nerdconnectionss",
+      "venueName": "티켓링크 1975 씨어터",
+      "dates": ["2026-05-09", "2026-05-10"],
+      "sources": [{ "platform": "TICKETLINK", "externalId": "62107" }]
+    },
+    "bfdf9bfc-f60c-43ac-9abb-97bfc9b11dc7": {
+      "title": "2026 박상민 'LOVE' 콘서트 - 울산",
+      "normalizedTitle": "박상민loveconvert울산",
+      "venueName": "KBS 울산홀",
+      "dates": ["2026-05-09"],
+      "sources": [{ "platform": "TICKETLINK", "externalId": "62108" }]
+    },
+    "e7a17647-ca5c-457d-b78b-45d56c022fed": {
+      "title": "오월오일 단독 콘서트 〈5X5〉",
+      "normalizedTitle": "오월오일단독콘서트x",
+      "venueName": "KT&G 상상마당 라이브홀",
+      "dates": ["2026-05-01"],
+      "sources": [{ "platform": "NOL", "externalId": "26004954" }]
+    },
+    "81424d24-85c9-49a9-855d-9ced1b9ce4bf": {
+      "title": "2026-27 BABYMONSTER WORLD TOUR ［춤 (CHOOM)］ IN SEOUL",
+      "normalizedTitle": "babymonsterworldtourchoomseoul",
+      "venueName": "잠실실내체육관",
+      "dates": ["2026-06-26", "2026-06-28"],
+      "sources": [{ "platform": "NOL", "externalId": "26004955" }]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "explored": [
+    "212901", "212902", "212903", "212904", "212905", "212906", "212907",
+    "212908", "212909", "212910", "212911", "212912", "212913", "212914",
+    "212915", "212916", "212917", "212918", "212919", "212920"
+  ],
+  "registered": {
+    "212901": { "performanceId": "5e693fe3-c8ae-4fc2-83f3-cf563f709aa0", "title": "〈Enjoy Life, Anyway – Spring〉" },
+    "212902": { "performanceId": "551fa5c5-bb95-4906-816a-59ada5de2278", "title": "먼데이프로젝트 시즌9 Our Universe [딕펑스 단독 콘서트]" },
+    "212903": { "performanceId": "a17e217e-6d34-4077-a2bb-a7b0d2839ed9", "title": "먼데이프로젝트 시즌9 THE ORIGINAL [고고학 단독 콘서트]" },
+    "212904": { "performanceId": "b2220bd2-8ef6-4e50-bb80-122188101390", "title": "[ POINT : lovelovelove ] - 숨비, 시황" },
+    "212905": { "performanceId": "fa039522-8698-406c-b164-4b23487f6169", "title": "문별 CONCERT [MUSEUM : village of eternal glow - Live House]" },
+    "212906": { "performanceId": "67f208bc-5049-4cb2-bc0a-d3fb7c477573", "title": "서우승 생일 팬미팅 〈우승하는 날!〉" },
+    "212907": { "performanceId": "4117e652-f612-4f74-81bd-71679d224edb", "title": "W24 단독 공연 〈NEXT CHAPTER: BEST CHAPTER / Section 3. 벨로주〉" },
+    "212908": { "performanceId": "6417eb8d-100c-464b-ae10-9710eefbe776", "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 - 부산" },
+    "212909": { "performanceId": "db97f0b8-e962-4221-a47e-fbf342feba15", "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 -서울" },
+    "212910": { "performanceId": "263cb767-6d6b-4e4b-98d3-bd546b8314fb", "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 -대전" },
+    "212911": { "performanceId": "c3823edd-302e-47ae-b29d-790d28ed9ab8", "title": "ROSEWOOD - [Scarlet Syndrome] Showcase" },
+    "212915": { "performanceId": "60686a83-18de-4224-ae5e-b2c259c578ac", "title": "[FULL-RISE] - 오드 x 쿠라니 x 블낫블" },
+    "212916": { "performanceId": "1099e709-be6d-4826-959c-f874774ff7dc", "title": "2026 서울히어로락페스티벌 X 트리헌드레드" },
+    "212917": { "performanceId": "41a5dbd4-e70e-4bed-acfc-70f2b3db4b85", "title": "TAEHO Mini Live Concert 'THE FIRST [ X ]'" },
+    "212918": { "performanceId": "33e2f3cc-3881-4bdc-854b-b58c959c240a", "title": "LiVE is Smile Always～15～ in Seoul" },
+    "212919": { "performanceId": "c0dea4e9-76b0-472e-ab47-79c53f14fd1b", "title": "관악청년포크협의회 2026년 임시총회" },
+    "212920": { "performanceId": "21611614-5a73-41d5-9ebf-5dab13dfb115", "title": "Noridogam Asia Tour 2026 - Seoul" }
+  },
+  "failed": [],
+  "seeds": [
+    "212901", "212902", "212903", "212904", "212905", "212906", "212907",
+    "212908", "212909", "212910", "212911", "212915", "212916", "212917",
+    "212918", "212919", "212920"
+  ],
+  "lastRun": "2026-04-08T14:15:00Z"
+}

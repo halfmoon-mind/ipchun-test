@@ -1,0 +1,19 @@
+{
+  "57011": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 [잠자는 숲속의 공주] 평택", "note": "뮤지컬" },
+  "57012": { "reason": "MANUAL_SKIP", "title": "서울시향 아주 특별한 콘서트", "note": "클래식" },
+  "57014": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 [잠자는 숲속의 공주] 대구", "note": "뮤지컬" },
+  "57016": { "reason": "MANUAL_SKIP", "title": "연동 테스트", "note": "테스트 데이터" },
+  "57017": { "reason": "MANUAL_SKIP", "title": "뮤지컬 [팬레터]", "note": "뮤지컬" },
+  "57018": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 [미녀와야수] 창원", "note": "뮤지컬" },
+  "57019": { "reason": "MANUAL_SKIP", "title": "강지영 피아노 독주회", "note": "클래식" },
+  "57020": { "reason": "MANUAL_SKIP", "title": "홍승아 첼로 독주회", "note": "클래식" },
+  "57021": { "reason": "MANUAL_SKIP", "title": "루미나 앙상블 정기연주회", "note": "클래식" },
+  "57022": { "reason": "MANUAL_SKIP", "title": "소프라노 박소영 귀국 독창회", "note": "클래식" },
+  "57023": { "reason": "MANUAL_SKIP", "title": "연극 〈템플〉", "note": "연극" },
+  "57024": { "reason": "MANUAL_SKIP", "title": "연극 〈칼로막베스〉", "note": "연극" },
+  "57025": { "reason": "MANUAL_SKIP", "title": "연극 〈망원동 브라더스〉", "note": "연극" },
+  "57026": { "reason": "MANUAL_SKIP", "title": "연극 〈들꽃〉", "note": "연극" },
+  "57027": { "reason": "MANUAL_SKIP", "title": "연극 〈시뮬라시옹〉", "note": "연극" },
+  "57029": { "reason": "MANUAL_SKIP", "title": "뮤지컬 [킹키부츠] 광주", "note": "뮤지컬" },
+  "57030": { "reason": "MANUAL_SKIP", "title": "예그리나합창단 정기연주회", "note": "클래식" }
+}

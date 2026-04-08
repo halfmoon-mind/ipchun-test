@@ -1,0 +1,35 @@
+{
+  "explored": [
+    "212880", "212881", "212882", "212883", "212884", "212885", "212886", "212887",
+    "212888", "212889", "212890", "212891", "212892", "212893", "212894", "212895",
+    "212896", "212897", "212898", "212899", "212900"
+  ],
+  "registered": {
+    "212880": { "performanceId": "4fab5568-42fb-4664-a5c7-d861d906a839", "title": "먼데이프로젝트 시즌9 [Heart & Friends] 앵콜 콘서트" },
+    "212881": { "performanceId": "e205fa59-6885-40ad-a88b-5f411c05125d", "title": "W24 Next Chapter : Best Chapter Section 4 : 롤링 31주년 기념 공연" },
+    "212882": { "performanceId": "5e22487a-0981-43ec-b28c-30b81caa7f63", "title": "DJ Soulscape Curated 28 eldon" },
+    "212883": { "performanceId": "7a3cc96c-be45-4ea9-ab9e-068183af8bfc", "title": "휘나 첫 단독 콘서트 The Call : 롤링 31주년 기념공연" },
+    "212884": { "performanceId": "75ad3ba5-00c8-4ce7-9fc4-e245f97aec9e", "title": "PEAK FESTIVAL 2026", "note": "NOL 소스로 기존 등록, MELON 소스 미연동 (API 미지원)" },
+    "212885": { "performanceId": "372c23b8-9d9f-4ac6-8181-38a3ccb208aa", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 부산" },
+    "212886": { "performanceId": "01071989-940a-4fe2-85df-4629c67104b7", "title": "제13회 김사월 쇼 : 도망자" },
+    "212887": { "performanceId": "6cc4fece-98cf-485e-b698-02a380bc0006", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대구" },
+    "212888": { "performanceId": "07bb8925-6b7d-49b3-9004-55af2bc773cc", "title": "현대카드 Curated 104 김승주" },
+    "212889": { "performanceId": "21e9a06a-5076-4205-99aa-c74364944049", "title": "캐치더영 콘서트 [LIVE EVOLVE]" },
+    "212890": { "performanceId": "86c388c0-8fc9-446c-aa73-3891c3c4f694", "title": "먼데이프로젝트X숲세권 MONDAY:SOOP [예람 단독 콘서트]" },
+    "212891": { "performanceId": "df64283f-8b99-4338-aa8c-25057dee0260", "title": "2026 DOHA Birthday Party" },
+    "212893": { "performanceId": "766a10f0-624d-47be-83e2-060650d44c02", "title": "RAVE NIGHT (HWA:HAP) (화합)" },
+    "212894": { "performanceId": "6cd48f4e-b9cb-4c3e-a905-b986584e6253", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대전" },
+    "212896": { "performanceId": "65a23f64-5a17-4cdd-8608-d30600487166", "title": "2026 UmYull FANCON 초안 : 롤링 31주년 기념 공연" },
+    "212897": { "performanceId": "4e7cbe19-b4cc-4555-9320-951ccf92e181", "title": "CHANGMO : THE EMPEROR" },
+    "212898": { "performanceId": "90cbef6b-fa89-4892-9afb-951e4503364a", "title": "TONE STUDIO LIVE 급한노새 (Rosai In Hurry)" },
+    "212899": { "performanceId": "5a58bb39-a827-4dbd-9aae-b1c886805dea", "title": "Nostalgia in You Me" },
+    "212900": { "performanceId": "0ff504c6-0706-4620-99b0-ba3202acf437", "title": "2026 이진솔 FANMEETING (Eternal Moment)" }
+  },
+  "failed": [],
+  "seeds": [
+    "212880", "212881", "212882", "212883", "212884", "212885", "212886", "212887",
+    "212888", "212889", "212890", "212891", "212893", "212894", "212896",
+    "212897", "212898", "212899", "212900"
+  ],
+  "lastRun": "2026-04-08T12:00:00Z"
+}
