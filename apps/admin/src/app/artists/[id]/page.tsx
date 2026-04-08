@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import type { Artist, Performance } from '@ipchun/shared';
 import { SpotifyInfoSection } from '../_components/SpotifyInfoSection';
@@ -36,12 +36,14 @@ function formatDate(iso: string) {
 
 export default function ArtistDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
 
   const [artist, setArtist] = useState<Artist | null>(null);
   const [performances, setPerformances] = useState<Performance[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -82,9 +84,28 @@ export default function ArtistDetailPage() {
         <Link href="/artists" className="btn-text">
           &larr; 목록으로
         </Link>
-        <Link href={`/artists/${id}/edit`} className="btn-primary">
-          수정
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`/artists/${id}/edit`} className="btn-primary">
+            수정
+          </Link>
+          <button
+            className="btn-destructive"
+            disabled={deleting}
+            onClick={async () => {
+              if (!confirm(`"${artist.name}" 아티스트를 삭제하시겠습니까?`)) return;
+              setDeleting(true);
+              try {
+                await api.artists.delete(id);
+                router.push('/artists');
+              } catch {
+                alert('삭제에 실패했습니다');
+                setDeleting(false);
+              }
+            }}
+          >
+            {deleting ? '삭제 중...' : '삭제'}
+          </button>
+        </div>
       </div>
 
       {/* 아티스트 프로필 */}

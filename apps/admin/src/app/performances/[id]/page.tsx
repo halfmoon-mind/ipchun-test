@@ -209,7 +209,11 @@ export default function PerformanceDetailPage() {
                                       {formatDateTime(a.startTime).slice(-5)}–{formatDateTime(a.endTime).slice(-5)}
                                     </span>
                                   )}
-                                  <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                                  {a.artistId ? (
+                                    <Link href={`/artists/${a.artistId}`} className="font-medium text-sm underline hover:opacity-70">{a.artist?.name ?? 'Unknown'}</Link>
+                                  ) : (
+                                    <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                                  )}
                                 </div>
                               ))}
                           </div>
@@ -244,7 +248,11 @@ export default function PerformanceDetailPage() {
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
                         {dayArtists.map((a) => (
                           <div key={a.id} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                            {a.artistId ? (
+                              <Link href={`/artists/${a.artistId}`} className="font-medium text-sm underline hover:opacity-70">{a.artist?.name ?? 'Unknown'}</Link>
+                            ) : (
+                              <span className="font-medium text-sm">{a.artist?.name ?? 'Unknown'}</span>
+                            )}
                           </div>
                         ))}
                       </div>
@@ -257,7 +265,11 @@ export default function PerformanceDetailPage() {
               <div className="space-y-2">
                 {performance.artists.map((a) => (
                   <div key={a.id} className="flex items-center gap-3 text-sm">
-                    <span className="font-medium">{a.artist?.name ?? a.stageName ?? 'Unknown'}</span>
+                    {a.artistId ? (
+                      <Link href={`/artists/${a.artistId}`} className="font-medium underline hover:opacity-70">{a.artist?.name ?? a.stageName ?? 'Unknown'}</Link>
+                    ) : (
+                      <span className="font-medium">{a.artist?.name ?? a.stageName ?? 'Unknown'}</span>
+                    )}
                     {a.role && <span style={{ color: 'var(--muted-foreground)' }}>({a.role})</span>}
                   </div>
                 ))}
