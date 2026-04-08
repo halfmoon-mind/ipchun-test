@@ -62,6 +62,48 @@
       "venueName": "잠실실내체육관",
       "dates": ["2026-06-26", "2026-06-28"],
       "sources": [{ "platform": "NOL", "externalId": "26004955" }]
+    },
+    "2602b6f7-0edd-4b2c-8271-fbba66d0560e": {
+      "title": "뷰티풀 민트 라이프 2026",
+      "normalizedTitle": "뷰티풀민트라이프",
+      "venueName": "문화비축기지",
+      "dates": ["2026-05-30", "2026-05-31"],
+      "sources": [{ "platform": "YES24", "externalId": "57200" }]
+    },
+    "3e5c48bc-5ff6-4dba-8eda-5018bd44180b": {
+      "title": "2026 정세운 단독공연 〈Margins〉",
+      "normalizedTitle": "정세운단독공연margins",
+      "venueName": "YES24 LIVE HALL",
+      "dates": ["2026-04-04", "2026-04-05"],
+      "sources": [{ "platform": "YES24", "externalId": "57450" }]
+    },
+    "29e3610b-1e02-4f41-914d-65a46da620b4": {
+      "title": "2026 김종서 전국투어 콘서트 : 모두의 김종서 - 서울",
+      "normalizedTitle": "김종서전국투어콘서트모두의김종서서울",
+      "venueName": "로운아트홀",
+      "dates": ["2026-03-21"],
+      "sources": [{ "platform": "YES24", "externalId": "57470" }]
+    },
+    "70e93a54-8948-4771-9a6c-8a0778385f4f": {
+      "title": "[인천] 2026 김정민 전국투어 콘서트 : 대한민국 락발라더 김정민",
+      "normalizedTitle": "김정민전국투어콘서트대한민국락발라더김정민",
+      "venueName": "청라블루노바홀",
+      "dates": ["2026-03-29"],
+      "sources": [{ "platform": "YES24", "externalId": "57520" }]
+    },
+    "e0a0d7d4-4343-404f-8c64-bc80f1e38695": {
+      "title": "[부산] 2026 The 심수봉 SHOW",
+      "normalizedTitle": "the심수봉show",
+      "venueName": "부산KBS홀",
+      "dates": ["2026-05-16"],
+      "sources": [{ "platform": "YES24", "externalId": "57770" }]
+    },
+    "046bffba-616b-4014-8a7f-7a14e7898e84": {
+      "title": "2026 LEE SEONG JONG FANMEETING [CHAMBER : WINGS]",
+      "normalizedTitle": "leeseongjonafanmeetingchamberwings",
+      "venueName": "예스24 원더로크홀",
+      "dates": ["2026-05-09"],
+      "sources": [{ "platform": "YES24", "externalId": "57800" }]
     }
   }
 }
