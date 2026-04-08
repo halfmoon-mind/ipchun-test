@@ -72,6 +72,51 @@ function parsePlayTimeSchedules(
     }
   }
 
+  // 날짜 범위 + 요일별 시간 패턴
+  // "2026년 5월 1일(금)-5일(화) / 금 7PM, 토 5PM, 일 5PM, 월 7PM, 화 5PM"
+  if (results.length === 0) {
+    const rangeRe =
+      /(\d{4})년\s*(\d{1,2})월\s*(\d{1,2})일\([^)]+\)\s*[-~]\s*(?:(\d{1,2})월\s*)?(\d{1,2})일\([^)]+\)/;
+    const rangeMatch = rangeRe.exec(playTime);
+    if (rangeMatch) {
+      const [, ry, startMo, startDay, endMoRaw, endDay] = rangeMatch;
+      const endMo = endMoRaw || startMo;
+      const dowNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+      // 요일별 시간 매핑: "금 7PM", "토 5:30PM"
+      const dayTimeMap: Record<string, { h: number; min: number }> = {};
+      const dtEnRe = /(월|화|수|목|금|토|일)\s*(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/gi;
+      let dtm: RegExpExecArray | null;
+      while ((dtm = dtEnRe.exec(playTime)) !== null) {
+        let h = parseInt(dtm[2], 10);
+        if (dtm[4].toUpperCase() === 'PM' && h < 12) h += 12;
+        if (dtm[4].toUpperCase() === 'AM' && h === 12) h = 0;
+        dayTimeMap[dtm[1]] = { h, min: dtm[3] ? parseInt(dtm[3], 10) : 0 };
+      }
+      // 한국어: "금 오후 7시"
+      if (Object.keys(dayTimeMap).length === 0) {
+        const dtKoRe = /(월|화|수|목|금|토|일)\s*(오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/g;
+        while ((dtm = dtKoRe.exec(playTime)) !== null) {
+          let h = parseInt(dtm[3], 10);
+          if (dtm[2] === '오후' && h < 12) h += 12;
+          if (dtm[2] === '오전' && h === 12) h = 0;
+          dayTimeMap[dtm[1]] = { h, min: dtm[4] ? parseInt(dtm[4], 10) : 0 };
+        }
+      }
+
+      const startDate = new Date(parseInt(ry), parseInt(startMo) - 1, parseInt(startDay));
+      const endDate = new Date(parseInt(ry), parseInt(endMo) - 1, parseInt(endDay));
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      for (let cur = new Date(startDate); cur <= endDate; cur = new Date(cur.getTime() + oneDay)) {
+        const dow = dowNames[cur.getDay()];
+        const time = dayTimeMap[dow] || { h: 0, min: 0 };
+        const iso = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}T${String(time.h).padStart(2, '0')}:${String(time.min).padStart(2, '0')}:00+09:00`;
+        results.push({ dateTime: iso });
+      }
+    }
+  }
+
   // 날짜와 시간이 별도 줄에 있는 경우 (예: "2026년 04월 25일(토)\n11시 30분")
   if (results.length === 0) {
     const dateOnly =
@@ -90,6 +135,8 @@ function parsePlayTimeSchedules(
       );
       // HH:MM
       const time24 = playTime.match(/(?:^|[\s\r\n])(\d{1,2}):(\d{2})(?:\s|$)/m);
+      // N AM/PM
+      const timeEn = playTime.match(/(?:^|[\s\r\n])(\d{1,2})(?::(\d{2}))?\s*(AM|PM)(?:\s|$)/im);
 
       if (timeKo) {
         h = parseInt(timeKo[2], 10);
@@ -99,6 +146,11 @@ function parsePlayTimeSchedules(
       } else if (time24) {
         h = parseInt(time24[1], 10);
         min = parseInt(time24[2], 10);
+      } else if (timeEn) {
+        h = parseInt(timeEn[1], 10);
+        min = timeEn[2] ? parseInt(timeEn[2], 10) : 0;
+        if (timeEn[3].toUpperCase() === 'PM' && h < 12) h += 12;
+        if (timeEn[3].toUpperCase() === 'AM' && h === 12) h = 0;
       }
 
       for (const dt of dates) {
@@ -257,16 +309,15 @@ export async function fetchFromNol(
     schedules.push(...parsePlayTimeSchedules(summary.playTime));
   }
 
-  // Fallback 2: startDate/endDate + playTime 텍스트에서 시간만 추출하여 결합
+  // Fallback 2: startDate/endDate 범위의 모든 날짜 생성 + playTime에서 시간 추출
   if (schedules.length === 0) {
-    // playTime에서 시간만 추출 (예: "토요일 오후 6시", "오후 8시 30분")
     let fallbackH = 0;
     let fallbackMin = 0;
     if (summary.playTime) {
-      const timeKo = (summary.playTime as string).match(
-        /(오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/,
-      );
-      const time24 = (summary.playTime as string).match(/(\d{1,2}):(\d{2})/);
+      const pt = summary.playTime as string;
+      const timeKo = pt.match(/(오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/);
+      const time24 = pt.match(/(\d{1,2}):(\d{2})/);
+      const timeEn = pt.match(/(\d{1,2})(?::(\d{2}))?\s*(AM|PM)/i);
       if (timeKo) {
         fallbackH = parseInt(timeKo[2], 10);
         fallbackMin = timeKo[3] ? parseInt(timeKo[3], 10) : 0;
@@ -275,23 +326,27 @@ export async function fetchFromNol(
       } else if (time24) {
         fallbackH = parseInt(time24[1], 10);
         fallbackMin = parseInt(time24[2], 10);
+      } else if (timeEn) {
+        fallbackH = parseInt(timeEn[1], 10);
+        fallbackMin = timeEn[2] ? parseInt(timeEn[2], 10) : 0;
+        if (timeEn[3].toUpperCase() === 'PM' && fallbackH < 12) fallbackH += 12;
+        if (timeEn[3].toUpperCase() === 'AM' && fallbackH === 12) fallbackH = 0;
       }
     }
 
-    const applyTime = (dateStr: string | null) => {
-      if (!dateStr) return null;
-      if (fallbackH > 0 || fallbackMin > 0) {
-        return dateStr.replace(/T\d{2}:\d{2}/, `T${String(fallbackH).padStart(2, '0')}:${String(fallbackMin).padStart(2, '0')}`);
-      }
-      return dateStr;
-    };
+    const timeStr = `${String(fallbackH).padStart(2, '0')}:${String(fallbackMin).padStart(2, '0')}`;
 
-    const start = applyTime(parseNolDate(summary.playStartDate));
-    if (start) {
-      schedules.push({ dateTime: start });
-      const end = applyTime(parseNolDate(summary.playEndDate));
-      if (end && end !== start) {
-        schedules.push({ dateTime: end });
+    const startIso = parseNolDate(summary.playStartDate);
+    const endIso = parseNolDate(summary.playEndDate);
+    if (startIso) {
+      const sd = new Date(parseInt(startIso.slice(0, 4)), parseInt(startIso.slice(5, 7)) - 1, parseInt(startIso.slice(8, 10)));
+      const ed = endIso && endIso !== startIso
+        ? new Date(parseInt(endIso.slice(0, 4)), parseInt(endIso.slice(5, 7)) - 1, parseInt(endIso.slice(8, 10)))
+        : sd;
+      const oneDay = 24 * 60 * 60 * 1000;
+      for (let cur = new Date(sd); cur <= ed; cur = new Date(cur.getTime() + oneDay)) {
+        const iso = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}T${timeStr}:00+09:00`;
+        schedules.push({ dateTime: iso });
       }
     }
   }
