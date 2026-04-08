@@ -1,4 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  BadGatewayException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import {
   SpotifyApiArtist,
   SpotifyApiTrack,
@@ -12,7 +17,7 @@ export class SpotifyService {
   private cachedToken: string | null = null;
   private tokenExpiresAt = 0;
 
-  private async getToken(): Promise<string | null> {
+  private async getToken(): Promise<string> {
     if (this.cachedToken && Date.now() < this.tokenExpiresAt) {
       return this.cachedToken;
     }
@@ -21,8 +26,7 @@ export class SpotifyService {
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
-      this.logger.warn('SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET not configured');
-      return null;
+      throw new ServiceUnavailableException('Spotify credentials not configured');
     }
 
     const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -35,8 +39,7 @@ export class SpotifyService {
     });
 
     if (!res.ok) {
-      this.logger.error(`Spotify auth failed: ${res.status}`);
-      return null;
+      throw new BadGatewayException(`Spotify auth failed: ${res.status}`);
     }
 
     const data = (await res.json()) as { access_token: string; expires_in: number };
@@ -49,37 +52,46 @@ export class SpotifyService {
     const res = await fetch(`https://api.spotify.com/v1${path}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('Retry-After') ?? '?';
+      throw new ServiceUnavailableException(
+        `Spotify rate limited (retry after ${retryAfter}s)`,
+      );
+    }
     if (!res.ok) return null;
     return res.json() as Promise<T>;
   }
 
   async search(query: string): Promise<SpotifySearchResult[]> {
     const token = await this.getToken();
-    if (!token) return [];
 
-    try {
-      const res = await fetch(
-        `https://api.spotify.com/v1/search?type=artist&q=${encodeURIComponent(query)}&limit=5`,
-        { headers: { Authorization: `Bearer ${token}` } },
+    const res = await fetch(
+      `https://api.spotify.com/v1/search?type=artist&q=${encodeURIComponent(query)}&limit=5`,
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+
+    if (res.status === 429) {
+      const retryAfter = res.headers.get('Retry-After') ?? '?';
+      throw new ServiceUnavailableException(
+        `Spotify rate limited (retry after ${retryAfter}s)`,
       );
-      if (!res.ok) return [];
-
-      const data = (await res.json()) as { artists?: { items?: SpotifyApiArtist[] } };
-      return (data.artists?.items ?? []).map((a: SpotifyApiArtist) => ({
-        spotifyId: a.id,
-        name: a.name,
-        imageUrl: a.images[0]?.url ?? null,
-        followers: a.followers?.total ?? 0,
-      }));
-    } catch (err) {
-      this.logger.error(`Spotify search failed: ${err}`);
-      return [];
     }
+
+    if (!res.ok) {
+      throw new BadGatewayException(`Spotify search failed: ${res.status}`);
+    }
+
+    const data = (await res.json()) as { artists?: { items?: SpotifyApiArtist[] } };
+    return (data.artists?.items ?? []).map((a: SpotifyApiArtist) => ({
+      spotifyId: a.id,
+      name: a.name,
+      imageUrl: a.images[0]?.url ?? null,
+      followers: a.followers?.total ?? 0,
+    }));
   }
 
   async getArtist(spotifyId: string): Promise<SpotifyArtistDetail | null> {
     const token = await this.getToken();
-    if (!token) return null;
 
     try {
       const [artist, topTracksRes, relatedRes, html] = await Promise.all([
