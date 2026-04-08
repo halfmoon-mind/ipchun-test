@@ -112,14 +112,25 @@ export default function EditArtistPage() {
       }
     }
 
+    // spotifyUrl 입력이 변경되었으면 ID/URL 동기화
+    let finalSpotifyId = spotifyId;
+    let finalSpotifyUrl = spotifyLink;
+    if (spotifyUrl && spotifyUrl !== spotifyLink) {
+      const sid = extractSpotifyId(spotifyUrl);
+      if (sid) {
+        finalSpotifyId = sid;
+        finalSpotifyUrl = `https://open.spotify.com/artist/${sid}`;
+      }
+    }
+
     try {
       await api.artists.update(id, {
         name,
         description: description || null,
         imageUrl: imageUrl || null,
         socialLinks: Object.keys(socialLinksObj).length > 0 ? socialLinksObj : null,
-        spotifyId: spotifyId || null,
-        spotifyUrl: spotifyLink || null,
+        spotifyId: finalSpotifyId || null,
+        spotifyUrl: finalSpotifyUrl || null,
         monthlyListeners,
         spotifyMeta,
       });

@@ -20,6 +20,7 @@ const genreLabels: Record<Genre, string> = {
   [Genre.CLASSIC]: '클래식',
   [Genre.FESTIVAL]: '페스티벌',
   [Genre.BUSKING]: '버스킹',
+  [Genre.TROT]: '트로트',
   [Genre.RELEASE]: '발매',
   [Genre.OTHER]: '기타',
 };
