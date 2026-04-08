@@ -65,6 +65,7 @@ enum Genre {
   FESTIVAL
   BUSKING
   RELEASE
+  TROT
   OTHER
 }
 

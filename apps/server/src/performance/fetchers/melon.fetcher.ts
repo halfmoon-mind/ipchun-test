@@ -20,6 +20,7 @@ const GENRE_MAP: Record<string, Genre> = {
   연극: Genre.PLAY,
   클래식: Genre.CLASSIC,
   페스티벌: Genre.FESTIVAL,
+  트로트: Genre.TROT,
 };
 
 

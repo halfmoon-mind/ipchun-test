@@ -117,6 +117,7 @@ const GENRE_MAP: Record<string, Genre> = {
   연극: Genre.PLAY,
   클래식: Genre.CLASSIC,
   페스티벌: Genre.FESTIVAL,
+  트로트: Genre.TROT,
 };
 
 /** NOL goodsStatus + 날짜 기반으로 PerformanceStatus 매핑 */
@@ -256,12 +257,39 @@ export async function fetchFromNol(
     schedules.push(...parsePlayTimeSchedules(summary.playTime));
   }
 
-  // Fallback 2: startDate/endDate (시간 없는 날짜만)
+  // Fallback 2: startDate/endDate + playTime 텍스트에서 시간만 추출하여 결합
   if (schedules.length === 0) {
-    const start = parseNolDate(summary.playStartDate);
+    // playTime에서 시간만 추출 (예: "토요일 오후 6시", "오후 8시 30분")
+    let fallbackH = 0;
+    let fallbackMin = 0;
+    if (summary.playTime) {
+      const timeKo = (summary.playTime as string).match(
+        /(오전|오후)?\s*(\d{1,2})시(?:\s*(\d{1,2})분)?/,
+      );
+      const time24 = (summary.playTime as string).match(/(\d{1,2}):(\d{2})/);
+      if (timeKo) {
+        fallbackH = parseInt(timeKo[2], 10);
+        fallbackMin = timeKo[3] ? parseInt(timeKo[3], 10) : 0;
+        if (timeKo[1] === '오후' && fallbackH < 12) fallbackH += 12;
+        if (timeKo[1] === '오전' && fallbackH === 12) fallbackH = 0;
+      } else if (time24) {
+        fallbackH = parseInt(time24[1], 10);
+        fallbackMin = parseInt(time24[2], 10);
+      }
+    }
+
+    const applyTime = (dateStr: string | null) => {
+      if (!dateStr) return null;
+      if (fallbackH > 0 || fallbackMin > 0) {
+        return dateStr.replace(/T\d{2}:\d{2}/, `T${String(fallbackH).padStart(2, '0')}:${String(fallbackMin).padStart(2, '0')}`);
+      }
+      return dateStr;
+    };
+
+    const start = applyTime(parseNolDate(summary.playStartDate));
     if (start) {
       schedules.push({ dateTime: start });
-      const end = parseNolDate(summary.playEndDate);
+      const end = applyTime(parseNolDate(summary.playEndDate));
       if (end && end !== start) {
         schedules.push({ dateTime: end });
       }

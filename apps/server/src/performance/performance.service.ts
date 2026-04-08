@@ -1,4 +1,9 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
+import { Genre } from '@ipchun/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
@@ -8,6 +13,11 @@ import { fetchFromMelon } from './fetchers/melon.fetcher';
 import { fetchFromTicketlink } from './fetchers/ticketlink.fetcher';
 import { fetchFromYes24 } from './fetchers/yes24.fetcher';
 import type { FetchedPerformance } from '@ipchun/shared';
+
+const EXCLUDED_GENRES: Genre[] = [Genre.MUSICAL, Genre.PLAY, Genre.CLASSIC, Genre.TROT];
+
+const EXCLUDED_TITLE_KEYWORDS =
+  /야구|축구|농구|배구|스포츠|KBO|KBL|K리그|프로야구|프로축구|프로농구|토크콘서트|토크쇼|강연|세미나|특강|트로트/i;
 
 const PERFORMANCE_INCLUDE = {
   venue: true,
@@ -42,18 +52,36 @@ export class PerformanceService {
       }
     }
 
+    let result: FetchedPerformance;
     switch (platform) {
       case 'NOL':
-        return fetchFromNol(externalId);
+        result = await fetchFromNol(externalId);
+        break;
       case 'MELON':
-        return fetchFromMelon(externalId);
+        result = await fetchFromMelon(externalId);
+        break;
       case 'TICKETLINK':
-        return fetchFromTicketlink(externalId);
+        result = await fetchFromTicketlink(externalId);
+        break;
       case 'YES24':
-        return fetchFromYes24(externalId);
+        result = await fetchFromYes24(externalId);
+        break;
       default:
         throw new Error(`지원하지 않는 플랫폼: ${platform}`);
     }
+
+    if (EXCLUDED_GENRES.includes(result.genre as Genre)) {
+      throw new BadRequestException(
+        `등록 대상이 아닌 장르입니다: ${result.genre} ("${result.title}")`,
+      );
+    }
+    if (EXCLUDED_TITLE_KEYWORDS.test(result.title)) {
+      throw new BadRequestException(
+        `음악 공연이 아닌 것으로 판단됩니다: "${result.title}"`,
+      );
+    }
+
+    return result;
   }
 
   async create(dto: CreatePerformanceDto) {

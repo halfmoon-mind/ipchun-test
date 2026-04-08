@@ -20,6 +20,7 @@ enum Genre {
   FESTIVAL = 'FESTIVAL',
   BUSKING = 'BUSKING',
   RELEASE = 'RELEASE',
+  TROT = 'TROT',
   OTHER = 'OTHER',
 }
 
