@@ -307,8 +307,10 @@ export class PerformanceService {
 
   async findCalendar(params: { year: number; month: number; artistId?: string }) {
     const { year, month, artistId } = params;
-    const monthStart = new Date(Date.UTC(year, month - 1, 1));
-    const monthEnd = new Date(Date.UTC(year, month, 1));
+    // KST(UTC+9) 기준 월 경계 — UTC 기준이면 자정 KST 공연이 전달에 포함됨
+    const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
+    const monthStart = new Date(Date.UTC(year, month - 1, 1) - KST_OFFSET_MS);
+    const monthEnd = new Date(Date.UTC(year, month, 1) - KST_OFFSET_MS);
 
     const performances = await this.prisma.performance.findMany({
       where: {
