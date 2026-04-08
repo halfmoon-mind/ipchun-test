@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -47,7 +48,11 @@ export class ArtistController {
   @Get('spotify/:spotifyId')
   @ApiOperation({ summary: 'Spotify 아티스트 상세 조회' })
   async spotifyDetail(@Param('spotifyId') spotifyId: string) {
-    return this.spotify.getArtist(spotifyId);
+    const artist = await this.spotify.getArtist(spotifyId);
+    if (!artist) {
+      throw new NotFoundException('Spotify 아티스트를 찾을 수 없습니다');
+    }
+    return artist;
   }
 
   @Post()
