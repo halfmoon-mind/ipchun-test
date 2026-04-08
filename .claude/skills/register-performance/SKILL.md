@@ -31,7 +31,7 @@ description: "공연 자동 등록 & 동기화 — 티켓 플랫폼(melon/nol/ti
    - **키워드 제외**: 야구, 축구, 농구, 배구, 스포츠, KBO, KBL, K리그 등 스포츠 + 토크콘서트, 토크쇼, 강연, 세미나, 특강 등 비-음악 이벤트 + 트로트 (서버가 제목 키워드로 400 거부)
    - **스킬 레벨 사전 거절**: 서버 호출 전에도, 제목이나 장르로 비-음악 공연임이 명백하면 fetch 자체를 스킵한다. 특히 "토크콘서트"처럼 "콘서트"가 포함되어 있지만 실제로는 강연/교육 이벤트인 경우를 주의한다. 불필요한 API 호출을 줄인다.
 2. **모든 DB 수정은 REST API** — Prisma 직접 호출 금지. curl로 API 호출.
-3. **로컬 상태 추적** — `tools/register/data/`에 플랫폼별 JSON 상태 저장.
+3. **로컬 상태 추적** — `tools/register/data/{env}/`에 플랫폼별 JSON 상태 저장 (환경별 분리).
 4. **아티스트 자동 생성** — DB에 없는 아티스트는 즉시 API로 생성.
 5. **크로스 플랫폼 병합** — 동일 공연이 여러 플랫폼에 있으면 하나로 합침.
 6. **기존 공연 업데이트** — 이미 등록된 공연은 변경사항 감지 후 PATCH.
@@ -48,11 +48,32 @@ description: "공연 자동 등록 & 동기화 — 티켓 플랫폼(melon/nol/ti
 - 로컬: `http://localhost:3000`
 - 프로덕션: `https://api.ipchun.live`
 
-스캔 전 서버 상태 확인:
+### 환경 감지 및 데이터 분리
+
+local DB와 prod DB는 ID 체계가 완전히 다르다. 한쪽에서 등록한 performanceId가 다른 쪽에는 존재하지 않으므로, 상태 파일을 환경별로 분리해야 한다.
+
+**스캔 시작 전 필수 절차:**
+
+1. localhost 서버 확인:
 ```bash
-curl -s -o /dev/null -w "%{http_code}" "http://localhost:3000/performances/calendar?year=2026&month=1"
+curl -s "http://localhost:3000/health"
 ```
-200이면 로컬 사용. 실패하면 프로덕션 사용. 둘 다 안 되면 중단하고 사용자에게 알림.
+2. 응답의 `env` 값으로 환경 결정:
+   - `{"env": "local"}` → `BASE_URL=http://localhost:3000`, `DATA_DIR=tools/register/data/local/`
+   - `{"env": "production"}` → `BASE_URL=http://localhost:3000`, `DATA_DIR=tools/register/data/prod/`
+3. localhost가 응답하지 않으면 → `BASE_URL=https://api.ipchun.live`, `DATA_DIR=tools/register/data/prod/`
+4. 둘 다 안 되면 중단하고 사용자에게 알림.
+
+스캔 시작 시 환경을 명시한다:
+```
+🔧 환경: local (localhost:3000 → local DB) → data/local/
+```
+또는
+```
+🌐 환경: prod (localhost:3000 → prod DB) → data/prod/
+```
+
+DATA_DIR이 비어있으면 빈 상태로 초기화한다 (새 환경 첫 실행).
 
 API 엔드포인트 상세는 `references/api-cheatsheet.md` 참조.
 
@@ -60,14 +81,42 @@ API 엔드포인트 상세는 `references/api-cheatsheet.md` 참조.
 
 ```
 tools/register/data/
-├── global.json          # 크로스 플랫폼 매핑 (중복 감지용)
-├── melon.json           # 멜론 상태
-├── nol.json             # NOL 상태
-├── ticketlink.json      # 티켓링크 상태
-└── yes24.json           # YES24 상태
+├── shared/              # 환경 무관 — 플랫폼별 스킵 목록
+│   ├── melon.json
+│   ├── nol.json
+│   ├── ticketlink.json
+│   └── yes24.json
+├── local/               # 로컬 DB 상태
+│   ├── global.json
+│   ├── melon.json
+│   ├── nol.json
+│   ├── ticketlink.json
+│   └── yes24.json
+└── prod/                # 프로덕션 DB 상태
+    ├── global.json
+    ├── melon.json
+    ├── nol.json
+    ├── ticketlink.json
+    └── yes24.json
 ```
 
-### 플랫폼 상태 스키마
+### 공유 스킵 스키마 (`shared/{platform}.json`)
+
+환경과 무관한 스킵 판단을 기록한다. 외부 플랫폼 ID는 환경이 달라도 동일한 공연을 가리키므로, 한 환경에서 스킵된 공연은 다른 환경에서도 스킵해야 한다.
+
+```json
+{
+  "12345": { "reason": "400_EXCLUDED", "title": "뮤지컬 제목" },
+  "12346": { "reason": "CANCELLED", "title": "취소된 공연" },
+  "12347": { "reason": "MANUAL_SKIP", "title": "토크콘서트", "note": "비음악" }
+}
+```
+
+- **`reason` 값**: `400_EXCLUDED` (장르/키워드 서버 거부), `CANCELLED` (취소), `MANUAL_SKIP` (수동 판단)
+- **기록 시점**: fetch 결과가 400이거나, salesStatus가 CANCELLED이거나, 비음악 이벤트로 판단될 때
+- **사용 시점**: fetch 전에 이 파일을 확인하여, 이미 스킵된 ID는 API 호출 없이 건너뛴다
+
+### 플랫폼 상태 스키마 (`{env}/{platform}.json`)
 
 ```json
 {
@@ -135,8 +184,8 @@ tools/register/data/
 
 ### Mode B: 플랫폼 스캔
 
-1. **상태 로드**: `tools/register/data/{platform}.json` 로드 (없으면 빈 상태로 초기화).
-2. **ID 선정**: 20개 미탐색 ID 선택.
+1. **상태 로드**: `{DATA_DIR}/{platform}.json` + `shared/{platform}.json` 둘 다 로드 (없으면 빈 상태로 초기화).
+2. **ID 선정**: 20개 미탐색 ID 선택. **공유 스킵 목록에 있는 ID도 explored 취급하여 제외한다.**
    - autoparse의 `tools/autoparse/seeds.json`에서 시드 가져오기.
    - seeds에서 인접 ID(±50 범위) 생성.
    - explored에 없는 것만 사용.
@@ -152,13 +201,14 @@ tools/register/data/
    ```
 
    **Fetch 루프 (메인 에이전트)**:
-   a. URL 조립 (플랫폼별 템플릿) → `POST /performances/fetch`.
-   b. **400 Bad Request** → 등록 제외 대상 (뮤지컬/연극/클래식/스포츠). explored에 추가, 스킵.
-   c. **500/네트워크 에러** → explored에 추가, 스킵. (500 = 존재하지 않는 공연)
-   d. **409 Conflict** → explored에 추가. `registered`에서 performanceId 조회 → **백그라운드 Agent** 디스패치 (업데이트 체크).
+   a. **공유 스킵 체크**: `shared/{platform}.json`에 해당 ID가 있으면 → fetch 없이 explored에 추가, 스킵. "공유 스킵: {title} ({reason})" 보고.
+   b. URL 조립 (플랫폼별 템플릿) → `POST /performances/fetch`.
+   c. **400 Bad Request** → 등록 제외 대상 (뮤지컬/연극/클래식/스포츠). explored에 추가, **`shared/{platform}.json`에 기록** (`reason: "400_EXCLUDED"`), 스킵.
+   d. **404/500/네트워크 에러** → explored에 추가, 스킵. (서버가 Prisma P2025를 404로 반환. 외부 플랫폼 에러는 500). 404는 공유 스킵에 기록하지 않는다 (ID가 존재하지 않는 것이지 스킵 판단이 아님).
+   e. **409 Conflict** → explored에 추가. `registered`에서 performanceId 조회 → **백그라운드 Agent** 디스패치 (업데이트 체크).
       - 409 메시지 형식: `"이미 등록된 공연입니다: \"제목\" (PLATFORM ID)"`.
-   e. **200 성공** → `salesStatus`가 `"CANCELLED"`이면 explored에만 추가하고 스킵 (등록하지 않음). 아니면 explored + seeds에 추가, **백그라운드 Agent** 디스패치 (신규 등록 전체 처리).
-   f. `sleep 2` → 다음 ID.
+   f. **200 성공** → `salesStatus`가 `"CANCELLED"`이면 explored에만 추가하고 **`shared/{platform}.json`에 기록** (`reason: "CANCELLED"`), 스킵. 아니면 explored + seeds에 추가, **백그라운드 Agent** 디스패치 (신규 등록 전체 처리).
+   g. `sleep 2` → 다음 ID.
 
    **백그라운드 Agent 프롬프트 (200 → 신규 등록)**:
    ```
@@ -213,7 +263,7 @@ tools/register/data/
 
 ```
 각 플랫폼마다 Agent 디스패치:
-  "tools/register/data/{platform}.json 상태를 로드하고,
+  "{DATA_DIR}/{platform}.json 상태를 로드하고,
    Mode B 워크플로우를 실행해.
    API base: {baseUrl}
    결과를 요약해서 반환해."
@@ -486,6 +536,7 @@ normalizeTitle(title):
    - 로컬 상태에도 없으면 `GET /performances` 목록에서 source 매칭으로 찾기.
 2. **CANCELLED 체크**: fetch 데이터의 `salesStatus`가 `"CANCELLED"`이면 → `DELETE /performances/:id`로 삭제. `registered`를 `{ "performanceId": null, "deleted": true, "reason": "CANCELLED" }`로 갱신, `seeds`에서 제거, 글로벌 상태에서 엔트리 삭제. 이후 단계 스킵.
 3. `GET /performances/:id`로 현재 DB 데이터 조회.
+   - **404** → 이미 삭제된 공연. `registered`를 `{ "performanceId": null, "deleted": true, "reason": "NOT_FOUND" }`로 갱신, 글로벌 상태에서 엔트리 삭제. 이후 단계 스킵.
 4. **변경 감지** (아래 필드 비교):
    - `status` + `salesStatus` (이 둘은 항상 쌍으로 비교·업데이트. 예: 공연 종료 시 `{"status": "COMPLETED", "salesStatus": "COMPLETED"}`)
    - `schedules` 목록 변경
@@ -537,7 +588,7 @@ normalizeTitle(title):
   ↻ 업데이트 1건: 밴드D 콘서트 (ON_SALE → SOLD_OUT)
   ⊕ 병합 1건: 밴드E 콘서트 ← NOL 소스 추가
   ✕ 삭제 1건: 밴드F 콘서트 (CANCELLED)
-  · 스킵 12건 (404/무효/취소)
+  · 스킵 12건 (404/무효/취소) — 이 중 공유 스킵 3건
   ✗ 실패 3건
   ★ 아티스트 신규 생성: 밴드A, 밴드B
 ```

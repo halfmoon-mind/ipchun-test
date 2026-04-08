@@ -36,6 +36,8 @@ curl -X POST $BASE_URL/performances \
 ```bash
 curl $BASE_URL/performances/{id}
 ```
+- 200: 공연 상세 반환
+- 404: 존재하지 않는 ID
 
 ### Update
 ```bash
@@ -46,11 +48,15 @@ curl -X PATCH $BASE_URL/performances/{id} \
     "schedules": [{"dateTime": "2026-05-01T19:00:00.000Z"}]
   }'
 ```
+- 200: 수정된 공연 반환
+- 404: 존재하지 않는 ID
 
 ### Delete
 ```bash
 curl -X DELETE $BASE_URL/performances/{id}
 ```
+- 200: 삭제 성공
+- 404: 존재하지 않는 ID
 
 ## Performance Artists
 
@@ -155,6 +161,8 @@ curl -X POST $BASE_URL/artists \
 ```bash
 curl $BASE_URL/artists/{id}
 ```
+- 200: 아티스트 상세 반환
+- 404: 존재하지 않는 ID
 
 ### Spotify Search (Admin UI용)
 ```bash
