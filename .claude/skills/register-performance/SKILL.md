@@ -191,7 +191,9 @@ tools/register/data/
    - explored에 없는 것만 사용.
 3. **Fetch-Process 파이프라인** — fetch는 순차(2초 딜레이), 후처리는 백그라운드 병렬:
 
-   외부 rate limit을 위해 fetch는 순차로 하되, 성공한 건의 후처리(등록/아티스트/타임테이블)는 **백그라운드 Agent(`run_in_background: true`)**에 위임한다. fetch 대기 시간과 처리 시간이 겹치므로 전체 소요 시간이 대폭 단축된다.
+   외부 rate limit을 위해 fetch는 순차로 하되, 성공한 건의 후처리(등록/아티스트/타임테이블)는 **백그라운드 Agent(`run_in_background: true`, `model: "sonnet"`)**에 위임한다. fetch 대기 시간과 처리 시간이 겹치므로 전체 소요 시간이 대폭 단축된다.
+
+   > **모델 정책**: 모든 서브에이전트는 `model: "sonnet"`으로 디스패치한다. 메인 오케스트레이션만 현재 모델을 사용하고, 개별 공연 처리(등록/업데이트/아티스트)는 Sonnet으로 충분하다.
 
    ```
    Main:      fetch(1) →2s→ fetch(2) →2s→ fetch(3) →2s→ fetch(4) ...
@@ -210,7 +212,7 @@ tools/register/data/
    f. **200 성공** → `salesStatus`가 `"CANCELLED"`이면 explored에만 추가하고 **`shared/{platform}.json`에 기록** (`reason: "CANCELLED"`), 스킵. 아니면 explored + seeds에 추가, **백그라운드 Agent** 디스패치 (신규 등록 전체 처리).
    g. `sleep 2` → 다음 ID.
 
-   **백그라운드 Agent 프롬프트 (200 → 신규 등록)**:
+   **백그라운드 Agent 프롬프트 (200 → 신규 등록)** — `model: "sonnet"`, `run_in_background: true`:
    ```
    공연 등록 처리. API: {baseUrl}
    fetchedData: {fetch 응답 JSON 전체}
@@ -225,7 +227,7 @@ tools/register/data/
    6. 결과 반환: {performanceId, title, artists: [...], action: "created"|"merged"}
    ```
 
-   **백그라운드 Agent 프롬프트 (409 → 업데이트 체크)**:
+   **백그라운드 Agent 프롬프트 (409 → 업데이트 체크)** — `model: "sonnet"`, `run_in_background: true`:
    ```
    기존 공연 업데이트 체크. API: {baseUrl}, performanceId: {id}
    fetchedData: {fetch 응답 JSON}
@@ -259,10 +261,10 @@ tools/register/data/
 
 ### Mode C: 전체 스캔 (`/register all`)
 
-4개 플랫폼을 **병렬 서브에이전트**로 동시 실행:
+4개 플랫폼을 **병렬 서브에이전트(`model: "sonnet"`)**로 동시 실행:
 
 ```
-각 플랫폼마다 Agent 디스패치:
+각 플랫폼마다 Agent 디스패치 (model: "sonnet"):
   "{DATA_DIR}/{platform}.json 상태를 로드하고,
    Mode B 워크플로우를 실행해.
    API base: {baseUrl}
@@ -397,6 +399,16 @@ fetcher 데이터에 빈 필드가 있으면 네가 채울 수 있는 건 채운
   - `"주최 : A / 주관 : B"` → `"A"`
   - 주최 패턴이 없고 단순 텍스트면 → 그대로 사용
   - 빈 문자열이나 문의 번호만 있으면 → `null`
+
+### 스케줄 검증
+
+fetcher의 스케줄 파싱은 플랫폼별 포맷 차이로 불완전할 수 있다. 등록 전에 반드시 확인한다:
+
+1. **다일 공연 날짜 누락**: 제목이나 공연 정보에 날짜 범위가 있는데 (예: "5/1~5/5", "3일간"), 스케줄이 범위보다 적으면 중간 날짜가 빠진 것이다. `playStartDate`~`playEndDate` 범위와 실제 스케줄 수가 일치하는지 확인. 누락된 날짜가 있으면 전체 스케줄을 올바르게 맞춰서 등록한다.
+2. **시간 누락 (자정 00:00)**: 모든 스케줄의 시각이 `T00:00:00` 또는 `T15:00:00Z` (= KST 자정)이면 시간 파싱이 실패한 것이다. `playTime` 텍스트에서 실제 공연 시간을 찾아 보정한다. 예: `"금 7PM, 토 5PM"` → 요일별 시간 적용.
+3. **요일별 시간 차이**: "금 7PM, 토 5PM" 같이 요일별 다른 시간이 있으면 각 날짜에 맞는 시간이 설정됐는지 확인한다.
+
+스케줄 수정이 필요하면 `PATCH /performances/:id` 에서 `schedules` 필드를 올바른 목록으로 교체한다.
 
 ### 중복 매칭 판단
 
