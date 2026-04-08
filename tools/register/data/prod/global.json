@@ -58,7 +58,7 @@
         }
       ]
     },
-    "cf6185a5-202e-4048-8128-790fd50cd5bf": {
+    "35d97e8e-802d-45af-a9ba-c41e19385b34": {
       "title": "2026 어썸뮤직페스티벌",
       "normalizedTitle": "어썸뮤직페스티벌",
       "venueName": "난지한강공원",
@@ -1137,7 +1137,10 @@
       "title": "2026 이승윤 콘서트 ［밖］",
       "normalizedTitle": "이승윤콘서트밖",
       "venueName": "킨텍스 밖(킨텍스 제2전시장 후면광장)",
-      "dates": ["2026-05-16", "2026-05-17"],
+      "dates": [
+        "2026-05-16",
+        "2026-05-17"
+      ],
       "sources": [
         {
           "platform": "NOL",
@@ -1149,7 +1152,9 @@
       "title": "2026 네미시스 라이브 콘서트 'Frozen echo'",
       "normalizedTitle": "네미시스라이브콘서트frozenecho",
       "venueName": "CJ아지트",
-      "dates": ["2026-02-28"],
+      "dates": [
+        "2026-02-28"
+      ],
       "sources": [
         {
           "platform": "NOL",
@@ -1161,11 +1166,418 @@
       "title": "〈미스트롯4〉 전국투어 콘서트 - 서울",
       "normalizedTitle": "미스트롯4전국투어콘서트서울",
       "venueName": "장충체육관",
-      "dates": ["2026-04-25", "2026-04-26"],
+      "dates": [
+        "2026-04-25",
+        "2026-04-26"
+      ],
       "sources": [
         {
           "platform": "NOL",
           "externalId": "26002761"
+        }
+      ]
+    },
+    "caae621e-55d8-462e-b4e8-8331da2d916f": {
+      "title": "〈Enjoy Life, Anyway – Spring〉",
+      "normalizedTitle": "enjoylifeanywayspring",
+      "venueName": "톤 스튜디오",
+      "dates": [
+        "2026-04-12"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212901"
+        }
+      ]
+    },
+    "e507d4d5-1408-4f12-b24e-9066d7a6426a": {
+      "title": "먼데이프로젝트 시즌9 Our Universe [딕펑스 단독 콘서트]",
+      "normalizedTitle": "먼데이프로젝트시즌ouruniverse딕펑스단독콘서트",
+      "venueName": "KT&G 상상마당 홍대 라이브홀",
+      "dates": [
+        "2026-03-30"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212902"
+        }
+      ]
+    },
+    "82eb045e-a1e2-4a7f-8f7e-4a90b43d6787": {
+      "title": "먼데이프로젝트 시즌9 THE ORIGINAL [고고학 단독 콘서트]",
+      "normalizedTitle": "먼데이프로젝트시즌theoriginal고고학단독콘서트",
+      "venueName": "구름아래소극장",
+      "dates": [
+        "2026-04-01",
+        "2026-04-02"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212903"
+        }
+      ]
+    },
+    "fe8ed4a6-ceca-453c-9344-22707156867e": {
+      "title": "[ POINT : lovelovelove ] - 숨비, 시황",
+      "normalizedTitle": "pointlovelovelove숨비시황",
+      "venueName": "클럽온에어",
+      "dates": [
+        "2026-03-20"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212904"
+        }
+      ]
+    },
+    "e6e063f4-bb5f-4cd1-a67d-e392ff945f11": {
+      "title": "문별 (Moon Byul) CONCERT [MUSEUM : village of eternal glow - Live House]",
+      "normalizedTitle": "문별moonbylconcertmuseumvillageofeternalgowlivehouse",
+      "venueName": "노들섬 라이브하우스",
+      "dates": [
+        "2026-03-21",
+        "2026-03-22"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212905"
+        }
+      ]
+    },
+    "b83e66a6-5476-4f16-a56c-2d6ccaaf67e4": {
+      "title": "서우승 생일 팬미팅 〈우승하는 날!〉",
+      "normalizedTitle": "서우승생일팬미팅우승하는날",
+      "venueName": "온맘씨어터",
+      "dates": [
+        "2026-03-22"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212906"
+        }
+      ]
+    },
+    "8f938d08-5e07-46d0-a8b2-e1072a81a33e": {
+      "title": "W24 단독 공연 〈NEXT CHAPTER: BEST CHAPTER / Section 3. 벨로주〉",
+      "normalizedTitle": "w단독공연nextchapterbestchaptersection벨로주",
+      "venueName": "벨로주 홍대",
+      "dates": [
+        "2026-03-21"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212907"
+        }
+      ]
+    },
+    "51d2aea4-8c55-4b27-a1ef-a0931af6d149": {
+      "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 - 부산",
+      "normalizedTitle": "디어클라우드전국투어콘서트월의숨부산",
+      "venueName": "KT&G 상상마당 부산라이브홀",
+      "dates": [
+        "2026-04-25"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212908"
+        }
+      ]
+    },
+    "10bbdd49-ee9c-4a57-a45c-8d21ac3fc8c1": {
+      "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 -서울",
+      "normalizedTitle": "디어클라우드전국투어콘서트월의숨서울",
+      "venueName": "구름아래소극장",
+      "dates": [
+        "2026-04-11"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212909"
+        }
+      ]
+    },
+    "dc9bd387-f795-49d1-8a1e-e1bdf0d6e81f": {
+      "title": "디어클라우드 전국 투어 콘서트 〈4월의 숨〉 -대전",
+      "normalizedTitle": "디어클라우드전국투어콘서트월의숨대전",
+      "venueName": "인터플레이",
+      "dates": [
+        "2026-04-18"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212910"
+        }
+      ]
+    },
+    "ddc755a7-f8ab-443c-891c-456ae9f019cd": {
+      "title": "ROSEWOOD - [Scarlet Syndrome] Showcase",
+      "normalizedTitle": "rosewoodscarletsyndromeshowcase",
+      "venueName": "우무지",
+      "dates": [
+        "2026-03-29"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212911"
+        }
+      ]
+    },
+    "e8ca8a48-4d3d-4f48-ada0-35c6e73b3b6b": {
+      "title": "[FULL-RISE] - 오드 x 쿠라니 x 블낫블",
+      "normalizedTitle": "fullrise오드쿠라니블낫블",
+      "venueName": "스윙홀",
+      "dates": [
+        "2026-03-22"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212915"
+        }
+      ]
+    },
+    "c2aa58c8-cdeb-43f3-a589-056c479d00b2": {
+      "title": "2026 서울히어로락페스티벌 X 트리헌드레드",
+      "normalizedTitle": "서울히어로락페스티벌트리헌드레드",
+      "venueName": "문화비축기지",
+      "dates": [
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212916"
+        }
+      ]
+    },
+    "190e20be-33af-470d-a08f-76817aa2f93a": {
+      "title": "TAEHO Mini Live Concert 'THE FIRST [ X ]'",
+      "normalizedTitle": "taehominiliveconvertthefirstx",
+      "venueName": "클럽온에어",
+      "dates": [
+        "2026-04-05"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212917"
+        }
+      ]
+    },
+    "a849d098-fc25-4a8c-8e97-cdb31690da0b": {
+      "title": "LiVE is Smile Always～15～ in Seoul",
+      "normalizedTitle": "liveissmilealwaysinseoul",
+      "venueName": "올림픽공원올림픽홀",
+      "dates": [
+        "2026-08-01",
+        "2026-08-02"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212918"
+        }
+      ]
+    },
+    "ee1fcc18-f554-4b08-a394-07eb1f072b82": {
+      "title": "관악청년포크협의회 2026년 임시총회",
+      "normalizedTitle": "관악청년포크협의회임시총회",
+      "venueName": "클럽온에어",
+      "dates": [
+        "2026-04-12"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212919"
+        }
+      ]
+    },
+    "8bd09569-621a-40f1-9c6c-f1d24aab3003": {
+      "title": "Noridogam Asia Tour 2026 - Seoul",
+      "normalizedTitle": "noridogamasiatourseoul",
+      "venueName": "Vel.R(벨르) (구 벨로주)",
+      "dates": [
+        "2026-04-25"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212920"
+        }
+      ]
+    },
+    "b32c4895-6361-45d3-b4c4-7816dc8becef": {
+      "title": "박종민 단독 공연 [Four Nights (부제 : 꽃잎 흩날리던 밤)]",
+      "normalizedTitle": "박종민단독공연fournights꽃잎흩날리던밤",
+      "venueName": "살롱문보우",
+      "dates": [
+        "2026-04-04"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212921"
+        }
+      ]
+    },
+    "bb5ea962-8580-4a9d-9f6f-cd212d81163f": {
+      "title": "베리코이버니 정규2집 발매 기념공연 〈Into the Bunny Tale〉",
+      "normalizedTitle": "베리코이버니정규집발매기념공연intothebunnytale",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": [
+        "2026-04-19"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212922"
+        }
+      ]
+    },
+    "0b7b033c-907e-4593-8ff0-424d636d0425": {
+      "title": "극아타의 극단적인 중개소 Vol.1 (For. 나비야 사랑해)",
+      "normalizedTitle": "극아타의극단적인중개소vol나비야사랑해",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": [
+        "2026-04-04"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212923"
+        }
+      ]
+    },
+    "b1060753-bba6-4fca-adb4-2e7c76581c82": {
+      "title": "장르자유화",
+      "normalizedTitle": "장르자유화",
+      "venueName": "우무지",
+      "dates": [
+        "2026-03-27"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212924"
+        }
+      ]
+    },
+    "d10bc626-b8ef-4896-ad2d-f28c474510d7": {
+      "title": "「2026 JINHO FAN CONCERT 'Dear. You'」",
+      "normalizedTitle": "jinhofanconcertdearyou",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": [
+        "2026-04-17"
+      ],
+      "sources": [
+        {
+          "platform": "MELON",
+          "externalId": "212925"
+        }
+      ]
+    },
+    "efda89ab-be2b-476c-9a7a-8cbeec618119": {
+      "title": "오월오일 단독 콘서트 〈5X5〉",
+      "normalizedTitle": "오월오일단독콘서트x",
+      "venueName": "KT＆G 상상마당 라이브홀",
+      "dates": [
+        "2026-05-01",
+        "2026-05-02",
+        "2026-05-03",
+        "2026-05-04",
+        "2026-05-05"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004954"
+        }
+      ]
+    },
+    "34907f80-d831-4381-9ced-54fcbfea52d0": {
+      "title": "2026-27 BABYMONSTER WORLD TOUR ［춤 (CHOOM)］ IN SEOUL",
+      "normalizedTitle": "babymonsterworldtourchoomseoul",
+      "venueName": "잠실실내체육관",
+      "dates": [
+        "2026-06-26",
+        "2026-06-27",
+        "2026-06-28"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004955"
+        }
+      ]
+    },
+    "2941d0c8-4a1c-4226-b5a8-a566e0470e0e": {
+      "title": "브릴란떼 Ready Set Go! ［브릴란떼 정기공연］",
+      "normalizedTitle": "브릴란떼readysetgo브릴란떼정기공연",
+      "venueName": "용산아트홀 대극장 미르",
+      "dates": [
+        "2026-04-01"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004964"
+        }
+      ]
+    },
+    "8ea54500-0004-4aa9-bfce-12847df8efce": {
+      "title": "GLOBAL CALLING : SILK FREQUENCY",
+      "normalizedTitle": "globalcallingsilkfrequency",
+      "venueName": "LION SUPER CLUB",
+      "dates": [
+        "2026-04-03",
+        "2026-04-04"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004967"
+        }
+      ]
+    },
+    "26c8a5a0-c81c-4f06-a2b2-5da840969a38": {
+      "title": "DOMESTIC CALLING : GONGSTAR X HOWL",
+      "normalizedTitle": "domesticcallinggongstarxhowl",
+      "venueName": "LION SUPER CLUB",
+      "dates": [
+        "2026-04-04",
+        "2026-04-05"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004974"
+        }
+      ]
+    },
+    "e3dba1bc-fdf3-4ec3-9644-31abef8d91aa": {
+      "title": "케이팝 데몬헌터스 Live OST Concert in 제주",
+      "normalizedTitle": "케이팝데몬헌터스liveostconcertin제주",
+      "venueName": "제주신화월드 랜딩컨벤션센터",
+      "dates": [
+        "2026-05-09"
+      ],
+      "sources": [
+        {
+          "platform": "NOL",
+          "externalId": "26004976"
         }
       ]
     }

@@ -1,5 +1,138 @@
 {
   "performances": {
+    "dd0e03bc-282e-4eb9-bea3-79b3750a92ca": {
+      "title": "먼데이프로젝트 시즌9 [Heart & Friends] 앵콜 콘서트",
+      "normalizedTitle": "먼데이프로젝트시즌heartfriends앵콜콘서트",
+      "venueName": "노들섬 라이브하우스",
+      "dates": ["2026-03-19"],
+      "sources": [{ "platform": "MELON", "externalId": "212880" }]
+    },
+    "f28aea7d-2d5b-4e47-bca1-03eebec3d80a": {
+      "title": "W24 Next Chapter : Best Chapter Section 4 : 롤링 31주년 기념 공연",
+      "normalizedTitle": "wnextchapterbestchaptersection롤링주년기념공연",
+      "venueName": "롤링홀",
+      "dates": ["2026-04-10"],
+      "sources": [{ "platform": "MELON", "externalId": "212881" }]
+    },
+    "26cd01ce-07c5-470a-88ec-fe29a40eefd7": {
+      "title": "DJ Soulscape Curated 28 eldon",
+      "normalizedTitle": "djsoulscapecuratedeldon",
+      "venueName": "현대카드 언더스테이지",
+      "dates": ["2026-03-28"],
+      "sources": [{ "platform": "MELON", "externalId": "212882" }]
+    },
+    "126c2911-6dae-45f1-8c2c-578418d0f27f": {
+      "title": "휘나 첫 단독 콘서트 'The Call' : 롤링 31주년 기념공연",
+      "normalizedTitle": "휘나첫단독콘서트thecall롤링주년기념공연",
+      "venueName": "롤링홀",
+      "dates": ["2026-04-09"],
+      "sources": [{ "platform": "MELON", "externalId": "212883" }]
+    },
+    "0827a855-fc27-4e1c-b4ec-db3a1f462e5a": {
+      "title": "PEAK FESTIVAL 2026",
+      "normalizedTitle": "peakfestival",
+      "venueName": "서울 난지한강공원",
+      "dates": ["2026-05-23", "2026-05-24"],
+      "sources": [{ "platform": "MELON", "externalId": "212884" }]
+    },
+    "29bb2b59-d518-4022-bbfa-e4f232f634cf": {
+      "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 부산",
+      "normalizedTitle": "dst전국투어콘서트acttwo부산",
+      "venueName": "금사락",
+      "dates": ["2026-03-28"],
+      "sources": [{ "platform": "MELON", "externalId": "212885" }]
+    },
+    "fb799a36-3f16-4710-b115-7a53d6818281": {
+      "title": "제13회 김사월 쇼 : 도망자",
+      "normalizedTitle": "제회김사월쇼도망자",
+      "venueName": "서강대학교 메리홀대극장",
+      "dates": ["2026-04-11"],
+      "sources": [{ "platform": "MELON", "externalId": "212886" }]
+    },
+    "c82a2f77-e836-4d7f-90c4-f26a19b08d30": {
+      "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대구",
+      "normalizedTitle": "dst전국투어콘서트acttwo대구",
+      "venueName": "대구클럽헤비(club Heavy)",
+      "dates": ["2026-03-29"],
+      "sources": [{ "platform": "MELON", "externalId": "212887" }]
+    },
+    "3be0a931-8db4-4bbb-a32a-b66b31022aeb": {
+      "title": "현대카드 Curated 104 김승주",
+      "normalizedTitle": "현대카드curated김승주",
+      "venueName": "현대카드 언더스테이지",
+      "dates": ["2026-03-29"],
+      "sources": [{ "platform": "MELON", "externalId": "212888" }]
+    },
+    "1f377ab2-bf7e-43fd-b9b6-7537b2a336c5": {
+      "title": "캐치더영 콘서트 [LIVE EVOLVE]",
+      "normalizedTitle": "캐치더영콘서트liveevolve",
+      "venueName": "무신사 개러지",
+      "dates": ["2026-03-29"],
+      "sources": [{ "platform": "MELON", "externalId": "212889" }]
+    },
+    "24647156-c06d-4e00-8802-13c4052bfa49": {
+      "title": "먼데이프로젝트X숲세권 MONDAY:SOOP [예람 단독 콘서트]",
+      "normalizedTitle": "먼데이프로젝트숲세권mondaysoop예람단독콘서트",
+      "venueName": "숲세권 라이브",
+      "dates": ["2026-03-30"],
+      "sources": [{ "platform": "MELON", "externalId": "212890" }]
+    },
+    "a4fdbfe6-8c80-4290-9cff-6207189f857a": {
+      "title": "2026 DOHA Birthday Party",
+      "normalizedTitle": "dohabirthdayparty",
+      "venueName": "온맘씨어터",
+      "dates": ["2026-03-28"],
+      "sources": [{ "platform": "MELON", "externalId": "212891" }]
+    },
+    "700d0b0b-f9c2-4e5a-9a8d-3a3552112609": {
+      "title": "RAVE NIGHT 〈HWA:HAP〉 (화합)",
+      "normalizedTitle": "ravenighthwahap화합",
+      "venueName": "에스팩토리D동 1F",
+      "dates": ["2026-03-21"],
+      "sources": [{ "platform": "MELON", "externalId": "212893" }]
+    },
+    "1650fa03-ad12-45a9-821c-e3fa001fc34b": {
+      "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대전",
+      "normalizedTitle": "dst전국투어콘서트acttwo대전",
+      "venueName": "인터플레이",
+      "dates": ["2026-04-12"],
+      "sources": [{ "platform": "MELON", "externalId": "212894" }]
+    },
+    "9f9d769f-c26d-4ef6-bfb2-cebdc715236b": {
+      "title": "2026 UmYull FANCON '초안' : 롤링 31주년 기념 공연",
+      "normalizedTitle": "umyullfancon초안롤링주년기념공연",
+      "venueName": "롤링홀",
+      "dates": ["2026-04-12"],
+      "sources": [{ "platform": "MELON", "externalId": "212896" }]
+    },
+    "566ebcf7-31de-4079-940b-2f2a40c4784f": {
+      "title": "〈CHANGMO : THE EMPEROR〉",
+      "normalizedTitle": "changmotheemperor",
+      "venueName": "세종문화회관대극장",
+      "dates": ["2026-05-09", "2026-05-10"],
+      "sources": [{ "platform": "MELON", "externalId": "212897" }]
+    },
+    "0463f808-6230-46fc-b5a7-d98dced6a431": {
+      "title": "TONE STUDIO LIVE 〈급한노새 (Rosai In Hurry)〉",
+      "normalizedTitle": "tonestudiolive급한노새rosaiinhurry",
+      "venueName": "톤 스튜디오",
+      "dates": ["2026-04-04"],
+      "sources": [{ "platform": "MELON", "externalId": "212898" }]
+    },
+    "f4c20b86-5f8a-409a-921e-68a9f7dc45db": {
+      "title": "Nostalgia in You Me",
+      "normalizedTitle": "nostalgiainyoume",
+      "venueName": "노들섬 라이브하우스",
+      "dates": ["2026-04-11"],
+      "sources": [{ "platform": "MELON", "externalId": "212899" }]
+    },
+    "3e553f14-b11f-4802-be73-dccb8f307b0b": {
+      "title": "2026 이진솔 FANMEETING 〈Eternal Moment〉",
+      "normalizedTitle": "이진솔fanmeetingeternalmoment",
+      "venueName": "H-스테이지",
+      "dates": ["2026-03-27"],
+      "sources": [{ "platform": "MELON", "externalId": "212900" }]
+    },
     "1099e709-be6d-4826-959c-f874774ff7dc": {
       "title": "2026 서울히어로락페스티벌 X 트리헌드레드",
       "normalizedTitle": "서울히어로락페스티벌트리헌드레드",

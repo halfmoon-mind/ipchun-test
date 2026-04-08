@@ -1,10 +1,32 @@
 {
   "explored": [
+    "212880", "212881", "212882", "212883", "212884", "212885", "212886",
+    "212887", "212888", "212889", "212890", "212891", "212893", "212894",
+    "212895", "212896", "212897", "212898", "212899", "212900",
     "212901", "212902", "212903", "212904", "212905", "212906", "212907",
     "212908", "212909", "212910", "212911", "212912", "212913", "212914",
     "212915", "212916", "212917", "212918", "212919", "212920"
   ],
   "registered": {
+    "212880": { "performanceId": "dd0e03bc-282e-4eb9-bea3-79b3750a92ca", "title": "먼데이프로젝트 시즌9 [Heart & Friends] 앵콜 콘서트" },
+    "212881": { "performanceId": "f28aea7d-2d5b-4e47-bca1-03eebec3d80a", "title": "W24 Next Chapter : Best Chapter Section 4 : 롤링 31주년 기념 공연" },
+    "212882": { "performanceId": "26cd01ce-07c5-470a-88ec-fe29a40eefd7", "title": "DJ Soulscape Curated 28 eldon" },
+    "212883": { "performanceId": "126c2911-6dae-45f1-8c2c-578418d0f27f", "title": "휘나 첫 단독 콘서트 'The Call' : 롤링 31주년 기념공연" },
+    "212884": { "performanceId": "0827a855-fc27-4e1c-b4ec-db3a1f462e5a", "title": "PEAK FESTIVAL 2026" },
+    "212885": { "performanceId": "29bb2b59-d518-4022-bbfa-e4f232f634cf", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 부산" },
+    "212886": { "performanceId": "fb799a36-3f16-4710-b115-7a53d6818281", "title": "제13회 김사월 쇼 : 도망자" },
+    "212887": { "performanceId": "c82a2f77-e836-4d7f-90c4-f26a19b08d30", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대구" },
+    "212888": { "performanceId": "3be0a931-8db4-4bbb-a32a-b66b31022aeb", "title": "현대카드 Curated 104 김승주" },
+    "212889": { "performanceId": "1f377ab2-bf7e-43fd-b9b6-7537b2a336c5", "title": "캐치더영 콘서트 [LIVE EVOLVE]" },
+    "212890": { "performanceId": "24647156-c06d-4e00-8802-13c4052bfa49", "title": "먼데이프로젝트X숲세권 MONDAY:SOOP [예람 단독 콘서트]" },
+    "212891": { "performanceId": "a4fdbfe6-8c80-4290-9cff-6207189f857a", "title": "2026 DOHA Birthday Party" },
+    "212893": { "performanceId": "700d0b0b-f9c2-4e5a-9a8d-3a3552112609", "title": "RAVE NIGHT 〈HWA:HAP〉 (화합)" },
+    "212894": { "performanceId": "1650fa03-ad12-45a9-821c-e3fa001fc34b", "title": "D82 1st 전국 투어 콘서트 ACT TWO : 82 – 대전" },
+    "212896": { "performanceId": "9f9d769f-c26d-4ef6-bfb2-cebdc715236b", "title": "2026 UmYull FANCON '초안' : 롤링 31주년 기념 공연" },
+    "212897": { "performanceId": "566ebcf7-31de-4079-940b-2f2a40c4784f", "title": "〈CHANGMO : THE EMPEROR〉" },
+    "212898": { "performanceId": "0463f808-6230-46fc-b5a7-d98dced6a431", "title": "TONE STUDIO LIVE 〈급한노새 (Rosai In Hurry)〉" },
+    "212899": { "performanceId": "f4c20b86-5f8a-409a-921e-68a9f7dc45db", "title": "Nostalgia in You Me" },
+    "212900": { "performanceId": "3e553f14-b11f-4802-be73-dccb8f307b0b", "title": "2026 이진솔 FANMEETING 〈Eternal Moment〉" },
     "212901": { "performanceId": "5e693fe3-c8ae-4fc2-83f3-cf563f709aa0", "title": "〈Enjoy Life, Anyway – Spring〉" },
     "212902": { "performanceId": "551fa5c5-bb95-4906-816a-59ada5de2278", "title": "먼데이프로젝트 시즌9 Our Universe [딕펑스 단독 콘서트]" },
     "212903": { "performanceId": "a17e217e-6d34-4077-a2bb-a7b0d2839ed9", "title": "먼데이프로젝트 시즌9 THE ORIGINAL [고고학 단독 콘서트]" },
@@ -25,9 +47,12 @@
   },
   "failed": [],
   "seeds": [
+    "212880", "212881", "212882", "212883", "212884", "212885", "212886",
+    "212887", "212888", "212889", "212890", "212891", "212893", "212894",
+    "212896", "212897", "212898", "212899", "212900",
     "212901", "212902", "212903", "212904", "212905", "212906", "212907",
     "212908", "212909", "212910", "212911", "212915", "212916", "212917",
     "212918", "212919", "212920"
   ],
-  "lastRun": "2026-04-08T14:15:00Z"
+  "lastRun": "2026-04-08T15:10:00Z"
 }
