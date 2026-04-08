@@ -103,7 +103,8 @@ pnpm install && \
 pnpm --filter @ipchun/shared build && \
 pnpm --filter @ipchun/server exec prisma generate && \
 NODE_ENV=production pnpm --filter @ipchun/server exec prisma migrate deploy && \
-pnpm build:server
+pnpm build:server && \
+pm2 restart ipchun-api
 ```
 
 이후 프로세스 매니저(pm2 등)나 컨테이너로 실행:
