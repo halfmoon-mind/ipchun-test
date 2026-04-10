@@ -1,25 +1,7 @@
 {
-  "explored": ["51818", "51819", "51820", "51821", "51823", "56995", "56996", "56997", "56998", "56999", "57000", "57001", "57002", "57003", "57004", "57005", "57006", "57007", "57008", "57009", "57010"],
-  "registered": {
-    "51819": { "performanceId": "b69f40b8-b20e-4e51-a662-33678640c538", "title": "유이카 내한공연 (YUIKA LIVE IN SEOUL)" },
-    "51820": { "performanceId": "38a846f0-5c91-4186-890c-1a8521c8b60f", "title": "[창원] 2024 진해성 콘서트 '별과 사랑의 노래'" },
-    "51821": { "performanceId": "a4e9a93f-a075-4746-987e-3e432aa49928", "title": "I.M WORLD TOUR 〈Off The Beat〉 FINAL IN SEOUL" },
-    "51823": { "performanceId": "ee89a2ca-7f08-4d14-87ac-c46c1d17dabb", "title": "[부산] 극음악 [비비몽夢]" },
-    "56995": { "performanceId": "ab12c653-ffba-44b7-a678-7b04a64357ff", "title": "[광주] 민수 클럽 투어 2026" },
-    "56996": { "performanceId": "320be51b-6fd4-41e6-aac0-f00d10b3a047", "title": "[라이프 오브 파이] 한국 초연（Life of Pi）- 부산" },
-    "56997": { "performanceId": "0838bb86-af9d-4df4-8d46-011d54ef05d4", "title": "[전주] 민수 클럽 투어 2026" },
-    "56998": { "performanceId": "36ff834e-0313-4a12-a9a0-5b5d51efbb5d", "title": "[대전] 민수 클럽 투어 2026" },
-    "56999": { "performanceId": "e58ccfdb-c8cc-4562-bc5e-8c73c4a46bdb", "title": "[서울 - 4회차] 민수 클럽 투어 2026" },
-    "57000": { "performanceId": "91917d33-9e67-448a-976c-229a084ef63e", "title": "Leina Live Tour 2026 \"Jellyfish\" in Seoul" },
-    "57001": { "performanceId": "197caf5d-00f4-49f6-97fc-b78a5571798c", "title": "[부산] 아코엔터테인먼트 [바람주머니에 담긴 세상]" },
-    "57003": { "performanceId": "58c92a71-6e82-4d5d-9c06-dee63e34e319", "title": "BAC 오르간 : 카메론 카펜터 오르간 리사이틀" },
-    "57005": { "performanceId": "ab78597b-23d5-4c22-81df-30c3062c3a79", "title": "2026 TEN B-day PARTY [About TEN]" },
-    "57006": { "performanceId": "caa4df9a-6be2-4f4e-97b9-372bdbf0528d", "title": "윤은경 피아노 독주회 - Now or Never 시리즈 II `Unsilenced`" },
-    "57007": { "performanceId": "0f78ab3d-e59e-42b3-afb7-92e0bf15d7fc", "title": "Kohana Lam Acoustic One Man Live \"Time With You\"" },
-    "57008": { "performanceId": "a2664c5b-a14c-425c-8808-7fa0d0e8b009", "title": "[수원] 2026 가족 매직쇼 [매직키즈서커스쇼]" },
-    "57010": { "performanceId": "c804dd05-60cc-48c3-ac77-ae9ce19759bc", "title": "Hebi The 1st Fan Concert \"FROM HERE\"" }
-  },
+  "explored": [],
+  "registered": {},
   "failed": [],
-  "seeds": ["51819", "51820", "51821", "51822", "51823", "56995", "56996", "56997", "56998", "56999", "57000", "57001", "57003", "57005", "57006", "57007", "57008", "57010"],
-  "lastRun": "2026-04-08T01:40:00Z"
+  "seeds": [],
+  "lastRun": "2026-04-11T00:00:00Z"
 }

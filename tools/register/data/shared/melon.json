@@ -12,5 +12,25 @@
     "reason": "MANUAL_SKIP",
     "title": "서우승 생일 팬미팅",
     "note": "팬미팅"
+  },
+  "212926": {
+    "reason": "400_EXCLUDED",
+    "title": "지브리vs주술회전 OST재즈오케스트라 콘서트",
+    "note": "CLASSIC 장르"
+  },
+  "212928": {
+    "reason": "400_EXCLUDED",
+    "title": "(부산) 판타지 뮤지컬 〈오싹한 알바〉",
+    "note": "MUSICAL 장르"
+  },
+  "212932": {
+    "reason": "MANUAL_SKIP",
+    "title": "say_test9_도면관리",
+    "note": "멜론 내부 테스트 데이터"
+  },
+  "212935": {
+    "reason": "400_EXCLUDED",
+    "title": "(부산) 어린이 뮤지컬 〈어린왕자〉",
+    "note": "MUSICAL 장르"
   }
 }

@@ -314,6 +314,118 @@
       "venueName": "올림픽공원 우리금융아트홀",
       "dates": ["2026-06-13", "2026-06-14"],
       "sources": [{ "platform": "NOL", "externalId": "26004932" }]
+    },
+    "63c9c4a5-f528-40b1-a284-60cefa9ef770": {
+      "title": "RAPBEAT 2026",
+      "normalizedTitle": "rapbeat",
+      "venueName": "문화비축기지",
+      "dates": ["2026-06-20", "2026-06-21"],
+      "sources": [{ "platform": "MELON", "externalId": "212936" }]
+    },
+    "d8cf6b80-8f40-4092-a139-54bb9f0271c3": {
+      "title": "박종민 단독 공연 [Four Nights (꽃잎 흩날리던 밤)]",
+      "normalizedTitle": "박종민단독공연fournights꽃잎흩날리던밤",
+      "venueName": "살롱문보우",
+      "dates": ["2026-04-04"],
+      "sources": [{ "platform": "MELON", "externalId": "212921" }]
+    },
+    "536f1d24-68e9-411c-9806-d3379c636e70": {
+      "title": "베리코이버니 정규2집 발매 기념공연 〈Into the Bunny Tale〉",
+      "normalizedTitle": "베리코이버니정규집발매기념공연intothebunnytale",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": ["2026-04-19"],
+      "sources": [{ "platform": "MELON", "externalId": "212922" }]
+    },
+    "9377eb1f-b849-424b-9945-9dfa1c435568": {
+      "title": "극아타의 극단적인 중개소 Vol.1 (For. 나비야 사랑해)",
+      "normalizedTitle": "극아타의극단적인중개소vol",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": ["2026-04-04"],
+      "sources": [{ "platform": "MELON", "externalId": "212923" }]
+    },
+    "5880fef5-2d33-4db5-a34d-282e408dd2bd": {
+      "title": "장르자유화",
+      "normalizedTitle": "장르자유화",
+      "venueName": "우무지",
+      "dates": ["2026-03-27"],
+      "sources": [{ "platform": "MELON", "externalId": "212924" }]
+    },
+    "9b4e790c-b990-40c8-8e5e-6c5bcd3569fa": {
+      "title": "2026 JINHO FAN CONCERT 'Dear. You'",
+      "normalizedTitle": "jinhofanconcertdearyou",
+      "venueName": "KT&G 상상마당라이브홀",
+      "dates": ["2026-04-17"],
+      "sources": [{ "platform": "MELON", "externalId": "212925" }]
+    },
+    "a14c7a0a-ea7f-4f92-aabf-f522d3ef4214": {
+      "title": "다정한 사월2026",
+      "normalizedTitle": "다정한사월",
+      "venueName": "무신사 개러지",
+      "dates": ["2026-04-18", "2026-04-19"],
+      "sources": [{ "platform": "MELON", "externalId": "212927" }]
+    },
+    "38ba9520-cc7b-424c-8ac0-e58587752fda": {
+      "title": "컨파인드화이트 단독 콘서트 'When You See Me Shine' : 롤링 31주년 기념공연",
+      "normalizedTitle": "컨파인드화이트단독콘서트whenyouseemeshine롤링주년기념공연",
+      "venueName": "롤링홀",
+      "dates": ["2026-04-17"],
+      "sources": [{ "platform": "MELON", "externalId": "212929" }]
+    },
+    "fd3a778a-727f-4df4-ae7f-121e4d27c226": {
+      "title": "All Day, JAZZ SHOW! (올데이, 재즈쇼!) - 이태원 올댓재즈",
+      "normalizedTitle": "alldayjazzshow올데이재즈쇼이태원올댓재즈",
+      "venueName": "올댓재즈",
+      "dates": ["2026-03-29"],
+      "sources": [{ "platform": "MELON", "externalId": "212930" }]
+    },
+    "4a7d37c4-af35-4a75-a33d-2a08be8e72a8": {
+      "title": "All Day, JAZZ SHOW! (올데이, 재즈쇼!) - 종로 이들스(EDLS)",
+      "normalizedTitle": "alldayjazzshow올데이재즈쇼종로이들스edls",
+      "venueName": "종로 이들스(EDLS)",
+      "dates": ["2026-03-22"],
+      "sources": [{ "platform": "MELON", "externalId": "212931" }]
+    },
+    "d5c12db2-58da-4229-8fa3-b5b2567b9701": {
+      "title": "혼네 10주년 기념 내한공연 (HONNE TOUR IN SEOUL)",
+      "normalizedTitle": "혼네주년기념내한공연honnetourinseoul",
+      "venueName": "롯데콘서트홀",
+      "dates": ["2026-07-16", "2026-07-18"],
+      "sources": [{ "platform": "MELON", "externalId": "212933" }]
+    },
+    "dd014a44-f645-4dcb-bbd8-da277924cd37": {
+      "title": "사운드 플래닛 페스티벌 2026",
+      "normalizedTitle": "사운드플래닛페스티벌",
+      "venueName": "인천 파라다이스시티",
+      "dates": ["2026-09-05", "2026-09-06"],
+      "sources": [{ "platform": "MELON", "externalId": "212934" }]
+    },
+    "5a3dc4f3-4461-4fb8-b9f6-65b27cd8bdb2": {
+      "title": "스티 단독 콘서트 '스티의 스위치'",
+      "normalizedTitle": "스티단독콘서트스티의스위치",
+      "venueName": "클럽온에어",
+      "dates": ["2026-04-11"],
+      "sources": [{ "platform": "MELON", "externalId": "212937" }]
+    },
+    "eb7906ed-7b5e-484e-a702-9752d9cadc8d": {
+      "title": "루루 단독콘서트 '사랑愛' : 롤링 31주년 기념공연",
+      "normalizedTitle": "루루단독콘서트사랑愛롤링주년기념공연",
+      "venueName": "롤링홀",
+      "dates": ["2026-04-18"],
+      "sources": [{ "platform": "MELON", "externalId": "212938" }]
+    },
+    "c751fd44-79bc-4003-9ef8-8bda0aff7b4b": {
+      "title": "먼데이프로젝트 X 숲세권 MONDAY:SOOP [디폴트(DEFAULT.) 단독 콘서트]",
+      "normalizedTitle": "먼데이프로젝트숲세권mondaysoop디폴트default단독콘서트",
+      "venueName": "숲세권 라이브",
+      "dates": ["2026-04-07"],
+      "sources": [{ "platform": "MELON", "externalId": "212939" }]
+    },
+    "4519243d-b475-4395-894c-fa6c136152c9": {
+      "title": "먼데이프로젝트 시즌9 My Universe [ORORA(오로라) 단독 콘서트]",
+      "normalizedTitle": "먼데이프로젝트시즌myuniverseorora오로라단독콘서트",
+      "venueName": "클럽온에어",
+      "dates": ["2026-04-16"],
+      "sources": [{ "platform": "MELON", "externalId": "212940" }]
     }
   }
 }
