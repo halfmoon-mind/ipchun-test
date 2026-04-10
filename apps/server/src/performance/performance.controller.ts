@@ -9,8 +9,10 @@ import {
   Query,
   Put,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
+import { TicketPlatform } from '@ipchun/shared';
 import { PerformanceService } from './performance.service';
+import { BatchScanService } from './batch-scan.service';
 import { FetchUrlDto } from './dto/fetch-url.dto';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
@@ -21,7 +23,35 @@ import { ReplaceArtistsDto } from './dto/replace-artists.dto';
 @ApiTags('performances')
 @Controller('performances')
 export class PerformanceController {
-  constructor(private readonly service: PerformanceService) {}
+  constructor(
+    private readonly service: PerformanceService,
+    private readonly batchScanService: BatchScanService,
+  ) {}
+
+  @Post('batch-scan')
+  @ApiOperation({ summary: '플랫폼 배치 스캔 수동 트리거 (관리자용)' })
+  @ApiQuery({ name: 'platform', enum: TicketPlatform, required: false })
+  @ApiQuery({ name: 'count', type: Number, required: false })
+  async batchScan(
+    @Query('platform') platform?: TicketPlatform,
+    @Query('count') count?: string,
+  ) {
+    const batchSize = count ? parseInt(count, 10) : 30;
+    if (platform) {
+      return this.batchScanService.scanPlatform(platform, batchSize);
+    }
+    const results = [];
+    for (const p of Object.values(TicketPlatform)) {
+      results.push(await this.batchScanService.scanPlatform(p as TicketPlatform, batchSize));
+    }
+    return results;
+  }
+
+  @Get('scan-stats')
+  @ApiOperation({ summary: '배치 스캔 통계 (플랫폼별 상태 집계)' })
+  getScanStats() {
+    return this.batchScanService.getScanStats();
+  }
 
   @Post('fetch')
   @ApiOperation({ summary: 'URL에서 공연 데이터 fetch (프리뷰용)' })

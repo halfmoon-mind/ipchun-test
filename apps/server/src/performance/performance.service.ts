@@ -3,7 +3,7 @@ import {
   ConflictException,
   BadRequestException,
 } from '@nestjs/common';
-import { Genre } from '@ipchun/shared';
+import { Genre, TicketPlatform } from '@ipchun/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePerformanceDto } from './dto/create-performance.dto';
 import { UpdatePerformanceDto } from './dto/update-performance.dto';
@@ -82,6 +82,39 @@ export class PerformanceService {
     }
 
     return result;
+  }
+
+  /** Used by BatchScanService: apply filters then create from a FetchedPerformance */
+  async createFromFetched(platform: TicketPlatform, externalId: string, fetched: FetchedPerformance) {
+    if (EXCLUDED_GENRES.includes(fetched.genre as Genre)) {
+      throw new BadRequestException(`EXCLUDED genre: ${fetched.genre} ("${fetched.title}")`);
+    }
+    if (EXCLUDED_TITLE_KEYWORDS.test(fetched.title)) {
+      throw new BadRequestException(`EXCLUDED title keyword: "${fetched.title}"`);
+    }
+    const dto: CreatePerformanceDto = {
+      title: fetched.title,
+      subtitle: fetched.subtitle ?? undefined,
+      genre: fetched.genre as any,
+      ageRating: fetched.ageRating ?? undefined,
+      runtime: fetched.runtime ?? undefined,
+      intermission: fetched.intermission ?? undefined,
+      posterUrl: fetched.posterUrl ?? undefined,
+      organizer: fetched.organizer ?? undefined,
+      venueName: fetched.venue?.name,
+      venueAddress: fetched.venue?.address ?? undefined,
+      venueLatitude: fetched.venue?.latitude ?? undefined,
+      venueLongitude: fetched.venue?.longitude ?? undefined,
+      platform: platform as any,
+      externalId,
+      sourceUrl: fetched.source.sourceUrl,
+      ticketOpenAt: fetched.source.ticketOpenAt ?? undefined,
+      bookingEndAt: fetched.source.bookingEndAt ?? undefined,
+      salesStatus: fetched.source.salesStatus ?? undefined,
+      schedules: fetched.schedules,
+      tickets: fetched.tickets,
+    } as any;
+    return this.create(dto);
   }
 
   async create(dto: CreatePerformanceDto) {

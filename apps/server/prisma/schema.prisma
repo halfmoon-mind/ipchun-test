@@ -99,6 +99,13 @@ enum TicketPlatform {
   YES24
 }
 
+enum ScanStatus {
+  DISCOVERED
+  REGISTERED
+  SKIPPED
+  FAILED
+}
+
 enum LineupMode {
   LINEUP
   TIMETABLE
@@ -238,4 +245,17 @@ model Ticket {
   updatedAt DateTime          @updatedAt @map("updated_at")
 
   @@map("tickets")
+}
+
+model ScanLog {
+  id            String         @id @default(uuid())
+  platform      TicketPlatform
+  externalId    String         @map("external_id")
+  status        ScanStatus
+  reason        String?
+  performanceId String?        @map("performance_id")
+  scannedAt     DateTime       @default(now()) @map("scanned_at")
+
+  @@unique([platform, externalId])
+  @@map("scan_logs")
 }
