@@ -1249,20 +1249,6 @@
         }
       ]
     },
-    "b83e66a6-5476-4f16-a56c-2d6ccaaf67e4": {
-      "title": "서우승 생일 팬미팅 〈우승하는 날!〉",
-      "normalizedTitle": "서우승생일팬미팅우승하는날",
-      "venueName": "온맘씨어터",
-      "dates": [
-        "2026-03-22"
-      ],
-      "sources": [
-        {
-          "platform": "MELON",
-          "externalId": "212906"
-        }
-      ]
-    },
     "8f938d08-5e07-46d0-a8b2-e1072a81a33e": {
       "title": "W24 단독 공연 〈NEXT CHAPTER: BEST CHAPTER / Section 3. 벨로주〉",
       "normalizedTitle": "w단독공연nextchapterbestchaptersection벨로주",
@@ -1520,20 +1506,6 @@
         {
           "platform": "NOL",
           "externalId": "26004955"
-        }
-      ]
-    },
-    "2941d0c8-4a1c-4226-b5a8-a566e0470e0e": {
-      "title": "브릴란떼 Ready Set Go! ［브릴란떼 정기공연］",
-      "normalizedTitle": "브릴란떼readysetgo브릴란떼정기공연",
-      "venueName": "용산아트홀 대극장 미르",
-      "dates": [
-        "2026-04-01"
-      ],
-      "sources": [
-        {
-          "platform": "NOL",
-          "externalId": "26004964"
         }
       ]
     },

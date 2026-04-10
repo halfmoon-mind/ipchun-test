@@ -237,6 +237,83 @@
       "venueName": "예스24 원더로크홀",
       "dates": ["2026-05-09"],
       "sources": [{ "platform": "YES24", "externalId": "57800" }]
+    },
+    "d7a41a1d-d9fd-4194-9d48-22ec9fec5f6f": {
+      "title": "정여진 & TULA Live Concert '드·디·어' in 하남",
+      "normalizedTitle": "정여진tulaliveconvert드디어하남",
+      "venueName": "하남문화예술회관 검단홀",
+      "dates": ["2026-05-02"],
+      "sources": [{ "platform": "YES24", "externalId": "57804" }]
+    },
+    "2cdee516-004c-4a58-9ab3-c23ca93af91d": {
+      "title": "SUKIMASWITCH \"POPMAN'S WORLD 2026 in Seoul\"",
+      "normalizedTitle": "sukimaswitchpopmansworld inseoul",
+      "venueName": "예스24 원더로크홀",
+      "dates": ["2026-06-20"],
+      "sources": [{ "platform": "YES24", "externalId": "57807" }]
+    },
+    "71ddb3e1-3247-4fc2-bb73-0e2800349d0b": {
+      "title": "Sofia Isella Live in Seoul 소피아 이셀라 첫 내한공연",
+      "normalizedTitle": "sofiaisellaliveinsoul소피아이셀라첫내한공연",
+      "venueName": "홍대 롤링홀",
+      "dates": ["2026-07-24"],
+      "sources": [{ "platform": "YES24", "externalId": "57842" }]
+    },
+    "d1d36b77-f377-45e3-a0bf-5bc070960002": {
+      "title": "조영남 전국투어 콘서트 : 조영남이 죽기 전에 하고 싶은 이야기 - 용인",
+      "normalizedTitle": "조영남전국투어콘서트조영남이죽기전에하고싶은이야기용인",
+      "venueName": "용인시문예회관 처인홀",
+      "dates": ["2026-05-10"],
+      "sources": [{ "platform": "TICKETLINK", "externalId": "62136" }]
+    },
+    "fb37f824-dc9f-4652-9b7e-026e2cacaf6b": {
+      "title": "아레아레아x이이오 < The Seasons We Loved >",
+      "normalizedTitle": "아레아레아이이오theseasonssweloved",
+      "venueName": "라이크디즈1601",
+      "dates": ["2026-04-09", "2026-04-10", "2026-04-11", "2026-04-12", "2026-04-13", "2026-04-14", "2026-04-15", "2026-04-16"],
+      "sources": [{ "platform": "TICKETLINK", "externalId": "62139" }]
+    },
+    "e5228157-4b4f-42ad-9133-a81a49bb2293": {
+      "title": "<요조 단독 콘서트_아름다움을 정확하게 말해보기> - 칠곡 향사아트센터",
+      "normalizedTitle": "요조단독콘서트아름다움을정확하게말해보기칠곡향사아트센터",
+      "venueName": "칠곡향사아트센터",
+      "dates": ["2026-04-11"],
+      "sources": [{ "platform": "TICKETLINK", "externalId": "62142" }]
+    },
+    "0c5c7edc-3f69-4cdf-8be6-d327a2861b66": {
+      "title": "DOMESTIC CALLING : GONGSTAR X HOWL",
+      "normalizedTitle": "domesticcallinggongstarxhowl",
+      "venueName": "LION SUPER CLUB",
+      "dates": ["2026-04-04", "2026-04-05"],
+      "sources": [{ "platform": "NOL", "externalId": "26004974" }]
+    },
+    "67300e53-44c0-4e3a-ab3f-a6455c17b449": {
+      "title": "케이팝 데몬헌터스 Live OST Concert in 제주",
+      "normalizedTitle": "케이팝데몬헌터스liveostconcertin제주",
+      "venueName": "제주신화월드 랜딩컨벤션센터",
+      "dates": ["2026-05-09"],
+      "sources": [{ "platform": "NOL", "externalId": "26004976" }]
+    },
+    "ffe9f4b6-00b5-4f95-901f-81c0f703eef9": {
+      "title": "포스트 말론 내한공연",
+      "normalizedTitle": "포스트말론내한공연",
+      "venueName": "고양종합운동장 주경기장",
+      "dates": ["2026-10-02"],
+      "sources": [{ "platform": "NOL", "externalId": "26004944" }]
+    },
+    "293ad357-2fd3-4b62-941b-130fea033084": {
+      "title": "yutori Bless you! live in Seoul",
+      "normalizedTitle": "yutoriblessyoulivesinseoul",
+      "venueName": "무신사 개러지",
+      "dates": ["2026-06-27"],
+      "sources": [{ "platform": "NOL", "externalId": "26004936" }]
+    },
+    "bd5d14e8-d0d7-4679-b63c-7fdb5bab4190": {
+      "title": "2026 한영애 50주년 콘서트 〈Snowrain〉",
+      "normalizedTitle": "한영애주년콘서트snowrain",
+      "venueName": "올림픽공원 우리금융아트홀",
+      "dates": ["2026-06-13", "2026-06-14"],
+      "sources": [{ "platform": "NOL", "externalId": "26004932" }]
     }
   }
 }

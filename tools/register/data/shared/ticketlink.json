@@ -17,5 +17,22 @@
   "62124": { "reason": "MANUAL_SKIP", "title": "대구크리스챤콰이어 특별콘서트", "note": "합창단" },
   "62125": { "reason": "MANUAL_SKIP", "title": "수성키즈클래식", "note": "클래식/어린이" },
   "62126": { "reason": "MANUAL_SKIP", "title": "소프라노 김소미 리사이틀", "note": "클래식/성악" },
-  "62127": { "reason": "MANUAL_SKIP", "title": "연극 <빵야>", "note": "연극" }
+  "62127": { "reason": "MANUAL_SKIP", "title": "연극 <빵야>", "note": "연극" },
+  "62128": { "reason": "400_EXCLUDED", "title": "경산시립합창단 제33회 정기연주회" },
+  "62129": { "reason": "MANUAL_SKIP", "title": "2026 덕운사 글로벌 투어 in 서울", "note": "중국 상성(만담) 공연단" },
+  "62130": { "reason": "MANUAL_SKIP", "title": "뮤지컬 <팬레터> 10주년 앵콜", "note": "뮤지컬" },
+  "62131": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <라푼젤> - 김해", "note": "뮤지컬" },
+  "62132": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <인어공주> - 영주", "note": "뮤지컬" },
+  "62133": { "reason": "MANUAL_SKIP", "title": "2026 기아타이거즈 아모제 ZONE", "note": "야구/스포츠" },
+  "62134": { "reason": "MANUAL_SKIP", "title": "뮤지컬 집사TV <대저택 문의 비밀>", "note": "뮤지컬" },
+  "62135": { "reason": "MANUAL_SKIP", "title": "지브리를 품은 클래식 - 대구", "note": "클래식" },
+  "62137": { "reason": "MANUAL_SKIP", "title": "가족오페라 <헨젤과 그레텔> - 대구", "note": "오페라/클래식" },
+  "62138": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <인어공주> - 울산", "note": "뮤지컬" },
+  "62140": { "reason": "MANUAL_SKIP", "title": "2026 LG트윈스 계열사 결제용", "note": "야구/스포츠" },
+  "62141": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <인어공주> - 제천", "note": "뮤지컬" },
+  "62143": { "reason": "MANUAL_SKIP", "title": "t_모바일 티켓 테스트", "note": "테스트 상품" },
+  "62144": { "reason": "MANUAL_SKIP", "title": "에릭 루 피아노 리사이틀 - 대구", "note": "클래식" },
+  "62145": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <꼬마버스 타요> - 성남", "note": "뮤지컬" },
+  "62146": { "reason": "MANUAL_SKIP", "title": "2026 K-트롯 그랜드 어워즈", "note": "트로트" },
+  "62147": { "reason": "MANUAL_SKIP", "title": "가족뮤지컬 <겨울이야기> - 광주", "note": "뮤지컬" }
 }

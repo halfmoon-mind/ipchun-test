@@ -1,33 +1,219 @@
 {
-  "26004945": { "reason": "CANCELLED+CLASSIC", "title": "2026 정기연주회 중앙환희&여명합창단" },
-  "26004948": { "reason": "CANCELLED", "title": "어뮤징오케스트라 제3회 정기연주회" },
-  "26004949": { "reason": "400_EXCLUDED", "title": "제일 가까운 장애인 화장실이 어디죠？ (PLAY)" },
-  "26004950": { "reason": "400_EXCLUDED", "title": "어린이 시리즈 공연1, 브레멘음악대 (MUSICAL)" },
-  "26004951": { "reason": "400_EXCLUDED", "title": "핑크트럭 (PLAY)" },
-  "26004952": { "reason": "MANUAL_SKIP", "title": "박주연 피아노 독주회", "note": "클래식" },
-  "26004953": { "reason": "MANUAL_SKIP", "title": "2026 온리브 기획전시 REAL ME - 청주", "note": "전시" },
-  "26004956": { "reason": "400_EXCLUDED", "title": "〈춘섬이의 거짓말〉 (PLAY)" },
-  "26004957": { "reason": "MANUAL_SKIP", "title": "2026 천안예술의전당 가정의 달 기념공연 가정음악회", "note": "클래식" },
-  "26004958": { "reason": "400_EXCLUDED", "title": "레인보우 프로젝트 시즌 2: 오렌지 701호의 기적 (PLAY)" },
-  "26004959": { "reason": "400_EXCLUDED", "title": "김창옥 토크콘서트 시즌5 - 의정부" },
-  "26004960": { "reason": "400_EXCLUDED", "title": "어린이뮤지컬 피터래빗 (MUSICAL)" },
-  "26004961": { "reason": "MANUAL_SKIP", "title": "제3회 트로이 앙상블 정기연주회", "note": "클래식" },
-  "26004962": { "reason": "MANUAL_SKIP", "title": "4인 음악회", "note": "오페라/클래식" },
-  "26004963": { "reason": "MANUAL_SKIP", "title": "SNU 브라스 소사이어티 10+1 - 화성", "note": "관악 앙상블" },
-  "26004965": { "reason": "MANUAL_SKIP", "title": "아츠앤라이프 SSP 제4회 정기연주회", "note": "클래식" },
-  "26004966": { "reason": "400_EXCLUDED", "title": "쇼뮤지컬 프린세스 캐치! 티니핑 - 안산 (MUSICAL)" },
-  "26004968": { "reason": "MANUAL_SKIP", "title": "이지은 피아노 독주회 - 성남", "note": "클래식/피아노 독주회" },
-  "26004969": { "reason": "400_EXCLUDED", "title": "뮤지컬 〈장수탕 선녀님〉 - 구리 (MUSICAL)" },
-  "26004970": { "reason": "400_EXCLUDED", "title": "뮤지컬 멜로우tv 〈Run it up, 팀나빠〉 - 과천 (MUSICAL)" },
-  "26004971": { "reason": "CANCELLED", "title": "2026 CHOI HOJONG 2nd MOVENOTE 〈LIMBØ〉" },
-  "26004972": { "reason": "MANUAL_SKIP", "title": "럭키시트- BABYMONSTER WORLD TOUR", "note": "26004955 동일 공연 럭키시트 별도 상품" },
-  "26004973": { "reason": "400_EXCLUDED", "title": "한뼘사이 - 대전 (PLAY)" },
-  "26004975": { "reason": "400_EXCLUDED", "title": "어린이뮤지컬 캣 - 김해 (MUSICAL)" },
-  "26004977": { "reason": "MANUAL_SKIP", "title": "On Screen - 창극 〈나무, 물고기, 달〉", "note": "전통극/창극" },
-  "26004978": { "reason": "MANUAL_SKIP", "title": "IBK기업은행 WIN CLASS 고객사랑 음악회", "note": "기업 초청 음악회/클래식" },
-  "26004979": { "reason": "MANUAL_SKIP", "title": "파주 프런티어 FC 홈경기 - 비지정", "note": "스포츠/축구" },
-  "26004980": { "reason": "MANUAL_SKIP", "title": "가족오페라 〈해와 달이 될뻔한 오누이〉 - 대전", "note": "오페라" },
-  "26004981": { "reason": "CANCELLED", "title": "2026 정기연주회 중앙환희&여명합창단" },
-  "26004982": { "reason": "MANUAL_SKIP", "title": "파주 프런티어 FC vs 김해FC", "note": "스포츠/축구" },
-  "26004983": { "reason": "MANUAL_SKIP", "title": "파주 프런티어 FC vs 서울이랜드", "note": "스포츠/축구" }
+  "26004945": {
+    "reason": "CANCELLED+CLASSIC",
+    "title": "2026 정기연주회 중앙환희&여명합창단"
+  },
+  "26004948": {
+    "reason": "CANCELLED",
+    "title": "어뮤징오케스트라 제3회 정기연주회"
+  },
+  "26004949": {
+    "reason": "400_EXCLUDED",
+    "title": "제일 가까운 장애인 화장실이 어디죠？ (PLAY)"
+  },
+  "26004950": {
+    "reason": "400_EXCLUDED",
+    "title": "어린이 시리즈 공연1, 브레멘음악대 (MUSICAL)"
+  },
+  "26004951": {
+    "reason": "400_EXCLUDED",
+    "title": "핑크트럭 (PLAY)"
+  },
+  "26004952": {
+    "reason": "MANUAL_SKIP",
+    "title": "박주연 피아노 독주회",
+    "note": "클래식"
+  },
+  "26004953": {
+    "reason": "MANUAL_SKIP",
+    "title": "2026 온리브 기획전시 REAL ME - 청주",
+    "note": "전시"
+  },
+  "26004956": {
+    "reason": "400_EXCLUDED",
+    "title": "〈춘섬이의 거짓말〉 (PLAY)"
+  },
+  "26004957": {
+    "reason": "MANUAL_SKIP",
+    "title": "2026 천안예술의전당 가정의 달 기념공연 가정음악회",
+    "note": "클래식"
+  },
+  "26004958": {
+    "reason": "400_EXCLUDED",
+    "title": "레인보우 프로젝트 시즌 2: 오렌지 701호의 기적 (PLAY)"
+  },
+  "26004959": {
+    "reason": "400_EXCLUDED",
+    "title": "김창옥 토크콘서트 시즌5 - 의정부"
+  },
+  "26004960": {
+    "reason": "400_EXCLUDED",
+    "title": "어린이뮤지컬 피터래빗 (MUSICAL)"
+  },
+  "26004961": {
+    "reason": "MANUAL_SKIP",
+    "title": "제3회 트로이 앙상블 정기연주회",
+    "note": "클래식"
+  },
+  "26004962": {
+    "reason": "MANUAL_SKIP",
+    "title": "4인 음악회",
+    "note": "오페라/클래식"
+  },
+  "26004963": {
+    "reason": "MANUAL_SKIP",
+    "title": "SNU 브라스 소사이어티 10+1 - 화성",
+    "note": "관악 앙상블"
+  },
+  "26004965": {
+    "reason": "MANUAL_SKIP",
+    "title": "아츠앤라이프 SSP 제4회 정기연주회",
+    "note": "클래식"
+  },
+  "26004966": {
+    "reason": "400_EXCLUDED",
+    "title": "쇼뮤지컬 프린세스 캐치! 티니핑 - 안산 (MUSICAL)"
+  },
+  "26004968": {
+    "reason": "MANUAL_SKIP",
+    "title": "이지은 피아노 독주회 - 성남",
+    "note": "클래식/피아노 독주회"
+  },
+  "26004969": {
+    "reason": "400_EXCLUDED",
+    "title": "뮤지컬 〈장수탕 선녀님〉 - 구리 (MUSICAL)"
+  },
+  "26004970": {
+    "reason": "400_EXCLUDED",
+    "title": "뮤지컬 멜로우tv 〈Run it up, 팀나빠〉 - 과천 (MUSICAL)"
+  },
+  "26004971": {
+    "reason": "CANCELLED",
+    "title": "2026 CHOI HOJONG 2nd MOVENOTE 〈LIMBØ〉"
+  },
+  "26004972": {
+    "reason": "MANUAL_SKIP",
+    "title": "럭키시트- BABYMONSTER WORLD TOUR",
+    "note": "26004955 동일 공연 럭키시트 별도 상품"
+  },
+  "26004973": {
+    "reason": "400_EXCLUDED",
+    "title": "한뼘사이 - 대전 (PLAY)"
+  },
+  "26004975": {
+    "reason": "400_EXCLUDED",
+    "title": "어린이뮤지컬 캣 - 김해 (MUSICAL)"
+  },
+  "26004977": {
+    "reason": "MANUAL_SKIP",
+    "title": "On Screen - 창극 〈나무, 물고기, 달〉",
+    "note": "전통극/창극"
+  },
+  "26004978": {
+    "reason": "MANUAL_SKIP",
+    "title": "IBK기업은행 WIN CLASS 고객사랑 음악회",
+    "note": "기업 초청 음악회/클래식"
+  },
+  "26004979": {
+    "reason": "MANUAL_SKIP",
+    "title": "파주 프런티어 FC 홈경기 - 비지정",
+    "note": "스포츠/축구"
+  },
+  "26004980": {
+    "reason": "MANUAL_SKIP",
+    "title": "가족오페라 〈해와 달이 될뻔한 오누이〉 - 대전",
+    "note": "오페라"
+  },
+  "26004981": {
+    "reason": "CANCELLED",
+    "title": "2026 정기연주회 중앙환희&여명합창단"
+  },
+  "26004982": {
+    "reason": "MANUAL_SKIP",
+    "title": "파주 프런티어 FC vs 김해FC",
+    "note": "스포츠/축구"
+  },
+  "26004983": {
+    "reason": "MANUAL_SKIP",
+    "title": "파주 프런티어 FC vs 서울이랜드",
+    "note": "스포츠/축구"
+  },
+  "26004964": {
+    "reason": "MANUAL_SKIP",
+    "title": "브릴란떼 Ready Set Go!",
+    "note": "어린이 합창단"
+  },
+  "26004946": {
+    "reason": "400_EXCLUDED",
+    "title": "뮤지컬〈만복이네 떡집〉 (MUSICAL)"
+  },
+  "26004947": {
+    "reason": "MANUAL_SKIP",
+    "title": "김미솔 피아노 독주회",
+    "note": "클래식"
+  },
+  "26004984": {
+    "reason": "MANUAL_SKIP",
+    "title": "파주 프런티어 FC vs 경남FC",
+    "note": "스포츠/축구"
+  },
+  "26004985": {
+    "reason": "MANUAL_SKIP",
+    "title": "파주 프런티어 FC vs 충북청주FC",
+    "note": "스포츠/축구"
+  },
+  "26004940": {
+    "reason": "MANUAL_SKIP",
+    "title": "강보라 바이올린 독주회",
+    "note": "클래식"
+  },
+  "26004941": {
+    "reason": "MANUAL_SKIP",
+    "title": "메커니즘 These mechanisms",
+    "note": "공연예술/무용"
+  },
+  "26004942": {
+    "reason": "400_EXCLUDED",
+    "title": "가족매직쇼 공룡 애니멀 쇼 - 보령 (MUSICAL)"
+  },
+  "26004943": {
+    "reason": "400_EXCLUDED",
+    "title": "2026 연극 테스트 (PLAY)"
+  },
+  "26004935": {
+    "reason": "MANUAL_SKIP",
+    "title": "임선혜&이동규 러브 듀엣 : Mozart and Handel in Love",
+    "note": "클래식"
+  },
+  "26004937": {
+    "reason": "400_EXCLUDED",
+    "title": "뮤지컬 〈오즈〉 (MUSICAL)"
+  },
+  "26004938": {
+    "reason": "MANUAL_SKIP",
+    "title": "슈만과 클라라, 그리고 브람스",
+    "note": "클래식"
+  },
+  "26004939": {
+    "reason": "MANUAL_SKIP",
+    "title": "춤추는 발레 FESTA",
+    "note": "발레"
+  },
+  "26004930": {
+    "reason": "MANUAL_SKIP",
+    "title": "2026 오네 슈퍼레이스 챔피언십",
+    "note": "모터스포츠"
+  },
+  "26004931": {
+    "reason": "400_EXCLUDED",
+    "title": "2026 신세계 이마트배 전국고교야구대회"
+  },
+  "26004933": {
+    "reason": "CANCELLED",
+    "title": "부활절 음악회"
+  },
+  "26004934": {
+    "reason": "400_EXCLUDED",
+    "title": "이은결 〈META〉 - 전주 (MUSICAL)"
+  }
 }
