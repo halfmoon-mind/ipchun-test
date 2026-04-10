@@ -54,10 +54,12 @@ curl -s "$BASE_URL/artists" | jq .
 
 ### 3단계: Spotify 검색 & 매칭
 
-미연결 아티스트 각각에 대해:
+미연결 아티스트 각각에 대해, 위의 **다국어 검색 전략**을 적용한다. 먼저 DB 이름으로 API 검색하고, 결과가 없거나 불확실하면 영문명·로마자명으로 재검색한다:
 
 ```bash
 curl -s "$BASE_URL/artists/spotify/search?q={아티스트명}" | jq .
+# 결과 없으면 영문 변환명으로 재시도
+curl -s "$BASE_URL/artists/spotify/search?q={영문명}" | jq .
 ```
 
 검색 결과를 평가하여 최적 매칭을 선택한다:
@@ -71,7 +73,20 @@ curl -s "$BASE_URL/artists/spotify/search?q={아티스트명}" | jq .
   - 검색 결과가 없음
   - 동명이인이 의심됨 (결과가 여러 개이고 followers가 비슷)
 
-**Fallback (API 검색 실패 시):** Spotify 검색 API가 빈 결과를 반환하거나 에러가 발생하면, 한글명 대신 영문명이나 로마자 표기로 재시도한다. 그래도 안 되면 웹 검색(`open.spotify.com/artist` + 아티스트명)으로 Spotify 프로필을 직접 찾아 spotifyId를 추출한다.
+**다국어 검색 전략:** 한국 인디 아티스트는 한글명과 전혀 다른 영문 활동명을 쓰는 경우가 매우 많다 (예: 고고학→gogohawk, 브릴란떼→Brillante). 단순 로마자 음역(gogohak)이 아니라 의역·창작 영문명일 수 있으므로, 한글 검색만으로는 Spotify 매칭에 실패할 확률이 높다.
+
+검색은 다음 순서로 시도한다. 각 단계에서 유력한 결과가 나오면 즉시 다음 단계로 넘어간다:
+
+1. **DB 이름 그대로 검색** — `GET /artists/spotify/search?q={name}`
+2. **공연 제목에서 영문명 추출** — `GET /performances?artistId={id}&limit=5`로 연결된 공연을 조회하여, 공연 제목에 영문 활동명이 포함되어 있는지 확인한다. 예: "TONE STUDIO LIVE (급한노새 (Rosai In Hurry))"에서 "Rosai In Hurry"를 추출. 공연 제목에는 아티스트의 실제 활동명이 괄호 안에 병기되거나, 영문 공연명 자체에 포함되는 경우가 많다.
+3. **영문/로마자 변환 검색** — DB 이름이 한글이면 영문 활동명을 추론하여 재검색한다:
+   - 음역이 아닌 의미 기반 영문명 가능성을 고려 (고고학→gogohawk, 심아일랜드→SIMILE LAND)
+   - 한자어·외래어 기반이면 원어 표기로도 시도 (브릴란떼→Brillante, 네미시스→Nemesis)
+   - 단순 로마자 음역도 한 번 시도 (숨비→soombi, 시황→sihwang)
+4. **웹 검색 fallback** — API 검색이 모두 실패하면, WebSearch로 `"아티스트명" spotify artist` 또는 `"아티스트명" site:open.spotify.com`을 검색하여 Spotify 프로필 URL에서 spotifyId를 추출한다. 한글명과 추정 영문명 양쪽 모두 웹 검색한다.
+5. **API rate limit 시** — Spotify API가 503/429를 반환하면, 1~4단계 전체를 웹 검색 기반으로 대체한다. 한글명과 영문명 양쪽으로 WebSearch를 수행한다.
+
+영문명 추론이 어려운 경우(순한글 고유명사 등), 무리하게 추측하지 말고 웹 검색으로 넘어간다. 웹 검색에서도 못 찾으면 사용자에게 영문 활동명을 직접 확인 요청한다.
 
 수동 확인이 필요한 경우, 검색 결과를 사용자에게 보여주고 선택을 요청한다:
 
