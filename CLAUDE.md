@@ -76,6 +76,52 @@
 | **Toggle/On** | `0mj4k` | knob: `AzrOk` |
 | **Toggle/Off** | `lAJAr` | knob: `CzTQ1` |
 
+## Data Model: Artist ↔ Performance
+
+Artist와 Performance는 `PerformanceArtist` 중간 테이블(라인업)로 다대다 연결된다.
+
+### 핵심 모델
+
+| Model | 역할 | 주요 필드 |
+|-------|------|----------|
+| `Artist` | 아티스트 | `name`, `spotifyId`, `spotifyUrl`, `imageUrl`, `socialLinks`, `monthlyListeners`, `spotifyMeta` |
+| `Performance` | 공연 | `title`, `status`, `genre`, `venueId`, `lineupMode` |
+| `PerformanceArtist` | 라인업(중간 테이블) | `artistId`, `performanceId`, `role`, `stageName`, `stage`, `startTime`, `endTime`, `performanceOrder`, `performanceScheduleId` |
+
+### 관계 구조
+
+```
+Artist ──┐                    ┌── Performance
+         │  PerformanceArtist │
+         └──── artistId ──────┘
+                performanceId
+                stageName (공연별 활동명)
+                role, stage, performanceOrder
+```
+
+- **unique constraint**: `[performanceId, artistId]` — 한 공연에 같은 아티스트 중복 불가
+- `stageName`: 공연에서 사용하는 이름이 DB `name`과 다를 때 (예: 한글명↔영문명)
+- `performanceScheduleId`: 일정별 아티스트 배정 (페스티벌 등)
+
+### 주요 API
+
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| `GET` | `/performances?artistId={id}` | 특정 아티스트의 공연 목록 (period=upcoming/past, cursor 페이지네이션) |
+| `GET` | `/performances/calendar?year=&month=&artistId=` | 월별 공연 캘린더 |
+| `PUT` | `/performances/:id/artists` | 공연 라인업 전체 교체 |
+| `DELETE` | `/performances/:id/artists/:entryId` | 라인업에서 아티스트 제거 |
+| `GET` | `/artists` | 전체 아티스트 (search 쿼리 지원) |
+| `PATCH` | `/artists/:id` | 아티스트 정보 수정 |
+| `POST` | `/artists/find-or-create` | 이름으로 찾거나 새로 생성 (Spotify 자동 연결 시도) |
+
+### 아티스트 이름 관례
+
+한국 인디 아티스트는 한글명과 전혀 다른 영문 활동명을 쓰는 경우가 많다:
+- 고고학 → Gogohawk, 심아일랜드 → SIMILE LAND, 급한노새 → Rosai In Hurry, 네미시스 → Nemesis
+
+DB `name`은 한글명을 유지하고, Spotify 등 외부 서비스 매칭 시 영문 활동명을 별도로 추론해야 한다. 공연 제목에 영문명이 괄호 병기되는 경우가 많으므로 공연 데이터를 참고할 것.
+
 ## Frontend Design Rules
 
 - **No generic layouts.** Every page should feel like one composition, not a dashboard (unless it IS a dashboard).
