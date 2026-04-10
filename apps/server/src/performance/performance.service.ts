@@ -17,7 +17,7 @@ import type { FetchedPerformance } from '@ipchun/shared';
 const EXCLUDED_GENRES: Genre[] = [Genre.MUSICAL, Genre.PLAY, Genre.CLASSIC, Genre.TROT];
 
 const EXCLUDED_TITLE_KEYWORDS =
-  /야구|축구|농구|배구|스포츠|KBO|KBL|K리그|프로야구|프로축구|프로농구|토크콘서트|토크쇼|강연|세미나|특강|트로트/i;
+  /야구|축구|농구|배구|스포츠|KBO|KBL|K리그|프로야구|프로축구|프로농구|토크콘서트|토크쇼|강연|세미나|특강|트로트|오케스트라|필하모닉|심포니|교향|합창|팬미팅/i;
 
 const PERFORMANCE_INCLUDE = {
   venue: true,
