@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Patch, Body, Headers, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Headers, Param, BadRequestException, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiHeader } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RegisterDeviceTokenDto } from './dto/register-device-token.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -58,5 +59,48 @@ export class UserController {
       nickname: user.nickname,
       imageUrl: user.imageUrl,
     };
+  }
+
+  @Patch('me/device-token')
+  @ApiHeader({ name: 'x-user-id', required: true, description: '사용자 externalId' })
+  @ApiOperation({ summary: 'OneSignal 디바이스 토큰 등록/갱신' })
+  async registerDeviceToken(
+    @Headers() headers: Record<string, string>,
+    @Body() dto: RegisterDeviceTokenDto,
+  ) {
+    const externalId = this.getExternalId(headers);
+    await this.userService.registerDeviceToken(externalId, dto.playerId);
+    return { ok: true };
+  }
+
+  @Post('me/follows/:artistId')
+  @ApiHeader({ name: 'x-user-id', required: true, description: '사용자 externalId' })
+  @ApiOperation({ summary: '아티스트 팔로우' })
+  async followArtist(
+    @Headers() headers: Record<string, string>,
+    @Param('artistId') artistId: string,
+  ) {
+    const externalId = this.getExternalId(headers);
+    return this.userService.followArtist(externalId, artistId);
+  }
+
+  @Delete('me/follows/:artistId')
+  @HttpCode(204)
+  @ApiHeader({ name: 'x-user-id', required: true, description: '사용자 externalId' })
+  @ApiOperation({ summary: '아티스트 언팔로우' })
+  async unfollowArtist(
+    @Headers() headers: Record<string, string>,
+    @Param('artistId') artistId: string,
+  ) {
+    const externalId = this.getExternalId(headers);
+    await this.userService.unfollowArtist(externalId, artistId);
+  }
+
+  @Get('me/follows')
+  @ApiHeader({ name: 'x-user-id', required: true, description: '사용자 externalId' })
+  @ApiOperation({ summary: '팔로우한 아티스트 목록' })
+  async getFollowedArtists(@Headers() headers: Record<string, string>) {
+    const externalId = this.getExternalId(headers);
+    return this.userService.getFollowedArtists(externalId);
   }
 }

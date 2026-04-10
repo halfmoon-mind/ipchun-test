@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -52,5 +52,48 @@ export class UserService {
       where: { id: user.id },
       data: { nickname: dto.nickname, imageUrl: dto.imageUrl },
     });
+  }
+
+  async registerDeviceToken(externalId: string, playerId: string) {
+    const user = await this.findByExternalId(externalId);
+    return this.prisma.user.update({
+      where: { id: user.id },
+      data: { oneSignalPlayerId: playerId },
+    });
+  }
+
+  async followArtist(externalId: string, artistId: string) {
+    const user = await this.findByExternalId(externalId);
+    const artist = await this.prisma.artist.findUnique({ where: { id: artistId } });
+    if (!artist) throw new NotFoundException('아티스트를 찾을 수 없습니다');
+    try {
+      return await this.prisma.userFollowArtist.create({
+        data: { userId: user.id, artistId },
+        include: { artist: { select: { id: true, name: true, imageUrl: true } } },
+      });
+    } catch {
+      throw new ConflictException('이미 팔로우한 아티스트입니다');
+    }
+  }
+
+  async unfollowArtist(externalId: string, artistId: string) {
+    const user = await this.findByExternalId(externalId);
+    const follow = await this.prisma.userFollowArtist.findUnique({
+      where: { userId_artistId: { userId: user.id, artistId } },
+    });
+    if (!follow) throw new NotFoundException('팔로우하지 않은 아티스트입니다');
+    await this.prisma.userFollowArtist.delete({
+      where: { userId_artistId: { userId: user.id, artistId } },
+    });
+  }
+
+  async getFollowedArtists(externalId: string) {
+    const user = await this.findByExternalId(externalId);
+    const follows = await this.prisma.userFollowArtist.findMany({
+      where: { userId: user.id },
+      include: { artist: { select: { id: true, name: true, imageUrl: true, spotifyUrl: true } } },
+      orderBy: { createdAt: 'asc' },
+    });
+    return follows.map((f) => f.artist);
   }
 }

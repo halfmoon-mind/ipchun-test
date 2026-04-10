@@ -125,6 +125,13 @@ export interface SignInParams {
   imageUrl?: string;
 }
 
+export interface ArtistSummaryWithFollow {
+  id: string;
+  name: string;
+  imageUrl: string | null;
+  spotifyUrl: string | null;
+}
+
 export const api = {
   users: {
     signIn(params: SignInParams): Promise<UserProfile & { isNew: boolean }> {
@@ -141,6 +148,21 @@ export const api = {
         method: 'PATCH',
         body: JSON.stringify(data),
       });
+    },
+    registerDeviceToken(playerId: string): Promise<{ ok: boolean }> {
+      return request('/users/me/device-token', {
+        method: 'PATCH',
+        body: JSON.stringify({ playerId }),
+      });
+    },
+    getFollows(): Promise<ArtistSummaryWithFollow[]> {
+      return request('/users/me/follows');
+    },
+    followArtist(artistId: string): Promise<void> {
+      return request(`/users/me/follows/${artistId}`, { method: 'POST' });
+    },
+    unfollowArtist(artistId: string): Promise<void> {
+      return request(`/users/me/follows/${artistId}`, { method: 'DELETE' });
     },
   },
   artists: {
