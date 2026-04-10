@@ -4,13 +4,15 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { ScrollView, Spinner, Text, XStack, YStack, useTheme } from 'tamagui';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { api, type Artist, type CalendarPerformance, type PaginatedPerformanceResponse } from '../../src/api/client';
+import { api, type Artist, type CalendarPerformance } from '../../src/api/client';
+import { useAuth } from '../../src/contexts/AuthContext';
 
 export default function ArtistDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const theme = useTheme();
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
 
   const [artist, setArtist] = useState<Artist | null>(null);
   const [upcoming, setUpcoming] = useState<CalendarPerformance[]>([]);
@@ -21,27 +23,42 @@ export default function ArtistDetailScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [descExpanded, setDescExpanded] = useState(false);
   const [descNeedsToggle, setDescNeedsToggle] = useState(false);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   const load = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(null);
     try {
-      const [artistData, upcomingData, pastData] = await Promise.all([
+      const requests: Promise<unknown>[] = [
         api.artists.getOne(id),
         api.performances.getByArtist(id, { period: 'upcoming' }),
         api.performances.getByArtist(id, { period: 'past', limit: 10 }),
-      ]);
+      ];
+      if (user) {
+        requests.push(api.users.getFollows());
+      }
+      const results = await Promise.all(requests);
+      const [artistData, upcomingData, pastData] = results as [
+        Artist,
+        { data: CalendarPerformance[]; nextCursor: string | null },
+        { data: CalendarPerformance[]; nextCursor: string | null },
+      ];
       setArtist(artistData);
       setUpcoming(upcomingData.data);
       setPast(pastData.data);
       setPastCursor(pastData.nextCursor);
+      if (user && results[3]) {
+        const follows = results[3] as { id: string }[];
+        setIsFollowed(follows.some((f) => f.id === id));
+      }
     } catch {
       setError('아티스트 정보를 불러올 수 없습니다.');
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, user]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -61,6 +78,24 @@ export default function ArtistDetailScreen() {
     }
   };
 
+  const handleFollowToggle = useCallback(async () => {
+    if (!id || followLoading) return;
+    setFollowLoading(true);
+    const prevFollowed = isFollowed;
+    setIsFollowed(!prevFollowed);
+    try {
+      if (prevFollowed) {
+        await api.users.unfollowArtist(id);
+      } else {
+        await api.users.followArtist(id);
+      }
+    } catch {
+      setIsFollowed(prevFollowed);
+    } finally {
+      setFollowLoading(false);
+    }
+  }, [id, isFollowed, followLoading]);
+
   const headerOptions = {
     headerShown: true,
     title: artist?.name ?? '',
@@ -74,6 +109,21 @@ export default function ArtistDetailScreen() {
       fontSize: 17,
     },
     headerShadowVisible: false,
+    ...(user && {
+      headerRight: () => (
+        <Pressable onPress={handleFollowToggle} disabled={followLoading} style={{ paddingHorizontal: 8 }}>
+          {followLoading ? (
+            <Spinner size="small" color="$accentColor" />
+          ) : (
+            <Ionicons
+              name={isFollowed ? 'heart' : 'heart-outline'}
+              size={24}
+              color={isFollowed ? '#DC2626' : theme.color.val}
+            />
+          )}
+        </Pressable>
+      ),
+    }),
   };
 
   if (loading) {
