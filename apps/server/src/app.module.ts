@@ -7,9 +7,10 @@ import { AttendanceModule } from './attendance/attendance.module';
 import { BookmarkModule } from './bookmark/bookmark.module';
 import { PerformanceModule } from './performance/performance.module';
 import { SpotifyModule } from './spotify/spotify.module';
+import { UserModule } from './user/user.module';
 
 @Module({
-  imports: [PrismaModule, SpotifyModule, ArtistModule, AttendanceModule, BookmarkModule, PerformanceModule],
+  imports: [PrismaModule, SpotifyModule, UserModule, ArtistModule, AttendanceModule, BookmarkModule, PerformanceModule],
   controllers: [AppController],
   providers: [AppService],
 })
