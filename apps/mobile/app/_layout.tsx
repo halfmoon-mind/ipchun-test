@@ -1,11 +1,12 @@
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TamaguiProvider, Theme } from 'tamagui';
 import tamaguiConfig from '@/src/design-system/tamagui.config';
+import { AuthProvider, useAuth } from '@/src/contexts/AuthContext';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -14,6 +15,28 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
+
+function RootNavigator() {
+  const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.replace('/sign-in' as any);
+    }
+  }, [user, isLoading]);
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: 'transparent' },
+      }}
+    >
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="sign-in" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -43,14 +66,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <TamaguiProvider config={tamaguiConfig} defaultTheme="dark">
         <Theme name={colorScheme === 'light' ? 'light' : 'dark'}>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: 'transparent' },
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-          </Stack>
+          <AuthProvider>
+            <RootNavigator />
+          </AuthProvider>
         </Theme>
       </TamaguiProvider>
     </GestureHandlerRootView>

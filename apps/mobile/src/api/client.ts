@@ -1,10 +1,18 @@
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
+let _userId: string | null = null;
+
+export function setUserId(id: string | null) {
+  _userId = id;
+}
+
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const authHeaders: Record<string, string> = _userId ? { 'x-user-id': _userId } : {};
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      ...authHeaders,
       ...options?.headers,
     },
   });
@@ -101,7 +109,40 @@ export interface PaginatedPerformanceResponse {
   nextCursor: string | null;
 }
 
+export interface UserProfile {
+  userId: string;
+  email: string;
+  nickname: string | null;
+  imageUrl: string | null;
+  createdAt?: string;
+}
+
+export interface SignInParams {
+  provider: 'APPLE' | 'GOOGLE';
+  providerAccountId: string;
+  email: string;
+  nickname?: string;
+  imageUrl?: string;
+}
+
 export const api = {
+  users: {
+    signIn(params: SignInParams): Promise<UserProfile & { isNew: boolean }> {
+      return request('/users/sign-in', {
+        method: 'POST',
+        body: JSON.stringify(params),
+      });
+    },
+    getMe(): Promise<UserProfile> {
+      return request('/users/me');
+    },
+    updateMe(data: { nickname?: string; imageUrl?: string }): Promise<UserProfile> {
+      return request('/users/me', {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+      });
+    },
+  },
   artists: {
     getAll() {
       return request<ArtistSummary[]>('/artists');
